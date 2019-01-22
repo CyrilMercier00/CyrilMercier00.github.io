@@ -12,10 +12,10 @@ Primary use:	Open Source
 
 * body
     + Header / header
-	+ Page Content / .page-content .name-page
+        + Page Content / .page-content .name-page
         + Section Layouts / section .name-section
         ...
-	+ Footer / footer
+        + Footer / footer
 
 -------------------------------------------------------------------*/
 /*------------------------------------------------------------------
@@ -171,6 +171,7 @@ strong {
     font-weight: 400;
     font-size: 24px;
     line-height: 1;
+    margin-bottom: 14px;
 }
 
 .title-3 {
@@ -448,6 +449,7 @@ section {
     -moz-transition: all 0.3s ease;
     transition: all 0.3s ease;
     cursor: pointer;
+    margin-bottom: 7px;
 }
 
 .au-btn:hover {
@@ -967,7 +969,7 @@ section {
 .select2-container--default.select2-container--open.select2-container--below .select2-selection--multiple {
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
- }
+}
 
 .rs-select2--border .select2-container--default .select2-selection--single,
 
@@ -5303,7 +5305,7 @@ section {
 }
 
 .switch.switch-text .switch-label::before,
-  .switch.switch-text .switch-label::after {
+.switch.switch-text .switch-label::after {
     position: absolute;
     top: 50%;
     width: 50%;
@@ -5449,7 +5451,7 @@ section {
 }
 
 .switch.switch-icon .switch-label::before,
-  .switch.switch-icon .switch-label::after {
+.switch.switch-icon .switch-label::after {
     position: absolute;
     top: 50%;
     width: 50%;
