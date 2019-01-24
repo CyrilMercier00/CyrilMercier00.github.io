@@ -3,10 +3,10 @@
   // USE STRICT
   "use strict";
   
-  // --------------------------------- CHARTS ----------------------------------
+  // ------------------------------- GRAPHIQUES --------------------------------
   try {
    
-    // Recent Report
+    // Graph 1
     const couleurVibrations = 'rgba(0,181,233,0.7)' ;
     const couleurSeuil = 'rgba(223,0,0,0.7)' ;
     const couleurInvisible = 'rgba(0,0,0,0)' ;
@@ -101,7 +101,7 @@
 
   try {
 
-    // Recent Report 2
+    // Graph 2
     const couleurSeuil = 'rgba(223,0,0,0.7)' ;
     const couleurVibrations = 'rgba(0,181,233,0.9)' ;
     const couleurInvisible = 'rgba(0,0,0,0)' ; 
@@ -281,7 +281,7 @@
 
 })(jQuery);
 
-// ------------------------------ ???RECHERCHE??? ------------------------------
+// --------------------------------- RECHERCHE ---------------------------------
 (function ($) {
   // USE STRICT
   "use strict";
