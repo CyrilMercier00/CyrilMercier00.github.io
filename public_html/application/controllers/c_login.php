@@ -1,8 +1,8 @@
 <?php
 
-session_start(); // Demmarer une session pour Code Igniter
+defined('BASEPATH') OR exit('No direct script access allowed');
 
-Class User_Authentication extends CI_Controller {
+Class c_login extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
@@ -15,6 +15,14 @@ Class User_Authentication extends CI_Controller {
 
         $this->load->view('v_login');
     }
-}
 
-?>
+    public function check_login() {
+        $data = array(
+            'user_name' => $this->input->post('username'),
+            'user_password' => $this->input->post('password')
+        );
+
+        $this->load->model('m_login', $data);
+    }
+
+}

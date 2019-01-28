@@ -74,12 +74,12 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => '',
-	'password' => '',
-	'database' => '',
-	'dbdriver' => 'mysqli',
+	'dsn'	=> 'mysql:host=172.16.128.124:82; dbname=bddvibration; charset=utf8;',
+	'hostname' => 'http://172.16.128.124:82/phpmyadmin/',
+	'username' => 'root',
+	'password' => 'root',
+	'database' => 'bddvibration',
+	'dbdriver' => 'pdo',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
