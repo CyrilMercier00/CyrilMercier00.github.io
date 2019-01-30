@@ -1,25 +1,25 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
 
-// Controlleur de la page principale du site.
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class c_accueil extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->library('session');          // Pour creer une session
     }
 
     public function index() {
         // Verification de la validitee de la session
         if (($this->session->userdata('logged_in') == true)) {
-
-            $session_data = $this->session->userdata('logged_in');
-            $data['username'] = $session_data['username'];
-            $this->load->view('v_accueil', $data);  // --> Verif OUI
+            $this->load->view('v_accueil');         // --> Session valide
         } else {
-             redirect('c_login');                   // --> Verif NON   
+            redirect('c_login');                   // --> Session invalide 
         }
+    }
+
+    public function logout() {
+        $this->session->sess_destroy();
+        redirect('c_login');
     }
 
 }

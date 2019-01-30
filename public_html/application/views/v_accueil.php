@@ -1,3 +1,5 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,8 +32,11 @@
         <link href="<?php echo base_url(); ?>assets/vendor/select2/select2.min.css" rel="stylesheet" media="all">
         <link href="<?php echo base_url(); ?>assets/vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
 
-        <!-- Main CSS-->
+        <!-- Bootstrap theme CSS -->
         <link href="<?php echo base_url(); ?>assets/css/theme.css" rel="stylesheet" media="all">
+        
+        <!-- Main CSS-->
+        <link href="<?php echo base_url(); ?>assets/css/v_accueil.css" rel="stylesheet" type="text/css"/>
 
     </head>
 
@@ -183,7 +188,7 @@
                                         <a href="register.html">Changer le mot de passe</a>
                                     </li>
                                     <li>
-                                        <a href="forget-pass.html">Deconnexion</a>
+                                        <a href="<?php echo site_url('c_accueil/logout') ?>">Déonnexion</a>
                                     </li>
                                 </ul>
                             </li>
@@ -275,7 +280,7 @@
                                         <div class="au-card-title" style="background-image:url('images/bg-title-01.jpg');">
                                             <div class="bg-overlay bg-overlay--blue"></div>
 
-                                            <h3> <i class="zmdi zmdi-account-calendar"></i>Journal d'evenement</h3>
+                                            <h3> <i class="zmdi zmdi-account-calendar"></i>Journal d'évènement</h3>
                                             <button class="au-btn-plus">
                                                 <i class="zmdi zmdi-plus"></i>
                                             </button>
@@ -285,7 +290,7 @@
                                                 <div class="au-task__item au-task__item--danger">
                                                     <div class="au-task__item-inner">
                                                         <h5 class="task">
-                                                            <a href="#">Exemple evenement tres important</a>
+                                                            <a href="#">Exemple évènement très important</a>
                                                         </h5>
                                                         <span class="time">10:00</span>
                                                     </div>
@@ -293,7 +298,7 @@
                                                 <div class="au-task__item au-task__item--warning">
                                                     <div class="au-task__item-inner">
                                                         <h5 class="task">
-                                                            <a href="#">Exemple evenement important</a>
+                                                            <a href="#">Exemple évènement important</a>
                                                         </h5>
                                                         <span class="time">11:00</span>
                                                     </div>
@@ -301,7 +306,7 @@
                                                 <div class="au-task__item au-task__item--success">
                                                     <div class="au-task__item-inner">
                                                         <h5 class="task">
-                                                            <a href="#">Exemple evenement</a>
+                                                            <a href="#">Exemple évènement</a>
                                                         </h5>
                                                         <span class="time">03:30</span>
                                                     </div>
@@ -346,28 +351,27 @@
 
         </div>
 
-        <!-- Jquery JS-->
+        <!-- Jquery JS -->
         <script src="<?php echo base_url(); ?>assets/vendor/jquery-3.2.1.min.js"></script>
-        <!-- Bootstrap JS-->
+
+        <!-- Bootstrap JS -->
         <script src="<?php echo base_url(); ?>assets/vendor/bootstrap-4.1/popper.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/vendor/bootstrap-4.1/bootstrap.min.js"></script>
-        <!-- Vendor JS       -->
-        <script src="<?php echo base_url(); ?>assets/vendor/slick/slick.min.js">
-        </script>
+
+        <!-- Vendor JS -->
+        <script src="<?php echo base_url(); ?>assets/vendor/slick/slick.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/vendor/wow/wow.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/vendor/animsition/animsition.min.js"></script>
-        <script src="<?php echo base_url(); ?>assets/vendor/bootstrap-progressbar/bootstrap-progressbar.min.js">
-        </script>
+        <script src="<?php echo base_url(); ?>assets/vendor/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/vendor/counter-up/jquery.waypoints.min.js"></script>
-        <script src="<?php echo base_url(); ?>assets/vendor/counter-up/jquery.counterup.min.js">
-        </script>
+        <script src="<?php echo base_url(); ?>assets/vendor/counter-up/jquery.counterup.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/vendor/circle-progress/circle-progress.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
         <script src="<?php echo base_url(); ?>assets/vendor/chartjs/Chart.bundle.min.js"></script>
-        <script src="<?php echo base_url(); ?>assets/vendor/select2/select2.min.js">
-        </script>
+        <script src="<?php echo base_url(); ?>assets/vendor/select2/select2.min.js"></script>
 
-        <!-- Main JS-->
+
+        <!-- Main JS -->
         <script src="<?php echo base_url(); ?>assets/js/c_accueil.js"></script>
 
     </body>
