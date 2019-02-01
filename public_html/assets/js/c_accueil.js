@@ -47,7 +47,7 @@
 
                     maintainAspectRatio: true,
                     legend: {
-                        display: true,
+                        display: false,
                         position: 'bottom', alignment: 'start',
                     },
                     responsive: true,
@@ -143,7 +143,7 @@
                 options: {
                     maintainAspectRatio: true,
                     legend: {
-                        display: true,
+                        display: false,
                         position: 'bottom', alignment: 'start'
                     },
                     responsive: true,

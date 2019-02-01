@@ -74,10 +74,10 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> 'mysql:host=localhost;dbname=bddvibration',
-	'hostname' => 'http://localhost:82/phpmyadmin/',
-	'username' => 'root',
-	'password' => '',
+	'dsn'	=> 'mysql:host=172.16.129.32;port=3306;dbname=bddvibration;charset=utf8;',
+	'hostname' => 'http://172.16.129.32:3306',
+	'username' => 'respMaint',
+	'password' => 'snir2pjt',
 	'database' => 'bddvibration',
 	'dbdriver' => 'pdo',
 	'dbprefix' => '',
@@ -95,12 +95,12 @@ $db['default'] = array(
 	'save_queries' => TRUE
 );
 
-/*  PC SNIR 
+/*  RASP SNIR 
 $db['default'] = array(
-	'dsn'	=> 'mysql:host=172.16.128.124:82; dbname=bddvibration; charset=utf8;',
-	'hostname' => 'http://172.16.128.124:82/phpmyadmin/',
-	'username' => 'root',
-	'password' => 'root',
+	'dsn'	=> 'mysql:host=172.16.128.124;port=3306;dbname=bddvibration;charset=utf8;',
+	'hostname' => 'http://172.16.128.124:3306',
+	'username' => 'respMaint',
+	'password' => 'snir2pjt',
 	'database' => 'bddvibration',
 	'dbdriver' => 'pdo',
 	'dbprefix' => '',

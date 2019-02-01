@@ -40,10 +40,11 @@ Class c_login extends CI_Controller {
                 );
                 $this->session->set_userdata($data_session);
                 redirect('c_accueil');
+                
             } else {
                 // Echec, redirection avec message d'erreur
-                $error_message = "Nom d'utilisateur ou mot de passe incorrect";
-                $this->load->view('v_login', $error_message);
+                $data['error_message'] = "Nom d'utilisateur ou mot de passe incorrect";
+                $this->load->view('v_login', $data);
             }
         }
     }

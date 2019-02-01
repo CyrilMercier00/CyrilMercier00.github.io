@@ -11,9 +11,17 @@ class c_accueil extends CI_Controller {
     public function index() {
         // Verification de la validitee de la session
         if (($this->session->userdata('logged_in') == true)) {
-            $this->load->view('v_accueil');         // --> Session valide
+
+            $page = $this->load->view('v_accueil','',true);
+            $data = array(
+                'page' => $page,
+                'css_location' => 'v_accueil.css',
+                'javascript_location' => 'c_accueil.js'
+            );
+            
+            $this->load->view('common/v_template', array('data' => $data), false);
         } else {
-            redirect('c_login');                   // --> Session invalide 
+            redirect('c_login');
         }
     }
 
