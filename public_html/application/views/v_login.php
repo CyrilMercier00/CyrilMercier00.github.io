@@ -27,10 +27,11 @@
                     </form>
                     <ul>
                         <?php
-                        echo validation_errors('<li>', '</li>');
+                        echo '<div class=\'div-erreur\'>' . validation_errors('<li>', '</li>');
                         if (isset($error_message)) {
-                            echo $error_message;
+                            echo '<li>' .$error_message. '</li>';
                         }
+                        echo '</div>';
                         ?>
                     </ul>
                 </div>
