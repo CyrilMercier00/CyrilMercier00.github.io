@@ -74,10 +74,10 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> 'mysql:host=172.16.129.32;port=3306;dbname=bddvibration;charset=utf8;',
-	'hostname' => 'http://172.16.129.32:3306',
-	'username' => 'respMaint',
-	'password' => 'snir2pjt',
+	'dsn'	=> 'mysql:host=localhost:3306;port=3306;dbname=bddvibration;charset=utf8',
+	'hostname' => 'http://localhost:3306',
+	'username' => 'root',
+	'password' => '',
 	'database' => 'bddvibration',
 	'dbdriver' => 'pdo',
 	'dbprefix' => '',
@@ -122,8 +122,8 @@ $db['default'] = array(
 
 /*  PC Perso
 $db['default'] = array(
-	'dsn'	=> '',
-	'hostname' => 'http://localhost:82/phpmyadmin/',
+	'dsn'	=> 'mysql:host=localhost:3306;port=3306;dbname=bddvibration;charset=utf8',
+	'hostname' => 'http://localhost:3306',
 	'username' => 'root',
 	'password' => '',
 	'database' => 'bddvibration',
