@@ -12,6 +12,8 @@ class capteurs extends REST_Controller {
 
     public function index_get() {
         $this->load->model('m_capteurs') ;
+        
+        $this->response($this->m_capteurs->get_all_machines() );
     }
 
 }
