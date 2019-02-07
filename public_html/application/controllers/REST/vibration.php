@@ -17,7 +17,10 @@ class capteurs extends REST_Controller {
             'valVibration' => $this->post('valVibration'),
         );
 
-        $this->response($this->m_capteurs->insert_vibration($data));
+        $this->response( $this->m_capteurs->insert_vibration($data) );
     }
 
+        public function index_get() {
+        $this->response( $this->m_capteurs->get_vibration() );
+    }
 }

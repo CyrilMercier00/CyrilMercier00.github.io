@@ -99,8 +99,6 @@
         console.log(error);
     }
 
-
-
     try {
 
         // Graph 2
