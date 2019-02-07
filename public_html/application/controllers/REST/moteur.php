@@ -15,9 +15,5 @@ class moteur extends REST_Controller {
         $this->response( $this->m_moteur->get_all_moteurs() );
     }
     
-    public function index_get($data) {
-        $this->response( $this->m_moteur->get_all_moteurs() );
-    }
 }
 
-// SELECT * FROM machine, colonne WHERE idMoteur = ""

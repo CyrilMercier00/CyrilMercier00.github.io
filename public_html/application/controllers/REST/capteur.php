@@ -22,5 +22,3 @@ class machines extends REST_Controller {
     }
 
 }
-
-// SELECT * FROM machine, colonne WHERE idMoteur = ""

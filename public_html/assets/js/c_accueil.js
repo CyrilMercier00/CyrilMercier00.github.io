@@ -11,7 +11,6 @@
         const couleurInvisible = 'rgba(0,0,0,0)';
         const couleurVibrations_bg = 'rgba(0,181,233,0.2)';
 
-        var elements = 12;
         var dataVibrations = [62, 66, 65, 77, 72, 70, 68, 66, 65, 62];
         var dataSeuil = [100, 100, 100, 100, 100, 100, 100, 100, 100];
 
@@ -44,7 +43,6 @@
                     ]
                 },
                 options: {
-
                     maintainAspectRatio: true,
                     legend: {
                         display: false,
@@ -89,8 +87,6 @@
                             tension: 0
                         }
                     }
-
-
                 }
             });
         }
@@ -98,6 +94,8 @@
     } catch (error) {
         console.log(error);
     }
+
+
 
     try {
 
