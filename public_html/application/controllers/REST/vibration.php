@@ -8,12 +8,16 @@ class capteurs extends REST_Controller {
 
     public function __construct() {
         parent::__construct();
+        $this->load->model('m_vibration');
     }
 
-    public function index_get() {
-        $this->load->model('m_capteurs') ;
-        
-        $this->response($this->m_capteurs->get_all_machines() );
+    public function index_post() {
+        $data = array(
+            'idMachine' => $this->post('idMachine'),
+            'valVibration' => $this->post('valVibration'),
+        );
+
+        $this->response($this->m_capteurs->insert_vibration($data));
     }
 
 }
