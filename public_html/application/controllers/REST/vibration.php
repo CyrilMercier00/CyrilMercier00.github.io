@@ -11,12 +11,14 @@ class vibration extends REST_Controller {
         $this->load->model('m_vibration');
     }
 
-    public function index_post($dto) {
+    public function index_post() {
+        $dto = $this->input->post(NULL, true);  // (idData, XSS Filter) Null = tout
+
         $this->response($this->m_vibration->insert_vibration($dto));
     }
 
     public function index_get($idMoteur) {
-        $this->response($this->m_vibration->get_vibration($idMoteur) );
+        $this->response($this->m_vibration->get_vibration($idMoteur));
     }
 
 }
