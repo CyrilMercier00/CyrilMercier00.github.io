@@ -1,0 +1,7 @@
+Adresse: http: index.php/REST/*****
+
+---- Les fonctions du REST ----
+	capteur: POST = Ajouter un capteur
+					parametres: type
+								nom
+								localisation

@@ -4,7 +4,6 @@
 
     // ------------------------------- GRAPHIQUES --------------------------------
     try {
-
         // Graph 1
         const couleurSeuil = 'rgba(223,0,0,0.7)';
         const couleurVibrations = 'rgba(0,181,233,0.9)';
@@ -14,13 +13,13 @@
         var dataVibrations = [62, 66, 65, 77, 72, 70, 68, 66, 65, 62];
         var dataSeuil = [100, 100, 100, 100, 100, 100, 100, 100, 100];
 
-        var ctx = document.getElementById("recent-rep-chart");
+        var ctx = document.getElementById("graphCapteur1");
         if (ctx) {
             ctx.height = 230;
             var myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00'],
+                    labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00'],
                     datasets: [
                         {
                             label: 'Vibrations du moteur',

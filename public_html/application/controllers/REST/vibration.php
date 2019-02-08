@@ -21,4 +21,8 @@ class vibration extends REST_Controller {
         $this->response($this->m_vibration->get_vibration($idMoteur));
     }
 
+    public function index_get_seuil($ordreSeuil) {
+        $this->response($this->m_vibration->get_seuil($ordreSeuil));
+    }
+
 }

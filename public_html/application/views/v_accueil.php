@@ -24,7 +24,7 @@
                                             </div>
                                             -->
                                             <div class="recent-report__chart">
-                                                <canvas id="recent-rep-chart"></canvas>
+                                                <canvas id="graphCapteur1"></canvas>
                                             </div>
                                         </div>
                                     </div>

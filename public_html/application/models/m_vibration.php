@@ -11,11 +11,15 @@ class m_vibration extends CI_Model {
             'idMoteur' => json_decode($prmDto['idMoteur']),
         );
 
-        $this->db->insert('vibration', $data);
+        return $this->db->insert('vibration', $data);
     }
 
-    public function get_vibration($idMoteur) {
-        return $this->db->get_where('vibration', array('idMoteur' => $idMoteur))->result();
+    public function get_vibration($prmIdMoteur) {
+        return $this->db->get_where('vibration', array('idMoteur' => $prmIdMoteur))->result();
+    }
+
+    public function get_seuil($prmOrdreSeuil) {
+        return $this->db->get_where('vibration', array('ordre' => $prmOrdreSeuil))->result();
     }
 
 }

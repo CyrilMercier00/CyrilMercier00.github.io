@@ -13,8 +13,8 @@ class capteur extends REST_Controller {
 
     // Ajouter un capteur
     public function index_post() {
-        $dto = $this->input->post(NULL,true);
-        
+        $dto = $this->input->post(NULL, true);
+
         $this->response($this->m_capteur->insert_capteur($dto));
     }
 
