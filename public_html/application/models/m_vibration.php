@@ -8,8 +8,8 @@ class m_vibration extends CI_Model {
         $this->db->insert('vibration', $dto);
     }
 
-    public function get_vibration($data) {
-        // $this->db->get_where('vibration', )
+    public function get_vibration($idMoteur) {
+       return $this->db->get_where('vibration', array('idMoteur' => $idMoteur))->result();
     }
 
 }
