@@ -117,7 +117,9 @@
         <script src="<?php echo base_url(); ?>assets/vendor/chartjs/Chart.bundle.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/vendor/select2/select2.min.js"></script>
 
-
+        <!-- Canvas JS -->
+        <script src="<?php echo base_url(); ?>assets/vendor/jquery.canvasjs.min.js" type="text/javascript"></script>
+        
         <!-- Main JS -->
         <script src="<?php echo base_url(); ?>assets/js/c_accueil.js"></script>
 
