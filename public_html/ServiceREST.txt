@@ -1,9 +1,0 @@
-Utilisation du service REST:
-
-@ du service index.php/REST/$1
-remplacer $1 par:
-	-capteur
-	-moteur
-	-vibration	
-
-capteur: ajouter capteur

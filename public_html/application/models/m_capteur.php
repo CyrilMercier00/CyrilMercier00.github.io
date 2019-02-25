@@ -15,11 +15,12 @@ class m_capteur extends CI_Model {
         return $this->db->insert('machine', $data)->result;
     }
 
-    public function get_capteur_et_colonne($prmIdMachine) {
+    public function get_machine_et_colonne($prmIdMachine) {
         $condition = array(
             'colonne.idMachine' => $prmIdMachine,
             'machine.idMachine' => $prmIdMachine
         );
+        
         return $this->db->get_where('machine , colonne', $condition)->result();
     }
 

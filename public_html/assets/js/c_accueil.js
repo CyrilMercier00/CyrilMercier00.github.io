@@ -1,14 +1,15 @@
 // ------------------------------- GRAPHIQUES --------------------------------
 $(document).ready(function () {
-    var canvas = document.getElementById("graphCapteur1");
-    if (canvas.getContext) {
-        var ctx = canvas.getContext("2d");
 
-        jquery.get('localhost:82/vibration/REST/vibration/', function () {
-            
-        } );
-        
-    }
+    url = 'localhost:82/vibration/index.php/REST/vibration/1';
+    
+    $.ajax({
+        url: url,
+        dataType: json,
+        success: function (data) {
+            alert(data)
+        }
+    });
 
 });
 // ------------------------- ANIMATION CHARGEMENT PAGE -------------------------
