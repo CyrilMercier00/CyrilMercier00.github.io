@@ -22,5 +22,8 @@ class capteur extends REST_Controller {
     public function index_get($idMoteur) {
         $this->response($this->m_capteur->get_capteur_et_colonne($idMoteur));
     }
-
+    
+            public function index_get() {
+        $this->response($this->m_capteur->get_all_machine($idMoteur));
+    }
 }
