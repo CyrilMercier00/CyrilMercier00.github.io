@@ -15,7 +15,8 @@ class m_vibration extends CI_Model {
     }
 
     public function get_vibration($prmIdMoteur) {
-        return $this->db->get_where('vibration', array('idMoteur' => $prmIdMoteur))->result();
+        // Requete pour les 12 dernieres vivration par ordre decroissant
+        return $this->db->order_by('idVibration', 'DESC')->limit(12)->get_where('vibration', array('idMoteur' => $prmIdMoteur))->result();
     }
 
     public function get_seuil($prmOrdreSeuil) {

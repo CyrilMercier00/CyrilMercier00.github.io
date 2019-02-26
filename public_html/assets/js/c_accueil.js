@@ -1,22 +1,33 @@
 // ------------------------------- GRAPHIQUES --------------------------------
 $(document).ready(function () {
 
-    url = 'localhost:82/vibration/index.php/REST/vibration/1';
-    
+    var valeurTableau = [];
+            url = 'http://localhost:82/vibration/index.php/REST/vibration/1';
     $.ajax({
+        type: "GET",
         url: url,
-        dataType: json,
-        success: function (data) {
-            alert(data)
+        dataType: "json",
+        success: function (data)
+        {
+            // Sauvegarder les 12 dernieres valeurs dans un array
+            for (var i = 0; i < data.length; i++)
+            {
+                valeurTableau[i] = data[i]['valeur'];
+                alert(valeurTableau[i]);
+            };
+           
+        },
+        error: function (xhr, status, error)
+        {
+            alert("Erreur: " + xhr.responseText);
         }
-    });
-
+    }
+    );
 });
 // ------------------------- ANIMATION CHARGEMENT PAGE -------------------------
 (function ($) {
     // USE STRICT
     "use strict";
-
     $(".animsition").animsition({
         inClass: 'fade-in',
         outClass: 'fade-out',
@@ -43,12 +54,10 @@ $(document).ready(function () {
 (function ($) {
     // USE STRICT
     "use strict";
-
     // Dropdown 
     try {
         var menu = $('.js-item-menu');
         var sub_menu_is_showed = -1;
-
         for (var i = 0; i < menu.length; i++) {
             $(menu[i]).on('click', function (e) {
                 e.preventDefault();
@@ -68,14 +77,12 @@ $(document).ready(function () {
         $(".js-item-menu, .js-dropdown").click(function (event) {
             event.stopPropagation();
         });
-
         $("body,html").on("click", function () {
             for (var i = 0; i < menu.length; i++) {
                 menu[i].classList.remove("show-dropdown");
             }
             sub_menu_is_showed = -1;
         });
-
     } catch (error) {
         console.log(error);
     }
@@ -84,7 +91,6 @@ $(document).ready(function () {
     // Right Sidebar
     var right_sidebar = $('.js-right-sidebar');
     var sidebar_btn = $('.js-sidebar-btn');
-
     sidebar_btn.on('click', function (e) {
         e.preventDefault();
         for (var i = 0; i < menu.length; i++) {
@@ -93,17 +99,12 @@ $(document).ready(function () {
         sub_menu_is_showed = -1;
         right_sidebar.toggleClass("show-sidebar");
     });
-
     $(".js-right-sidebar, .js-sidebar-btn").click(function (event) {
         event.stopPropagation();
     });
-
     $("body,html").on("click", function () {
         right_sidebar.removeClass("show-sidebar");
-
     });
-
-
     // Sublist Sidebar
     try {
         var arrow = $('.js-arrow');
@@ -116,7 +117,6 @@ $(document).ready(function () {
                 that.parent().find('.js-sub-list').slideToggle("250");
             });
         });
-
     } catch (error) {
         console.log(error);
     }
@@ -142,7 +142,6 @@ $(document).ready(function () {
 (function ($) {
     // USE STRICT
     "use strict";
-
     // Load more
     try {
         var list_load = $('.js-list-load');
@@ -159,7 +158,6 @@ $(document).ready(function () {
                     e.preventDefault();
                 });
             });
-
         }
     } catch (error) {
         console.log(error);
