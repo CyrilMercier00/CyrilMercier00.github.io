@@ -28,9 +28,11 @@ $(document).ready(function ()
 
         var dataVibration = [];
         getValeurVibration(1, dataVibration);
-   
+        alert(dataVibration);
+        
         var dataSeuil = [];
-        getValeurSeuil(1, dataSeuil)
+        getValeurSeuil(1, dataSeuil);
+        alert(dataSeuil);
 
         var ctx = document.getElementById("graphCapteur1");
         if (ctx) {

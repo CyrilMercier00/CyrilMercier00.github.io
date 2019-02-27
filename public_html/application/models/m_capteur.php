@@ -21,6 +21,7 @@ class m_capteur extends CI_Model {
             'colonne.idMachine' => $prmIdMachine,
         );
         
+        $this->db->select('idMoteur, idColonne'); 
         return $this->db->get_where('moteur , colonne', $condition)->result();
     }
 
