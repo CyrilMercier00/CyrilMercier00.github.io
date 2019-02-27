@@ -12,16 +12,16 @@ class m_capteur extends CI_Model {
             'localisation' => $prmDto_decoded[localisation]
         );
 
-        return $this->db->insert('machine', $data)->result;
+        return $this->db->insert('machine', $data)->result();
     }
 
-    public function get_machine_et_colonne($prmIdMachine) {
+    public function get_capteur_by_machine($prmIdMachine) {
         $condition = array(
+            'moteur.idMachine' => $prmIdMachine,
             'colonne.idMachine' => $prmIdMachine,
-            'machine.idMachine' => $prmIdMachine
         );
         
-        return $this->db->get_where('machine , colonne', $condition)->result();
+        return $this->db->get_where('moteur , colonne', $condition)->result();
     }
 
     public function delete_capteur($prmIdMachine) {
