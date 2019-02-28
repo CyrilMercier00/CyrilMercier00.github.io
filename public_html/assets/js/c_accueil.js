@@ -1,123 +1,119 @@
 // ------------------------------ GRAPHIQUES -----------------------------------
 $(document).ready(function ()
 {
-    /*$.ajax({
-     type: "GET",
-     url: url,
-     dataType: "json",
-     success: function (data)
-     {
-     // Sauvegarder les 12 dernieres valeurs dans un array
-     for (var i = 0; i < data.length; i++)
-     {
-     creerGraph(data[i]['idMachine']);
-     };
-           
-     },
-     error: function (xhr, status, error)
-     {
-     alert("Erreur: " + xhr.responseText);
-     }
-     });
-     */
-    try {
-        const bd_brandProduct3 = 'rgba(0,181,233,0.9)';
-        const bd_brandService3 = 'rgba(0,173,95,0.9)';
-        const brandProduct3 = 'transparent';
-        const brandService3 = 'transparent';
+    chargerGraphiques();
+    
+    // Rafraichir le graphique
+    setInterval(rafraichirGraphiques() , 1000);
 
-        var dataVibration = [];
-        getValeurVibration(1, dataVibration);
-        alert(dataVibration);
-        
-        var dataSeuil = [];
-        getValeurSeuil(1, dataSeuil);
-        alert(dataSeuil);
+    function chargerGraphiques()
+    {
+        try
+        {
+            const bd_brandProduct3 = 'rgba(0,181,233,0.9)';
+            const ln_blue = 'rgba(0,173,95,0.9)';
+            const bg_vert = 'rgba(137, 209, 66, 0.72)';
+            const transparent = 'transparent';
 
-        var ctx = document.getElementById("graphCapteur1");
-        if (ctx) {
-            ctx.height = 230;
-            var myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', ''],
-                    datasets: [
-                        {
-                            label: 'My First dataset',
-                            backgroundColor: brandService3,
-                            borderColor: bd_brandService3,
-                            pointHoverBackgroundColor: '#fff',
-                            borderWidth: 0,
-                            data: dataVibration,
-                            pointBackgroundColor: bd_brandService3
+            var dataVibration = [];  // Contient la valeur des 12 dernieres 
+            getValeurVibration(1, dataVibration);
+
+            var dataSeuils = [];    // Contient la valeur de tous les suils
+            var dataSeuilA = [];    // Contient la valeur du seuil A
+            var dataSeuilB = [];    // Contient la valeur du seuil B
+            var dataSeuilC = [];    // Contient la valeur du seuil C
+
+            // Demande et sauvegarde de la valeur des seuils
+            getValeurSeuil(1, dataSeuils);
+            dataSeuilA = dataSeuils[1];
+            dataSeuilB = dataSeuils[1];
+            dataSeuilC = dataSeuils[2];
+
+            var ctx = document.getElementById("graphCapteur1");
+            if (ctx) {
+                ctx.height = 230;
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', ''],
+                        datasets: [
+                            {
+                                label: 'Valeur des vibrations',
+                                backgroundColor: transparent,
+                                borderColor: ln_blue,
+                                pointHoverBackgroundColor: '#fff',
+                                borderWidth: 0,
+                                data: dataVibration,
+                                pointBackgroundColor: ln_blue
+                            },
+                            {
+                                label: 'Seuil A',
+                                backgroundColor: bg_vert,
+                                borderColor: bd_brandProduct3,
+                                pointHoverBackgroundColor: '#fff',
+                                borderWidth: 0,
+                                data: dataSeuilA,
+                                pointBackgroundColor: bd_brandProduct3
+
+                            }
+                        ]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: false
                         },
-                        {
-                            label: 'My Second dataset',
-                            backgroundColor: brandProduct3,
-                            borderColor: bd_brandProduct3,
-                            pointHoverBackgroundColor: '#fff',
-                            borderWidth: 0,
-                            data: dataSeuil,
-                            pointBackgroundColor: bd_brandProduct3
+                        responsive: true,
+                        scales: {
+                            xAxes: [{
+                                    gridLines: {
+                                        drawOnChartArea: true,
+                                        color: '#f2f2f2'
+                                    },
+                                    ticks: {
+                                        fontFamily: "Poppins",
+                                        fontSize: 12
+                                    }
+                                }],
+                            yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        maxTicksLimit: 5,
+                                        stepSize: 1,
+                                        max: 6,
+                                        fontFamily: "Poppins",
+                                        fontSize: 11
+                                    },
+                                    gridLines: {
+                                        display: false,
+                                        color: '#f2f2f2'
+                                    }
+                                }]
+                        },
+                        elements: {
+                            point: {
+                                radius: 3,
+                                hoverRadius: 4,
+                                hoverBorderWidth: 3,
+                                backgroundColor: '#333'
+                            }
+                        }
 
-                        }
-                    ]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    legend: {
-                        display: false
-                    },
-                    responsive: true,
-                    scales: {
-                        xAxes: [{
-                                gridLines: {
-                                    drawOnChartArea: true,
-                                    color: '#f2f2f2'
-                                },
-                                ticks: {
-                                    fontFamily: "Poppins",
-                                    fontSize: 12
-                                }
-                            }],
-                        yAxes: [{
-                                ticks: {
-                                    beginAtZero: true,
-                                    maxTicksLimit: 5,
-                                    stepSize: 50,
-                                    max: 150,
-                                    fontFamily: "Poppins",
-                                    fontSize: 12
-                                },
-                                gridLines: {
-                                    display: false,
-                                    color: '#f2f2f2'
-                                }
-                            }]
-                    },
-                    elements: {
-                        point: {
-                            radius: 3,
-                            hoverRadius: 4,
-                            hoverBorderWidth: 3,
-                            backgroundColor: '#333'
-                        }
+
                     }
-
-
-                }
-            });
+                });
+            }
+        } catch (error) {
+            console.log(error);
         }
-    } catch (error) {
-        console.log(error);
+
     }
-
-
 });
 
-function getValeurVibration(prmNumVibration, prmDataArray) {
+function getValeurVibration(prmNumVibration, prmDataArray) 
+{
     url = 'http://localhost:82/vibration/index.php/REST/vibration/' + prmNumVibration;
-    
+
     // Recuperation des valeurs pour le capteur
     $.ajax({
         type: "GET",
@@ -126,21 +122,22 @@ function getValeurVibration(prmNumVibration, prmDataArray) {
         success: function (data)
         {
             // Sauvegarder les valeurs dans un array
-            for (var i=0 ; i<data.length ; i++)
+            for (var i = 0; i < data.length; i++)
             {
                 prmDataArray[i] = data[i]['valeur'];
             }
         },
         error: function (xhr, status, error)
         {
-            alert("erreur fonction getValeurVibration: " + xhr.responseText);
+            console.log("erreur fonction getValeurVibration: " + xhr.responseText);
         }
     });
 }
 
-function getValeurSeuil(prmOrdre, prmDataArray) {
+function getValeurSeuil(prmOrdre, prmDataArray) 
+{
     url = 'http://localhost:82/vibration/index.php/REST/norme/' + prmOrdre;
-    
+
     // Recuperation des valeurs pour le capteur
     $.ajax({
         type: "GET",
@@ -149,16 +146,21 @@ function getValeurSeuil(prmOrdre, prmDataArray) {
         success: function (data)
         {
             // Sauvegarder les valeurs dans un array
-            for (var i=0 ; i<data.length ; i++)
+            for (var i = 0; i < data.length; i++)
             {
                 prmDataArray[i] = data[i]['seuil'];
             }
         },
         error: function (xhr, status, error)
         {
-            alert("erreur fonction getValeurVibration: " + xhr.responseText);
+            console.log("erreur fonction getValeurVibration: " + xhr.responseText);
         }
     });
+}
+
+function rafraichirGraphiques()
+{
+    // TODO
 }
 // ------------------------- ANIMATION CHARGEMENT PAGE -------------------------
 (function ($) {

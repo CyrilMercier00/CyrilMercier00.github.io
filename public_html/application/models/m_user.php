@@ -10,7 +10,7 @@ class m_user extends CI_Model {
                                                           , 'pass' => $data['user_password'])
                                      );
 
-        // Si la requete est valide
+        // Si la requete retourne qqe chose
         if ($query->num_rows() > 0) {
             $valid = true;
         }

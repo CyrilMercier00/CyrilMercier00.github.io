@@ -93,9 +93,9 @@
                     </div>
                 </div>
                 <!-- END MAIN CONTENT-->
-                <!-- END PAGE CONTAINER-->
             </div>
-
+ <!-- END PAGE CONTAINER-->
+ 
         </div>
 
         <!-- Jquery JS -->
