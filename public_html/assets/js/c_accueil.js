@@ -1,167 +1,216 @@
 // ------------------------------ GRAPHIQUES -----------------------------------
-$(document).ready(function ()
+(function ($)
 {
-    chargerGraphiques();
-    
-    // Rafraichir le graphique
-    setInterval(rafraichirGraphiques() , 1000);
+    var date = new Date();
+    var dataHeures = [date.getHours() - 1 + 'h', date.getHours() + 'h', date.getHours() + 1 + 'h'];
 
-    function chargerGraphiques()
-    {
-        try
-        {
-            const bd_brandProduct3 = 'rgba(0,181,233,0.9)';
-            const ln_blue = 'rgba(0,173,95,0.9)';
-            const bg_vert = 'rgba(137, 209, 66, 0.72)';
-            const transparent = 'transparent';
+    // ------ CONFIGURATION GLOBALE DU GRAPHIQUE --------
 
-            var dataVibration = [];  // Contient la valeur des 12 dernieres 
-            getValeurVibration(1, dataVibration);
+    // Couleurs utilisées dans les grapgiques
+    const ln_blue = 'rgba(80, 140, 200, 1)';
 
-            var dataSeuils = [];    // Contient la valeur de tous les suils
-            var dataSeuilA = [];    // Contient la valeur du seuil A
-            var dataSeuilB = [];    // Contient la valeur du seuil B
-            var dataSeuilC = [];    // Contient la valeur du seuil C
+    const ln_vert = 'rgba(140, 210, 65, 1)';
+    const bg_vert = 'rgba(140, 210, 65, 0.82)';
+    const ln_jaune = 'rgba(220, 220, 60, 1)';
+    const bg_jaune = 'rgba(220, 220, 60, 0.82)';
+    const ln_orange = 'rgba(255, 160 55, 1)';
+    const bg_orange = 'rgba(255, 160, 55, 0.82)';
+    const ln_rouge = 'rgba(250, 66, 81, 1)';
+    const bg_rouge = 'rgba(250, 66, 81, 0.82)';
+    const transparent = 'transparent';
 
-            // Demande et sauvegarde de la valeur des seuils
-            getValeurSeuil(1, dataSeuils);
-            dataSeuilA = dataSeuils[1];
-            dataSeuilB = dataSeuils[1];
-            dataSeuilC = dataSeuils[2];
+    // Fichier config principal
+    config = {
+        type: 'line',
+        data: {
+            labels: dataHeures,
+            datasets: [
+                {
+                    label: 'Valeur des vibrations',
+                    backgroundColor: transparent,
+                    borderColor: ln_blue,
+                    pointHoverBackgroundColor: '#fff',
+                    borderWidth: 0,
+                    data: [],
+                    pointBackgroundColor: ln_blue
+                },
+                {
+                    label: 'Seuil A',
+                    backgroundColor: bg_vert,
+                    borderColor: ln_vert,
+                    pointHoverBackgroundColor: transparent,
+                    borderWidth: 0,
+                    pointRadius:0,
+                    data: [],
+                    pointBackgroundColor: transparent,
+                    fill: 'origin'
+                },
+                {
+                    label: 'Seuil B',
+                    backgroundColor: bg_jaune,
+                    borderColor: ln_jaune,
+                    pointHoverBackgroundColor: transparent,
+                    borderWidth: 0,
+                    pointRadius:0,
+                    data: [],
+                    pointBackgroundColor: transparent,
+                    fill: '-1'
+                },
+                {
+                    label: 'Seuil C',
+                    backgroundColor: bg_orange,
+                    borderColor: ln_orange,
+                    pointHoverBackgroundColor: transparent,
+                    borderWidth: 0,
+                    pointRadius:0,
+                    data: [],
+                    pointBackgroundColor: transparent,
+                    fill: '-1'
+                },
+                {
+                    label: 'Seuil D',
+                    backgroundColor: bg_rouge,
+                    borderColor: transparent,
+                    pointHoverBackgroundColor: transparent,
+                    borderWidth: 0,
+                    pointRadius:0,
+                    data: [],
+                    pointBackgroundColor: transparent,
+                    fill: '-1'
+                }
+            ]
 
-            var ctx = document.getElementById("graphCapteur1");
-            if (ctx) {
-                ctx.height = 230;
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', ''],
-                        datasets: [
-                            {
-                                label: 'Valeur des vibrations',
-                                backgroundColor: transparent,
-                                borderColor: ln_blue,
-                                pointHoverBackgroundColor: '#fff',
-                                borderWidth: 0,
-                                data: dataVibration,
-                                pointBackgroundColor: ln_blue
-                            },
-                            {
-                                label: 'Seuil A',
-                                backgroundColor: bg_vert,
-                                borderColor: bd_brandProduct3,
-                                pointHoverBackgroundColor: '#fff',
-                                borderWidth: 0,
-                                data: dataSeuilA,
-                                pointBackgroundColor: bd_brandProduct3
-
-                            }
-                        ]
-                    },
-                    options: {
-                        maintainAspectRatio: false,
-                        legend: {
-                            display: false
+        },
+        options: {
+            maintainAspectRatio: false,
+            legend: {
+                display: false
+            },
+            responsive: true,
+            scales: {
+                xAxes: [{
+                        gridLines: {
+                            drawOnChartArea: true,
+                            color: '#f2f2f2'
                         },
-                        responsive: true,
-                        scales: {
-                            xAxes: [{
-                                    gridLines: {
-                                        drawOnChartArea: true,
-                                        color: '#f2f2f2'
-                                    },
-                                    ticks: {
-                                        fontFamily: "Poppins",
-                                        fontSize: 12
-                                    }
-                                }],
-                            yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true,
-                                        maxTicksLimit: 5,
-                                        stepSize: 1,
-                                        max: 6,
-                                        fontFamily: "Poppins",
-                                        fontSize: 11
-                                    },
-                                    gridLines: {
-                                        display: false,
-                                        color: '#f2f2f2'
-                                    }
-                                }]
-                        },
-                        elements: {
-                            point: {
-                                radius: 3,
-                                hoverRadius: 4,
-                                hoverBorderWidth: 3,
-                                backgroundColor: '#333'
-                            }
+                        ticks: {
+                            fontFamily: "Poppins",
+                            fontSize: 11
                         }
-
-
-                    }
-                });
+                    }],
+                yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            maxTicksLimit: 5,
+                            stepSize: 1,
+                            max: 6,
+                            fontFamily: "Poppins",
+                            fontSize: 11
+                        },
+                        gridLines: {
+                            display: false,
+                            color: '#f2f2f2'
+                        }
+                    }]
+            },
+            elements: {
+                point: {
+                    radius: 3,
+                    hoverRadius: 4,
+                    hoverBorderWidth: 3,
+                    backgroundColor: '#333'
+                }
             }
-        } catch (error) {
-            console.log(error);
+
+
+        }
+    };
+
+    try
+    {
+        var ctx = document.getElementById("graphCapteur1");
+        if (ctx)
+        {
+            ctx.height = 230;
+            var myChart = new Chart(ctx, config);
         }
 
+    } catch (error)
+    {
+        console.log(error);
     }
-});
 
-function getValeurVibration(prmNumVibration, prmDataArray) 
-{
-    url = 'http://localhost:82/vibration/index.php/REST/vibration/' + prmNumVibration;
 
-    // Recuperation des valeurs pour le capteur
-    $.ajax({
-        type: "GET",
-        url: url,
-        dataType: "json",
-        success: function (data)
-        {
-            // Sauvegarder les valeurs dans un array
-            for (var i = 0; i < data.length; i++)
+
+
+
+    function rafraichirGraphiques()
+    {
+        getValVibrations(1);
+        getValSeuil(1);
+        myChart.update();
+    }
+
+    setInterval(rafraichirGraphiques, 1000);
+
+
+
+
+
+    function getValVibrations(prmIdCapteur)
+    {
+        url = 'http://localhost:82/vibration/index.php/REST/vibration/' + prmIdCapteur;
+
+        // Recuperation des valeurs pour le capteur
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json",
+            success: function (result)
             {
-                prmDataArray[i] = data[i]['valeur'];
+                myChart.data.datasets[0].data = [];     // Vider les anciennes données
+                for (i = 0; i < result.length; i++)     // Les remplacer par les nouvelles
+                {
+                    myChart.data.datasets[0].data.push(result[i]['valeur']);
+                }
             }
-        },
-        error: function (xhr, status, error)
-        {
-            console.log("erreur fonction getValeurVibration: " + xhr.responseText);
-        }
-    });
-}
+        });
+    }
 
-function getValeurSeuil(prmOrdre, prmDataArray) 
-{
-    url = 'http://localhost:82/vibration/index.php/REST/norme/' + prmOrdre;
 
-    // Recuperation des valeurs pour le capteur
-    $.ajax({
-        type: "GET",
-        url: url,
-        dataType: "json",
-        success: function (data)
-        {
-            // Sauvegarder les valeurs dans un array
-            for (var i = 0; i < data.length; i++)
+
+
+
+    function getValSeuil(prmOrdreMoteur)
+    {
+        url = 'http://localhost:82/vibration/index.php/REST/norme/' + prmOrdreMoteur;
+
+        // Recuperation des valeurs pour le seuil
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json",
+            success: function (result)
             {
-                prmDataArray[i] = data[i]['seuil'];
-            }
-        },
-        error: function (xhr, status, error)
-        {
-            console.log("erreur fonction getValeurVibration: " + xhr.responseText);
-        }
-    });
-}
+                // Vide les anciennes données
+                myChart.data.datasets[1].data = [];
+                myChart.data.datasets[2].data = [];
+                myChart.data.datasets[3].data = [];
 
-function rafraichirGraphiques()
-{
-    // TODO
-}
+                // Remplacer le seuil sur toute la longueur de la courbe
+                for (i = 0; i < myChart.data.datasets[0].data.length; i++)
+                {
+                    myChart.data.datasets[1].data.push(result[1]['seuil']);
+                    myChart.data.datasets[2].data.push(result[2]['seuil']);
+                    myChart.data.datasets[3].data.push(result[3]['seuil']);
+                    myChart.data.datasets[4].data.push(6);
+                }
+                console.log(myChart.data.datasets[1]);
+            }
+        });
+    }
+    
+})(jQuery);
 // ------------------------- ANIMATION CHARGEMENT PAGE -------------------------
 (function ($) {
     // USE STRICT
