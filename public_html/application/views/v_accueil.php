@@ -8,7 +8,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" id="divGraph">
         <div class="col-lg-6">
             <div class="au-card recent-report">
                 <div class="au-card-inner">

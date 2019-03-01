@@ -1,10 +1,13 @@
 // ------------------------------ GRAPHIQUES -----------------------------------
 (function ($)
 {
+    //Heure pour le label
     var date = new Date();
     var dataHeures = [date.getHours() - 1 + 'h', date.getHours() + 'h', date.getHours() + 1 + 'h'];
-
-    // ------ CONFIGURATION GLOBALE DU GRAPHIQUE --------
+    var nbCapteurs = 0;                // Nombre max de capteurs
+    var graph_created = false;         // verifie si les graphiques sont initialisés
+    const valVibrationsMax = 6;        // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
+    var code_html = "" ;
 
     // Couleurs utilisées dans les grapgiques
     const ln_blue = 'rgba(80, 140, 200, 1)';
@@ -19,7 +22,7 @@
     const bg_rouge = 'rgba(250, 66, 81, 0.82)';
     const transparent = 'transparent';
 
-    // Fichier config principal
+    // --- Fichier config principal ---
     config = {
         type: 'line',
         data: {
@@ -40,7 +43,7 @@
                     borderColor: ln_vert,
                     pointHoverBackgroundColor: transparent,
                     borderWidth: 0,
-                    pointRadius:0,
+                    pointRadius: 0,
                     data: [],
                     pointBackgroundColor: transparent,
                     fill: 'origin'
@@ -51,7 +54,7 @@
                     borderColor: ln_jaune,
                     pointHoverBackgroundColor: transparent,
                     borderWidth: 0,
-                    pointRadius:0,
+                    pointRadius: 0,
                     data: [],
                     pointBackgroundColor: transparent,
                     fill: '-1'
@@ -62,7 +65,7 @@
                     borderColor: ln_orange,
                     pointHoverBackgroundColor: transparent,
                     borderWidth: 0,
-                    pointRadius:0,
+                    pointRadius: 0,
                     data: [],
                     pointBackgroundColor: transparent,
                     fill: '-1'
@@ -73,7 +76,7 @@
                     borderColor: transparent,
                     pointHoverBackgroundColor: transparent,
                     borderWidth: 0,
-                    pointRadius:0,
+                    pointRadius: 0,
                     data: [],
                     pointBackgroundColor: transparent,
                     fill: '-1'
@@ -126,14 +129,40 @@
         }
     };
 
+    // --- Code Appli principal --- 
     try
     {
-        var ctx = document.getElementById("graphCapteur1");
-        if (ctx)
-        {
-            ctx.height = 230;
-            var myChart = new Chart(ctx, config);
+        if (graph_created === false) {
+            url = 'http://localhost:82/vibration/index.php/REST/moteur';
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json",
+                success: function (result)
+                {
+                    nbCapteurs = result.length;
+                }
+            });
+
+            for (i = 0; nbCapteurs < i; i++)
+            {
+                document.getElementById("myList").appendChild(code_html);
+                
+                
+                var ctx = document.getElementById("graphCapteur" + [i]);
+                if (ctx)
+                {
+                    ctx.height = 230;
+                    var myChart = new Chart+[i](ctx, config);
+                }
+            }
         }
+
+
+
+
+
+
 
     } catch (error)
     {
@@ -168,7 +197,7 @@
             dataType: "json",
             success: function (result)
             {
-                myChart.data.datasets[0].data = [];     // Vider les anciennes données
+                myChart.data.datasets[0].data = [];     // Supprime les anciennes données
                 for (i = 0; i < result.length; i++)     // Les remplacer par les nouvelles
                 {
                     myChart.data.datasets[0].data.push(result[i]['valeur']);
@@ -192,24 +221,23 @@
             dataType: "json",
             success: function (result)
             {
-                // Vide les anciennes données
+                // Supprime les anciennes données
                 myChart.data.datasets[1].data = [];
                 myChart.data.datasets[2].data = [];
                 myChart.data.datasets[3].data = [];
 
                 // Remplacer le seuil sur toute la longueur de la courbe
-                for (i = 0; i < myChart.data.datasets[0].data.length; i++)
+                for (i = 0; i < myChart.data.datasets[0].data.length; i++)  // pour toute les données recupérées
                 {
                     myChart.data.datasets[1].data.push(result[1]['seuil']);
                     myChart.data.datasets[2].data.push(result[2]['seuil']);
                     myChart.data.datasets[3].data.push(result[3]['seuil']);
                     myChart.data.datasets[4].data.push(6);
                 }
-                console.log(myChart.data.datasets[1]);
             }
         });
     }
-    
+
 })(jQuery);
 // ------------------------- ANIMATION CHARGEMENT PAGE -------------------------
 (function ($) {
