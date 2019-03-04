@@ -3,9 +3,18 @@
 class m_moteur extends CI_Model {
 
     public function get_all_moteurs() {
-        return $this->db->get('moteur')->result();
+        return $this->db->select('idMoteur,fonction')->get('moteur')->result();
     }
-
+    
+    
+    public function get_moteur_by_id($idMoteur) {
+        $condition = array (
+            'idMachine' => $idMoteur,
+        );
+        
+        return $this->db->select('idMoteur,fonction')->get_where('moteur',$condition)->result();
+    }
+    
     public function insert_moteur($prmDto) {
         $data = array(
             'valeur' => json_decode($prmDto['fonction']),
