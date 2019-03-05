@@ -11,7 +11,8 @@ class moteur extends REST_Controller {
         $this->load->model('m_moteur');
     }
 
-    public function index_get($idMoteur) {
+    public function index_get() {
+        $idMoteur = $this->uri->segment(3);
         if (isset($idMoteur)) {
             $this->response($this->m_moteur->get_moteur_by_id($idMoteur));
         } else {

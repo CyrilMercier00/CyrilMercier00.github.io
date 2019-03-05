@@ -1,168 +1,13 @@
 // ------------------------------ GRAPHIQUES -----------------------------------
 (function ($)
 {
-    //Heure pour le label
-    var date = new Date();
-    var dataHeures = [date.getHours() - 1 + 'h', date.getHours() + 'h', date.getHours() + 1 + 'h'];
-    var nbCapteurs = 0;                // Nombre max de capteurs
-    var graph_created = false;         // verifie si les graphiques sont initialisés
-    const valVibrationsMax = 6;        // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
-    var code_html = "" ;
-
-    // Couleurs utilisées dans les grapgiques
-    const ln_blue = 'rgba(80, 140, 200, 1)';
-
-    const ln_vert = 'rgba(140, 210, 65, 1)';
-    const bg_vert = 'rgba(140, 210, 65, 0.82)';
-    const ln_jaune = 'rgba(220, 220, 60, 1)';
-    const bg_jaune = 'rgba(220, 220, 60, 0.82)';
-    const ln_orange = 'rgba(255, 160 55, 1)';
-    const bg_orange = 'rgba(255, 160, 55, 0.82)';
-    const ln_rouge = 'rgba(250, 66, 81, 1)';
-    const bg_rouge = 'rgba(250, 66, 81, 0.82)';
-    const transparent = 'transparent';
-
-    // --- Fichier config principal ---
-    config = {
-        type: 'line',
-        data: {
-            labels: dataHeures,
-            datasets: [
-                {
-                    label: 'Valeur des vibrations',
-                    backgroundColor: transparent,
-                    borderColor: ln_blue,
-                    pointHoverBackgroundColor: '#fff',
-                    borderWidth: 0,
-                    data: [],
-                    pointBackgroundColor: ln_blue
-                },
-                {
-                    label: 'Seuil A',
-                    backgroundColor: bg_vert,
-                    borderColor: ln_vert,
-                    pointHoverBackgroundColor: transparent,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    data: [],
-                    pointBackgroundColor: transparent,
-                    fill: 'origin'
-                },
-                {
-                    label: 'Seuil B',
-                    backgroundColor: bg_jaune,
-                    borderColor: ln_jaune,
-                    pointHoverBackgroundColor: transparent,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    data: [],
-                    pointBackgroundColor: transparent,
-                    fill: '-1'
-                },
-                {
-                    label: 'Seuil C',
-                    backgroundColor: bg_orange,
-                    borderColor: ln_orange,
-                    pointHoverBackgroundColor: transparent,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    data: [],
-                    pointBackgroundColor: transparent,
-                    fill: '-1'
-                },
-                {
-                    label: 'Seuil D',
-                    backgroundColor: bg_rouge,
-                    borderColor: transparent,
-                    pointHoverBackgroundColor: transparent,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    data: [],
-                    pointBackgroundColor: transparent,
-                    fill: '-1'
-                }
-            ]
-
-        },
-        options: {
-            maintainAspectRatio: false,
-            legend: {
-                display: false
-            },
-            responsive: true,
-            scales: {
-                xAxes: [{
-                        gridLines: {
-                            drawOnChartArea: true,
-                            color: '#f2f2f2'
-                        },
-                        ticks: {
-                            fontFamily: "Poppins",
-                            fontSize: 11
-                        }
-                    }],
-                yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            maxTicksLimit: 5,
-                            stepSize: 1,
-                            max: 6,
-                            fontFamily: "Poppins",
-                            fontSize: 11
-                        },
-                        gridLines: {
-                            display: false,
-                            color: '#f2f2f2'
-                        }
-                    }]
-            },
-            elements: {
-                point: {
-                    radius: 3,
-                    hoverRadius: 4,
-                    hoverBorderWidth: 3,
-                    backgroundColor: '#333'
-                }
-            }
-
-
-        }
-    };
+    var site_url = $('#base').val();
+    var listeCreated = false;          // verifie si la liste des machines a été crée
 
     // --- Code Appli principal --- 
     try
     {
-        if (graph_created === false) {
-            url = 'http://localhost:82/vibration/index.php/REST/moteur';
-            $.ajax({
-                type: "GET",
-                url: url,
-                dataType: "json",
-                success: function (result)
-                {
-                    nbCapteurs = result.length;
-                }
-            });
-
-            for (i = 0; nbCapteurs < i; i++)
-            {
-                document.getElementById("myList").appendChild(code_html);
-                
-                
-                var ctx = document.getElementById("graphCapteur" + [i]);
-                if (ctx)
-                {
-                    ctx.height = 230;
-                    var myChart = new Chart+[i](ctx, config);
-                }
-            }
-        }
-
-
-
-
-
-
+        creerListeMachines();
 
     } catch (error)
     {
@@ -173,69 +18,37 @@
 
 
 
-    function rafraichirGraphiques()
+    function creerListeMachines()
     {
-        getValVibrations(1);
-        getValSeuil(1);
-        myChart.update();
-    }
-
-    setInterval(rafraichirGraphiques, 1000);
-
-
-
-
-
-    function getValVibrations(prmIdCapteur)
-    {
-        url = 'http://localhost:82/vibration/index.php/REST/vibration/' + prmIdCapteur;
-
-        // Recuperation des valeurs pour le capteur
-        $.ajax({
-            type: "GET",
-            url: url,
-            dataType: "json",
-            success: function (result)
-            {
-                myChart.data.datasets[0].data = [];     // Supprime les anciennes données
-                for (i = 0; i < result.length; i++)     // Les remplacer par les nouvelles
-                {
-                    myChart.data.datasets[0].data.push(result[i]['valeur']);
-                }
-            }
-        });
+        getAllMachines();
     }
 
 
 
 
 
-    function getValSeuil(prmOrdreMoteur)
+    function getAllMachines()
     {
-        url = 'http://localhost:82/vibration/index.php/REST/norme/' + prmOrdreMoteur;
+        console.log("getAllMachines - début");
+        url = 'http://localhost:82/vibration/index.php/REST/machine';
 
-        // Recuperation des valeurs pour le seuil
-        $.ajax({
-            type: "GET",
-            url: url,
-            dataType: "json",
-            success: function (result)
-            {
-                // Supprime les anciennes données
-                myChart.data.datasets[1].data = [];
-                myChart.data.datasets[2].data = [];
-                myChart.data.datasets[3].data = [];
-
-                // Remplacer le seuil sur toute la longueur de la courbe
-                for (i = 0; i < myChart.data.datasets[0].data.length; i++)  // pour toute les données recupérées
+        if (listeCreated === false)
+        {
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json",
+                success: function (result)
                 {
-                    myChart.data.datasets[1].data.push(result[1]['seuil']);
-                    myChart.data.datasets[2].data.push(result[2]['seuil']);
-                    myChart.data.datasets[3].data.push(result[3]['seuil']);
-                    myChart.data.datasets[4].data.push(6);
+                    console.log("getAllMachines - succes");
+                    for (i = 0; i < result.length; i++)  // pour toute les données recupérées
+                    {
+                        $('#liste_machines').append("<li> <a href=" + site_url + "/c_machine/" + i + " class\"list-group-item group-item-action\"> Machine n°" + i + ": " + result[i]['nom'] + "</a> </li>");
+                    }
+                    listeCreated = true;
                 }
-            }
-        });
+            });
+        }
     }
 
 })(jQuery);

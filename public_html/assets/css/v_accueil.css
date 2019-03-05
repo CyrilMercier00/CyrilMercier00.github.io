@@ -1,3 +1,25 @@
 .chart {
-  background-color: #212f3d;
+    background-color: #212f3d;
 }
+
+.container-list{
+    background-color: white;
+    border-radius: 6px;
+    border-color:black;
+    margin: 8px 0px 10px 0px ;
+}
+
+#liste_machines {
+    list-style:  none;
+    width: 100%
+}
+#liste_machines li a {
+    display: block;
+    color: black;
+    text-decoration: none;
+}
+
+#liste_machines li a:hover {
+    color: blue;
+}
+

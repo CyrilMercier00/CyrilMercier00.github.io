@@ -8,40 +8,13 @@
             </div>
         </div>
     </div>
-    <div class="row" id="divGraph">
-        <div class="col-lg-6">
-            <div class="au-card recent-report">
-                <div class="au-card-inner">
-                    <h3 class="title-2">Capteur 1</h3>
-                    <div class="recent-report__chart">
-                        <canvas id="graphCapteur1"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="au-card recent-report">
-                <div class="au-card-inner">
-                    <h3 class="title-2">Capteur 2</h3>
-                    <!--    DESCRIPTION COURBES
-                    <div class="chart-info">
-                        <div class="chart-info__left">
-                            <div class="chart-note">
-                                <span class="dot dot--blue"></span>
-                                <span class="chart-text">Vibrations</span>
-                            </div>
-                        </div>
-                    </div>
-                    -->
-                    <div class="recent-report__chart">
-                        <canvas id="recent-rep2-chart"></canvas>
-                    </div>
-                </div>
-            </div>
+
+    <div class="container-list col-lg-6" id="divliste">
+        <div class="au-card-inner ">
+            <ul class="list-group" id="liste_machines">
         </div>
     </div>
-
-
+    
     <div class="row">
         <div class="col-lg-8">
             <div class="au-card au-card--no-shadow au-card--no-pad m-b-40">

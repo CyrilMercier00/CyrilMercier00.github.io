@@ -20,9 +20,6 @@
         <link href="<?php echo base_url(); ?>assets/vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
         <link href="<?php echo base_url(); ?>assets/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
 
-        <!-- Bootstrap CSS-->
-        <link href="<?php echo base_url(); ?>assets/vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
-
         <!-- Vendor CSS-->
         <link href="<?php echo base_url(); ?>assets/vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
         <link href="<?php echo base_url(); ?>assets/vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
@@ -32,15 +29,19 @@
         <link href="<?php echo base_url(); ?>assets/vendor/select2/select2.min.css" rel="stylesheet" media="all">
         <link href="<?php echo base_url(); ?>assets/vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
 
-        <!-- Bootstrap theme CSS -->
-        <link href="<?php echo base_url(); ?>assets/css/theme.css" rel="stylesheet" media="all">
+        <!-- Bootstrap CSS-->
+        <link href="<?php echo base_url(); ?>assets/vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
 
+                <!-- Bootstrap theme CSS -->
+        <link href="<?php echo base_url(); ?>assets/css/theme.css" rel="stylesheet" media="all">
+        
         <!-- Main CSS-->
         <link href="<?php echo base_url(); ?>assets/css/v_accueil.css" rel="stylesheet" type="text/css"/>
 
     </head>
 
     <body class="animsition">
+        <input type="hidden" id="base" value="<?php echo site_url(); ?>">  <!-- necessaire pour le javascript. passe l'adresse site_url -->
         <div class="page-wrapper">
 
             <!-- MENU SIDEBAR-->
@@ -54,7 +55,7 @@
                     <nav class="navbar-sidebar">
                         <ul class="list-unstyled navbar__list">
                             <li>
-                                <a href="<?php echo site_url()?>/c_accueil">
+                                <a href="<?php echo site_url() ?>/c_accueil">
                                     <i class="fas fa-home"></i>Accueil</a>
                             </li>
                             <li>
@@ -94,8 +95,8 @@
                 </div>
                 <!-- END MAIN CONTENT-->
             </div>
- <!-- END PAGE CONTAINER-->
- 
+            <!-- END PAGE CONTAINER-->
+
         </div>
 
         <!-- Jquery JS -->
@@ -119,7 +120,7 @@
 
         <!-- Canvas JS -->
         <script src="<?php echo base_url(); ?>assets/vendor/jquery.canvasjs.min.js" type="text/javascript"></script>
-        
+
         <!-- Main JS -->
         <script src="<?php echo base_url(); ?>assets/js/c_accueil.js"></script>
 
