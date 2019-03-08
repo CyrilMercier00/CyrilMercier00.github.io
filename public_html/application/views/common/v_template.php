@@ -32,9 +32,9 @@
         <!-- Bootstrap CSS-->
         <link href="<?php echo base_url(); ?>assets/vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
 
-                <!-- Bootstrap theme CSS -->
+        <!-- Bootstrap theme CSS -->
         <link href="<?php echo base_url(); ?>assets/css/theme.css" rel="stylesheet" media="all">
-        
+
         <!-- Main CSS-->
         <link href="<?php echo base_url(); ?>assets/css/v_accueil.css" rel="stylesheet" type="text/css"/>
 
@@ -123,9 +123,12 @@
 
         <!-- Canvas JS -->
         <script src="<?php echo base_url(); ?>assets/js/common.js" type="text/javascript"></script>
+
+        <!-- MQTT Client -->
+        <script src="<?php echo base_url();?>assets/vendor/paho-mqtt-min.js" type="text/javascript"></script>
         
         <!-- Main JS -->
-         <script src="<?php echo base_url(); ?>assets/js/<?php echo $data['javascript_location'] ?>" ></script>
+        <script src="<?php echo base_url(); ?>assets/js/<?php echo $data['javascript_location'] ?>" ></script>
 
     </body>
 

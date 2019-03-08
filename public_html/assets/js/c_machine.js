@@ -11,15 +11,15 @@
     var dataHeures = [date.getHours() - 1 + 'h', date.getHours() + 'h', date.getHours() + 1 + 'h'];
 
     // Code html a inserer pour creer un graphique, separé en deux pour pouvoir inserer l'id du graphique
-    var code_html1 = "<div class='col-lg-6'> \n\
+    var code_html1 = "<div class='col-lg-8'> \n\
     <div class='au-card recent-report'> \n\
     <div class='au-card-inner'> \n\
     <h3 class='title-2'>Capteur ";
-    
+
     var code_html2 = "</h3> \n\
     <div class='recent-report__chart'> \n\
-    <canvas id='graphCapteur";"\n\
-"
+    <canvas id='graphCapteur";
+
     var code_html3 = "'></canvas> \n\
     </div> \n\
     </div> \n\
@@ -62,7 +62,7 @@
                     pointHoverBackgroundColor: transparent,
                     borderWidth: 0,
                     pointRadius: 0,
-                    data: [],
+                    data: [0.71],
                     pointBackgroundColor: transparent,
                     fill: 'origin'
                 },
@@ -73,7 +73,7 @@
                     pointHoverBackgroundColor: transparent,
                     borderWidth: 0,
                     pointRadius: 0,
-                    data: [],
+                    data: ['1.8'],
                     pointBackgroundColor: transparent,
                     fill: '-1'
                 },
@@ -84,7 +84,7 @@
                     pointHoverBackgroundColor: transparent,
                     borderWidth: 0,
                     pointRadius: 0,
-                    data: [],
+                    data: ['4.5'],
                     pointBackgroundColor: transparent,
                     fill: '-1'
                 },
@@ -171,7 +171,7 @@
 
                             nbCapteurs = result.length;
                             console.log('getNumCapteurs - succes, ' + nbCapteurs + ' capteurs détecté(s)');
-                            //setInterval(rafraichirGraphiques, 1000);  // Rafraichir les graphiques toutes les secondes
+                            setInterval(rafraichirGraphiques, 1000);  // Rafraichir les graphiques toutes les secondes
                             creerGraph(nbCapteurs);                   // Creer une div pour chaque capteur
                         }
                     });
@@ -191,13 +191,13 @@
             $("#divGraph").append(code_html1 + i + code_html2 + i + code_html3);     // Le code html est separé en deux partie, le i correspond a l'id du graphique 
             console.log('html ' + i + ' fait.');
             var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div 
-             console.log("creerGraph - graphCapteur" + " " + [i]);
-             if (ctx)
-             {
-             console.log("ctx detecté pour " + i);
-             ctx.height = 230;
-             arrayChart[i] = new Chart(ctx, config);
-             }
+            console.log("creerGraph - graphCapteur" + " " + [i]);
+            if (ctx)
+            {
+                console.log("ctx detecté pour " + i);
+                ctx.height = 230;
+                arrayChart[i] = new Chart(ctx, config);
+            }
         }
         graph_created = true;                     // Pour ne pas recreer les div en boucle
         console.log("creerGraph - fait");
@@ -211,8 +211,7 @@
     {
         for (i = 0; i < nbCapteurs; i++)
         {
-            getValVibrations(1);      // Recuperer les vibrations pour le capteur 
-            getValSeuil(1);           // Recuperer le seuil pour le capteur   
+            getValVibrations();      // Recuperer les vibrations pour le capteur 
             arrayChart[i].update();   // Mise a jour de données
         }
     }
@@ -221,56 +220,37 @@
 
 
 
-    function getValVibrations(prmIdCapteur)
+    function getValVibrations()
     {
-        url = 'http://localhost:82/vibration/index.php/REST/vibration/' + prmIdCapteur;
+        host = "172.16.129.32";
+        port = 8080;
+        idClient = "1";
 
-        // Recuperation des valeurs pour le capteur
-        $.ajax({
-            type: "GET",
-            url: url,
-            dataType: "json",
-            success: function (result)
+        // Creation du client MQTT 
+        client = new Paho.MQTT.Client(host, port, idClient);
+
+
+        // Connection au serveur MQTT
+        client.connect({onSuccess: function ()
             {
-                arrayChart[i].data.datasets[0].data = [];     // Supprime les anciennes données
-                for (i = 0; i < result.length; i++)     // Les remplacer par les nouvelles
-                {
-                    arrayChart.data.datasets[0].data.push(result[i]['valeur']);
-                }
+                console.log("Client MQTT connecté");
+                client.subscribe("vibration");
             }
         });
-    }
-
-
-
-
-
-    function getValSeuil(prmOrdreMoteur)
-    {
-        url = 'http://localhost:82/vibration/index.php/REST/norme/' + prmOrdreMoteur;
-
-        // Recuperation des valeurs pour le seuil
-        $.ajax({
-            type: "GET",
-            url: url,
-            dataType: "json",
-            success: function (result)
+        
+        // Handler connection perdue
+        client.onConnectionLost = function(responseObject)
             {
-                // Supprime les anciennes données
-                arrayChart[i].data.datasets[1].data = [];
-                arrayChart[i].data.datasets[2].data = [];
-                arrayChart[i].data.datasets[3].data = [];
-
-                // Remplacer le seuil sur toute la longueur de la courbe
-                for (i = 0; i < arrayChart[i].data.datasets[0].data.length; i++)  // pour toute les données recupérées
-                {
-                    arrayChart[i].data.datasets[1].data.push(result[1]['seuil']);
-                    arrayChart[i].data.datasets[2].data.push(result[2]['seuil']);
-                    arrayChart[i].data.datasets[3].data.push(result[3]['seuil']);
-                    arrayChart[i].data.datasets[4].data.push(6);
+                if (responseObject.errorCode !== 0) {
+                    console.log("Connection perdue:" + responseObject.errorMessage);
                 }
-            }
-        });
+            };
+        
+        // Handler Reception de message
+        client.onMessageArrived = function(message)
+            {
+                console.log("onMessageArrived:" + message.payloadString);
+            };
     }
 
 
