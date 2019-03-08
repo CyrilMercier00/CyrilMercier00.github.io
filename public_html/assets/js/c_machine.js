@@ -150,6 +150,7 @@
     // --- Code Appli principal --- 
     try
     {
+        initWebsocketMQTT();
         getNumCapteurs();
     } catch (error)
     {
@@ -171,7 +172,7 @@
 
                             nbCapteurs = result.length;
                             console.log('getNumCapteurs - succes, ' + nbCapteurs + ' capteurs détecté(s)');
-                            setInterval(rafraichirGraphiques, 1000);  // Rafraichir les graphiques toutes les secondes
+                            // setInterval(rafraichirGraphiques, 1000);  // Rafraichir les graphiques toutes les secondes
                             creerGraph(nbCapteurs);                   // Creer une div pour chaque capteur
                         }
                     });
@@ -184,23 +185,21 @@
 
     function creerGraph(prmNbCapteurs)
     {
-        console.log("creerGraph - début");
-        console.log(prmNbCapteurs + " capteurs");
+        console.log("GRAPH - début");
+        console.log("GRAPH - " +prmNbCapteurs + " capteurs");
         for (i = 0; i < prmNbCapteurs; i++)
         {
             $("#divGraph").append(code_html1 + i + code_html2 + i + code_html3);     // Le code html est separé en deux partie, le i correspond a l'id du graphique 
-            console.log('html ' + i + ' fait.');
             var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div 
-            console.log("creerGraph - graphCapteur" + " " + [i]);
             if (ctx)
             {
-                console.log("ctx detecté pour " + i);
+                console.log("GRAPH - ctx detecté pour " + i);
                 ctx.height = 230;
                 arrayChart[i] = new Chart(ctx, config);
             }
         }
         graph_created = true;                     // Pour ne pas recreer les div en boucle
-        console.log("creerGraph - fait");
+        console.log("GRAPH - fait");
     }
 
 
@@ -220,40 +219,50 @@
 
 
 
-    function getValVibrations()
+    function initWebsocketMQTT()
     {
+
         host = "172.16.129.32";
         port = 8080;
-        idClient = "1";
+        idClient = "clientjs";
 
         // Creation du client MQTT 
-        client = new Paho.MQTT.Client(host, port, idClient);
-
+        client = new Paho.MQTT.Client(host, port, idClient);   
+        
+        // Definir les handlers a utiliser
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
 
         // Connection au serveur MQTT
         client.connect({onSuccess: function ()
             {
-                console.log("Client MQTT connecté");
-                client.subscribe("vibration");
+                console.log("MQTT - Client MQTT connecté a l'adresse: '"+client.host+"', port: '"+client.port+" path: "+client.path);
+                client.subscribe("/vibration");
+                message = new Paho.MQTT.Message("AH");
+                message.destinationName = "/vibration";
+                client.send(message);
+                console.log("MQTT - Message '" + message.payloadString +"' envoyé" );
             }
         });
-        
+
+
+
         // Handler connection perdue
-        client.onConnectionLost = function(responseObject)
+        function onConnectionLost(responseObject)
             {
                 if (responseObject.errorCode !== 0) {
-                    console.log("Connection perdue:" + responseObject.errorMessage);
+                    console.log("MQTT - Connection perdue: " + responseObject.errorMessage);
                 }
+            };  
+
+        // Handler Reception de message
+        function onMessageArrived(message)
+            {
+                console.log("MQTT - Message reçu: " + message.payloadString);
             };
         
-        // Handler Reception de message
-        client.onMessageArrived = function(message)
-            {
-                console.log("onMessageArrived:" + message.payloadString);
-            };
+
     }
-
-
 
 
 })(jQuery);
