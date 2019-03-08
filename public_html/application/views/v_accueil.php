@@ -12,9 +12,10 @@
     <div class="container-list col-lg-6" id="divliste">
         <div class="au-card-inner ">
             <ul class="list-group" id="liste_machines">
+            </ul>
         </div>
     </div>
-    
+
     <div class="row">
         <div class="col-lg-8">
             <div class="au-card au-card--no-shadow au-card--no-pad m-b-40">

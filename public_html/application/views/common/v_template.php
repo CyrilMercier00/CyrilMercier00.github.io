@@ -121,8 +121,11 @@
         <!-- Canvas JS -->
         <script src="<?php echo base_url(); ?>assets/vendor/jquery.canvasjs.min.js" type="text/javascript"></script>
 
+        <!-- Canvas JS -->
+        <script src="<?php echo base_url(); ?>assets/js/common.js" type="text/javascript"></script>
+        
         <!-- Main JS -->
-        <script src="<?php echo base_url(); ?>assets/js/c_accueil.js"></script>
+         <script src="<?php echo base_url(); ?>assets/js/<?php echo $data['javascript_location'] ?>" ></script>
 
     </body>
 

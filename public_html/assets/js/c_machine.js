@@ -3,6 +3,7 @@
     var arrayChart = [];               // Array contenant les graphiques crées 
     var graph_created = false;         // verifie si les graphiques sont initialisés
     var nbCapteurs = 0;                // Nombre max de capteurs
+    var i = 0;
     const valVibrationsMax = 6;        // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
 
     //Heure pour le label
@@ -13,10 +14,13 @@
     var code_html1 = "<div class='col-lg-6'> \n\
     <div class='au-card recent-report'> \n\
     <div class='au-card-inner'> \n\
-    <h3 class='title-2'>Capteur 1</h3> \n\
+    <h3 class='title-2'>Capteur ";
+    
+    var code_html2 = "</h3> \n\
     <div class='recent-report__chart'> \n\
-    <canvas id='graphCapteur";
-    var code_html2 = "'></canvas> \n\
+    <canvas id='graphCapteur";"\n\
+"
+    var code_html3 = "'></canvas> \n\
     </div> \n\
     </div> \n\
     </div> \n\
@@ -152,116 +156,122 @@
         console.log(error);
     }
 
-function getNumCapteurs()
-{
-    // Recuperer le nombre de capteurs a afficher
-    if (graph_created === false) {
-        url = 'http://localhost:82/vibration/index.php/REST/moteur';
+    function getNumCapteurs()
+    {
+        // Recuperer le nombre de capteurs a afficher
+        if (graph_created === false) {
+            url = 'http://localhost:82/vibration/index.php/REST/moteur';
+            console.log('getNumCapteurs - début'),
+                    $.ajax({
+                        type: "GET",
+                        url: url,
+                        dataType: "json",
+                        success: function (result)
+                        {
 
+                            nbCapteurs = result.length;
+                            console.log('getNumCapteurs - succes, ' + nbCapteurs + ' capteurs détecté(s)');
+                            //setInterval(rafraichirGraphiques, 1000);  // Rafraichir les graphiques toutes les secondes
+                            creerGraph(nbCapteurs);                   // Creer une div pour chaque capteur
+                        }
+                    });
+        }
+    }
+
+
+
+
+
+    function creerGraph(prmNbCapteurs)
+    {
+        console.log("creerGraph - début");
+        console.log(prmNbCapteurs + " capteurs");
+        for (i = 0; i < prmNbCapteurs; i++)
+        {
+            $("#divGraph").append(code_html1 + i + code_html2 + i + code_html3);     // Le code html est separé en deux partie, le i correspond a l'id du graphique 
+            console.log('html ' + i + ' fait.');
+            var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div 
+             console.log("creerGraph - graphCapteur" + " " + [i]);
+             if (ctx)
+             {
+             console.log("ctx detecté pour " + i);
+             ctx.height = 230;
+             arrayChart[i] = new Chart(ctx, config);
+             }
+        }
+        graph_created = true;                     // Pour ne pas recreer les div en boucle
+        console.log("creerGraph - fait");
+    }
+
+
+
+
+
+    function rafraichirGraphiques()
+    {
+        for (i = 0; i < nbCapteurs; i++)
+        {
+            getValVibrations(1);      // Recuperer les vibrations pour le capteur 
+            getValSeuil(1);           // Recuperer le seuil pour le capteur   
+            arrayChart[i].update();   // Mise a jour de données
+        }
+    }
+
+
+
+
+
+    function getValVibrations(prmIdCapteur)
+    {
+        url = 'http://localhost:82/vibration/index.php/REST/vibration/' + prmIdCapteur;
+
+        // Recuperation des valeurs pour le capteur
         $.ajax({
             type: "GET",
             url: url,
             dataType: "json",
             success: function (result)
             {
-                nbCapteurs = result.length;
-                setInterval(rafraichirGraphiques, 1000);  // Rafraichir les graphiques toutes les secondes
-                creerGraph(nbCapteurs);                   // Creer une div pour chaque capteur
+                arrayChart[i].data.datasets[0].data = [];     // Supprime les anciennes données
+                for (i = 0; i < result.length; i++)     // Les remplacer par les nouvelles
+                {
+                    arrayChart.data.datasets[0].data.push(result[i]['valeur']);
+                }
             }
         });
     }
-}
 
 
 
 
 
-function creerGraph(prmNbCapteurs)
-{
-    for (i = 0; prmNbCapteurs < i; i++)
+    function getValSeuil(prmOrdreMoteur)
     {
-        document.getElementById("divGraph").appendChild(code_html1 + i + code_html2);     // Le code html est separé en deux partie, le i correspond a l'id du graphique 
-        console.log('html ' + i + ' fait.');
-        var ctx = document.getElementById("graphCapteur" + [i]);                        // Creer un graphique pour chaque div 
+        url = 'http://localhost:82/vibration/index.php/REST/norme/' + prmOrdreMoteur;
 
-        if (ctx)
-        {
-            ctx.height = 230;
-            arrayChart[i] = new Chart + [i](ctx, config);
-        }
-    }
-    graph_created = true;                     // Pour ne pas recreer les div en boucle
-}
-
-
-
-
-
-function rafraichirGraphiques()
-{
-    for (i = 0; i < nbCapteurs; i++)
-    {
-        getValVibrations(1);      // Recuperer les vibrations pour le capteur 
-        getValSeuil(1);           // Recuperer le seuil pour le capteur   
-        arrayChart[i].update();   // Mise a jour de données
-    }
-}
-
-
-
-
-
-function getValVibrations(prmIdCapteur)
-{
-    url = 'http://localhost:82/vibration/index.php/REST/vibration/' + prmIdCapteur;
-
-    // Recuperation des valeurs pour le capteur
-    $.ajax({
-        type: "GET",
-        url: url,
-        dataType: "json",
-        success: function (result)
-        {
-            arrayChart[i].data.datasets[0].data = [];     // Supprime les anciennes données
-            for (i = 0; i < result.length; i++)     // Les remplacer par les nouvelles
+        // Recuperation des valeurs pour le seuil
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json",
+            success: function (result)
             {
-                arrayChart.data.datasets[0].data.push(result[i]['valeur']);
+                // Supprime les anciennes données
+                arrayChart[i].data.datasets[1].data = [];
+                arrayChart[i].data.datasets[2].data = [];
+                arrayChart[i].data.datasets[3].data = [];
+
+                // Remplacer le seuil sur toute la longueur de la courbe
+                for (i = 0; i < arrayChart[i].data.datasets[0].data.length; i++)  // pour toute les données recupérées
+                {
+                    arrayChart[i].data.datasets[1].data.push(result[1]['seuil']);
+                    arrayChart[i].data.datasets[2].data.push(result[2]['seuil']);
+                    arrayChart[i].data.datasets[3].data.push(result[3]['seuil']);
+                    arrayChart[i].data.datasets[4].data.push(6);
+                }
             }
-        }
-    });
-}
-
-
-
-
-
-function getValSeuil(prmOrdreMoteur)
-{
-    url = 'http://localhost:82/vibration/index.php/REST/norme/' + prmOrdreMoteur;
-
-    // Recuperation des valeurs pour le seuil
-    $.ajax({
-        type: "GET",
-        url: url,
-        dataType: "json",
-        success: function (result)
-        {
-            // Supprime les anciennes données
-            arrayChart[i].data.datasets[1].data = [];
-            arrayChart[i].data.datasets[2].data = [];
-            arrayChart[i].data.datasets[3].data = [];
-
-            // Remplacer le seuil sur toute la longueur de la courbe
-            for (i = 0; i < arrayChart[i].data.datasets[0].data.length; i++)  // pour toute les données recupérées
-            {
-                arrayChart[i].data.datasets[1].data.push(result[1]['seuil']);
-                arrayChart[i].data.datasets[2].data.push(result[2]['seuil']);
-                arrayChart[i].data.datasets[3].data.push(result[3]['seuil']);
-                arrayChart[i].data.datasets[4].data.push(6);
-            }
-        }
-    });
-}
+        });
+    }
 
 
 
