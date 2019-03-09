@@ -67,13 +67,13 @@
                                     <i class="fas fa-user"></i>Compte</a>
                                 <ul class="list-unstyled navbar__sub-list js-sub-list">
                                     <li>
-                                        <a href="login.html">Nouvel utilisateur</a>
+                                        <a href=<?php echo site_url('c_user/newUser')?> >Nouvel utilisateur</a>
                                     </li>
                                     <li>
-                                        <a href="register.html">Changer le mot de passe</a>
+                                        <a href=<?php echo site_url('c_user/changePass')?>>Changer le mot de passe</a>
                                     </li>
                                     <li>
-                                        <a href="<?php echo site_url('c_accueil/logout') ?>">Déonnexion</a>
+                                        <a href="<?php echo site_url('c_user/logout') ?>">Déonnexion</a>
                                     </li>
                                 </ul>
                             </li>

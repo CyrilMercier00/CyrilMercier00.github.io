@@ -193,7 +193,7 @@
             var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div 
             if (ctx)
             {
-                console.log("GRAPH - ctx detecté pour " + i);
+                console.log("GRAPH - Canvas détectté pour le graphique " + i);
                 ctx.height = 230;
                 arrayChart[i] = new Chart(ctx, config);
             }
@@ -221,7 +221,7 @@
 
     function initWebsocketMQTT()
     {
-
+        try {
         host = "172.16.129.32";
         port = 8080;
         idClient = "clientjs";
@@ -261,7 +261,9 @@
                 console.log("MQTT - Message reçu: " + message.payloadString);
             };
         
-
+        } catch (e) {
+            console.log("MQTT - Erreur: " + e);
+        }
     }
 
 

@@ -1,12 +1,5 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12">
-            <div class="overview-wrap">
-                <h2 class="title-1">Appareils connectés :</h2>
-                <button class="au-btn au-btn-icon au-btn--blue">
-                    <i class="zmdi zmdi-plus"></i>Ajouter un capteur</button>
-            </div>
-        </div>
     </div>
 
     <div class="container-list col-lg-6" id="divliste">
@@ -15,6 +8,7 @@
             </ul>
         </div>
     </div>
+
 
     <div class="row">
         <div class="col-lg-8">
@@ -56,7 +50,7 @@
                         <div class="au-task__item au-task__item--danger js-load-item">
                             <div class="au-task__item-inner">
                                 <h5 class="task">
-                                    <a href="#">Meeting about plan for Admin Template 2018</a>
+                                    <a href="#">Evenement supplémentaire</a>
                                 </h5>
                                 <span class="time">10:00 AM</span>
                             </div>
@@ -64,7 +58,7 @@
                         <div class="au-task__item au-task__item--warning js-load-item">
                             <div class="au-task__item-inner">
                                 <h5 class="task">
-                                    <a href="#">Create new task for Dashboard</a>
+                                    <a href="#">Evenement supplémentaire</a>
                                 </h5>
                                 <span class="time">11:00 AM</span>
                             </div>
@@ -77,4 +71,6 @@
             </div>
         </div>
     </div>
+
+    
 </div>
