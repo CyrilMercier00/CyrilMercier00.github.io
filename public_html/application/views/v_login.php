@@ -27,7 +27,7 @@
                     </form>
                     <ul>
                         <?php
-                        echo '<div class=\'div-erreur\'>' . validation_errors('<li>', '</li>');
+                        echo '<div class=\'div-erreur\'>';
                         if (isset($error_message)) {
                             echo '<li>' .$error_message. '</li>';
                         }
