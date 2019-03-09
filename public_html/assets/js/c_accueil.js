@@ -1,6 +1,8 @@
 // ------------------------------ GRAPHIQUES -----------------------------------
 (function ($)
 {
+    urlMachine = 'http://localhost:82' ;
+    
     var site_url = $('#base').val();
     var listeCreated = false;          // verifie si la liste des machines a été crée
 
@@ -30,7 +32,7 @@
     function getAllMachines()
     {
         console.log("getAllMachines - début");
-        url = 'http://localhost:82/vibration/index.php/REST/machine';
+        url = urlMachine + '/vibration/index.php/REST/machine';
 
         if (listeCreated === false)
         {

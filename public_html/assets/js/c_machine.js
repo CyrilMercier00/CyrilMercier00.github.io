@@ -226,14 +226,14 @@
         port = 8080;
         idClient = "clientjs";
 
-        // Creation du client MQTT 
+        // Création du client MQTT 
         client = new Paho.MQTT.Client(host, port, idClient);   
         
         // Definir les handlers a utiliser
         client.onConnectionLost = onConnectionLost;
         client.onMessageArrived = onMessageArrived;
 
-        // Connection au serveur MQTT
+        // Succès de la connexion au serveur MQTT
         client.connect({onSuccess: function ()
             {
                 console.log("MQTT - Client MQTT connecté a l'adresse: '"+client.host+"', port: '"+client.port+" path: "+client.path);
@@ -254,6 +254,8 @@
                     console.log("MQTT - Connection perdue: " + responseObject.errorMessage);
                 }
             };  
+
+
 
         // Handler Reception de message
         function onMessageArrived(message)
