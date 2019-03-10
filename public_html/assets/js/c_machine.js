@@ -1,10 +1,11 @@
 (function ($)
 {
-    var arrayChart = [];               // Array contenant les graphiques crées 
-    var graph_created = false;         // verifie si les graphiques sont initialisés
-    var nbCapteurs = 0;                // Nombre max de capteurs
-    var i = 0;
-    const valVibrationsMax = 6;        // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
+    const site = "http://localhost:82/"; // Adresse du site pour le service REST
+    var arrayChart = [];                 // Array contenant les graphiques crées 
+    var graph_created = false;           // verifie si les graphiques sont initialisés
+    var nbCapteurs = 0;                  // Nombre max de capteurs
+    var i = 0;                           // Compteur
+    const valVibrationsMax = 6;          // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
 
     //Heure pour le label
     var date = new Date();
@@ -40,7 +41,7 @@
 
     const transparent = 'transparent';
 
-    // --- Fichier config du graphiqe  ---
+    // --- Début fichier config du graphiqe  ---
     config = {
         type: 'line',
         data: {
@@ -146,6 +147,9 @@
 
         }
     };
+    // --- Fin fichier config du graphiqe  ---
+
+
 
     // --- Code Appli principal --- 
     try
@@ -157,11 +161,13 @@
         console.log(error);
     }
 
+
+
     function getNumCapteurs()
     {
         // Recuperer le nombre de capteurs a afficher
         if (graph_created === false) {
-            url = 'http://localhost:82/vibration/index.php/REST/moteur';
+            url = site + 'vibration/index.php/REST/moteur';
             console.log('getNumCapteurs - début'),
                     $.ajax({
                         type: "GET",
@@ -178,11 +184,9 @@
                     });
         }
     }
-
-
-
-
-
+    
+    
+    
     function creerGraph(prmNbCapteurs)
     {
         console.log("GRAPH - début");
@@ -205,7 +209,6 @@
 
 
 
-
     function rafraichirGraphiques()
     {
         for (i = 0; i < nbCapteurs; i++)
@@ -214,8 +217,6 @@
             arrayChart[i].update();   // Mise a jour de données
         }
     }
-
-
 
 
 
