@@ -223,7 +223,7 @@
     {
 
         host = "172.16.129.32";
-        port = 8080;
+        port = 9001;
         idClient = "clientjs";
 
         // Creation du client MQTT 

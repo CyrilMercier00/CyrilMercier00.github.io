@@ -59,7 +59,7 @@
                                     <i class="fas fa-home"></i>Accueil</a>
                             </li>
                             <li>
-                                <a href="#">
+                                <a href="<?php echo site_url()?>/c_historique">
                                     <i class="fas fa-clock"></i>Historique</a>
                             </li>
                             <li class="has-sub">
