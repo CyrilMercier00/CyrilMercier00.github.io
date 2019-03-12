@@ -15,17 +15,21 @@ class m_capteur extends CI_Model {
         return $this->db->insert('machine', $data)->result();
     }
 
-    public function get_capteur_by_machine($prmIdMachine) {
+    public function get_capteur_by_moteur($prmIdMachine) {
         $condition = array(
             'moteur.idMachine' => $prmIdMachine,
         );
-        
-        $this->db->select('idMoteur, fonction'); 
+
+        $this->db->select('idMoteur, fonction');
         return $this->db->get_where('moteur', $condition)->result();
     }
 
     public function delete_capteur($prmIdMachine) {
-        return $this->db->delete('machine', array('idMachine' => $prmIdMachine))->result();
+        $condition = array(
+            'idMachine' => $prmIdMachine
+        );
+
+        return $this->db->delete('machine', $condition)->result();
     }
 
 }

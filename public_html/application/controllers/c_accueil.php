@@ -13,6 +13,7 @@ class c_accueil extends CI_Controller {
         if (($this->session->userdata('logged_in') == true)) {
 
             $page = $this->load->view('v_accueil','',true);
+            
             $data = array(
                 'page' => $page,
                 'css_location' => 'v_accueil.css',
@@ -23,11 +24,6 @@ class c_accueil extends CI_Controller {
         } else {
             redirect('c_login');
         }
-    }
-
-    public function logout() {
-        $this->session->sess_destroy();
-        redirect('c_login');
     }
 
 }

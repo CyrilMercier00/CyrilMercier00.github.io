@@ -1,10 +1,11 @@
 (function ($)
 {
-    var arrayChart = [];               // Array contenant les graphiques crées 
-    var graph_created = false;         // verifie si les graphiques sont initialisés
-    var nbCapteurs = 0;                // Nombre max de capteurs
-    var i = 0;
-    const valVibrationsMax = 6;        // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
+    const site = "http://localhost:82/"; // Adresse du site pour le service REST
+    var arrayChart = [];                 // Array contenant les graphiques crées 
+    var graph_created = false;           // verifie si les graphiques sont initialisés
+    var nbCapteurs = 0;                  // Nombre max de capteurs
+    var i = 0;                           // Compteur
+    const valVibrationsMax = 6;          // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
 
     //Heure pour le label
     var date = new Date();
@@ -40,7 +41,7 @@
 
     const transparent = 'transparent';
 
-    // --- Fichier config du graphiqe  ---
+    // --- Début fichier config du graphiqe  ---
     config = {
         type: 'line',
         data: {
@@ -146,6 +147,9 @@
 
         }
     };
+    // --- Fin fichier config du graphiqe  ---
+
+
 
     // --- Code Appli principal --- 
     try
@@ -157,11 +161,13 @@
         console.log(error);
     }
 
+
+
     function getNumCapteurs()
     {
         // Recuperer le nombre de capteurs a afficher
         if (graph_created === false) {
-            url = 'http://localhost:82/vibration/index.php/REST/moteur';
+            url = site + 'vibration/index.php/REST/moteur';
             console.log('getNumCapteurs - début'),
                     $.ajax({
                         type: "GET",
@@ -178,11 +184,9 @@
                     });
         }
     }
-
-
-
-
-
+    
+    
+    
     function creerGraph(prmNbCapteurs)
     {
         console.log("GRAPH - début");
@@ -193,7 +197,7 @@
             var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div 
             if (ctx)
             {
-                console.log("GRAPH - ctx detecté pour " + i);
+                console.log("GRAPH - Canvas détectté pour le graphique " + i);
                 ctx.height = 230;
                 arrayChart[i] = new Chart(ctx, config);
             }
@@ -201,7 +205,6 @@
         graph_created = true;                     // Pour ne pas recreer les div en boucle
         console.log("GRAPH - fait");
     }
-
 
 
 
@@ -217,23 +220,21 @@
 
 
 
-
-
     function initWebsocketMQTT()
     {
-
+        try {
         host = "172.16.129.32";
         port = 9001;
         idClient = "clientjs";
 
-        // Creation du client MQTT 
+        // Création du client MQTT 
         client = new Paho.MQTT.Client(host, port, idClient);   
         
         // Definir les handlers a utiliser
         client.onConnectionLost = onConnectionLost;
         client.onMessageArrived = onMessageArrived;
 
-        // Connection au serveur MQTT
+        // Succès de la connexion au serveur MQTT
         client.connect({onSuccess: function ()
             {
                 console.log("MQTT - Client MQTT connecté a l'adresse: '"+client.host+"', port: '"+client.port+" path: "+client.path);
@@ -255,13 +256,17 @@
                 }
             };  
 
+
+
         // Handler Reception de message
         function onMessageArrived(message)
             {
                 console.log("MQTT - Message reçu: " + message.payloadString);
             };
         
-
+        } catch (e) {
+            console.log("MQTT - Erreur: " + e);
+        }
     }
 
 

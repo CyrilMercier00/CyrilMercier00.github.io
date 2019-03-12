@@ -14,7 +14,7 @@ Class c_login extends CI_Controller {
     }
 
     public function check_login() {
-        $this->load->model('m_user');      // Contient les methodes pour la verification du mdp
+        $this->load->model('m_login');      // Contient les methodes pour la verification du mdp
         
         // Nettoyer l'input    
         $this->form_validation->set_rules('username', 'nom d\'utilisateur', 'trim|required');
@@ -32,7 +32,7 @@ Class c_login extends CI_Controller {
             );
 
             // Verification du mdp dans la BDD
-            if ($this->m_user->check_pass($data)) {
+            if ($this->m_login->check_pass($data)) {
                 // Succes: Demmarer session avec les données suivantes
                 $data_session = array(
                     'username' => $this->input->post('username'),
