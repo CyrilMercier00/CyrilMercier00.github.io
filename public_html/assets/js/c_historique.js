@@ -1,7 +1,7 @@
 // ------------------------------ GRAPHIQUES -----------------------------------
 (function ($)
 {
-    url = "http://localhost:82/vibration/indes.php/REST/";
+    url = "http://localhost:82/vibration/index.php/REST/";
 
     $.ajax({
         type: "GET",
@@ -12,7 +12,7 @@
             console.log("getAllCapteurs - succes");
             for (i = 0; i < result.length; i++)  // pour toute les données recupérées
             {
-                $('#liste_machines').append("<li> <a href=" + site_url + "/c_machine/" + i + " class\"list-group-item group-item-action\"> Machine n°" + i + ": " + result[i]['nom'] + "</a> </li>");
+                $('#divGraph').append("<li> <a href=" + site_url + "/c_machine/" + i + " class\"list-group-item group-item-action\"> Machine n°" + i + ": " + result[i]['nom'] + "</a> </li>");
             }
             listeCreated = true;
         }

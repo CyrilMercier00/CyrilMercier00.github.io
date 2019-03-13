@@ -58,19 +58,27 @@
                                 <a href="<?php echo site_url() ?>/c_accueil">
                                     <i class="fas fa-home"></i>Accueil</a>
                             </li>
-                            <li>
-                                <a href="<?php echo site_url()?>/c_historique">
-                                    <i class="fas fa-clock"></i>Historique</a>
-                            </li>
+                            
+                            <?php
+                            // Si l'utilisateur ce trouve sur la page machine activer la redirection
+                            if (isset($data['numMachine']))
+                            {
+                                echo '<li>';
+                                echo '<a href="<?php echo site_url()?>/c_historique/'+$data[numMachine]+'>';
+                                echo '<i class="fas fa-clock"></i>Historique</a>';
+                                echo '</li>';
+                            }
+                            ?>
+                            
                             <li class="has-sub">
                                 <a class="js-arrow" href="#">
                                     <i class="fas fa-user"></i>Compte</a>
                                 <ul class="list-unstyled navbar__sub-list js-sub-list">
                                     <li>
-                                        <a href=<?php echo site_url('c_user/newUser')?> >Nouvel utilisateur</a>
+                                        <a href=<?php echo site_url('c_user/newUser') ?> >Nouvel utilisateur</a>
                                     </li>
                                     <li>
-                                        <a href=<?php echo site_url('c_user/changePass')?>>Changer le mot de passe</a>
+                                        <a href=<?php echo site_url('c_user/changePass') ?>>Changer le mot de passe</a>
                                     </li>
                                     <li>
                                         <a href="<?php echo site_url('c_user/logout') ?>">Déonnexion</a>
@@ -125,8 +133,8 @@
         <script src="<?php echo base_url(); ?>assets/js/common.js" type="text/javascript"></script>
 
         <!-- MQTT Client -->
-        <script src="<?php echo base_url();?>assets/vendor/paho-mqtt-min.js" type="text/javascript"></script>
-        
+        <script src="<?php echo base_url(); ?>assets/vendor/paho-mqtt-min.js" type="text/javascript"></script>
+
         <!-- Main JS -->
         <script src="<?php echo base_url(); ?>assets/js/<?php echo $data['javascript_location'] ?>" ></script>
 

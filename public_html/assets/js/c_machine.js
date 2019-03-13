@@ -208,14 +208,10 @@
 
 
 
-
-    function rafraichirGraphiques()
+    function updateGraph(prmJsonDecoded)
     {
-        for (i = 0; i < nbCapteurs; i++)
-        {
-            getValVibrations();      // Recuperer les vibrations pour le capteur 
-            arrayChart[i].update();   // Mise a jour de données
-        }
+        numGraph = prmJsonDecoded['numGraph'];
+        arrayChart['numGraph'].update();       // Mise a jour de données
     }
 
 
@@ -228,7 +224,7 @@
         idClient = "clientjs";
 
         // Création du client MQTT 
-        client = new Paho.MQTT.Client(host, port, idClient);   
+        console.log(client = new Paho.MQTT.Client(host, port, idClient));   
         
         // Definir les handlers a utiliser
         client.onConnectionLost = onConnectionLost;
@@ -238,9 +234,9 @@
         client.connect({onSuccess: function ()
             {
                 console.log("MQTT - Client MQTT connecté a l'adresse: '"+client.host+"', port: '"+client.port+" path: "+client.path);
-                client.subscribe("/vibration");
+                client.subscribe("vibration");
                 message = new Paho.MQTT.Message("AH");
-                message.destinationName = "/vibration";
+                message.destinationName = "vibration";
                 client.send(message);
                 console.log("MQTT - Message '" + message.payloadString +"' envoyé" );
             }
@@ -262,6 +258,8 @@
         function onMessageArrived(message)
             {
                 console.log("MQTT - Message reçu: " + message.payloadString);
+                // message_decoded = json_decode( message.payloadString ) ;
+                // updateGraph(message_decoded);           // Logique pour mettre a jour le graphique
             };
         
         } catch (e) {

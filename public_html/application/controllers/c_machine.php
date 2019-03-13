@@ -18,7 +18,8 @@ class c_machine extends CI_Controller {
                 $data = array(
                     'page' => $page,
                     'css_location' => 'v_machine.css',
-                    'javascript_location' => 'c_machine.js'
+                    'javascript_location' => 'c_machine.js',
+                    'numMachine' => $this->uri->segment(2)
                 );
 
                 $this->load->view('common/v_template', array('data' => $data), false);
