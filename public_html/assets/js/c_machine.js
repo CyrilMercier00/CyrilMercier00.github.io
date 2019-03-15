@@ -1,17 +1,17 @@
 (function ($)
 {
-    const site = "http://localhost:82/"; // Adresse du site pour le service REST
+    const  site = $('#url_js').val() ;   // Adresse du site pour le service REST
     var arrayChart = [];                 // Array contenant les graphiques crées 
     var graph_created = false;           // verifie si les graphiques sont initialisés
     var nbCapteurs = 0;                  // Nombre max de capteurs
     var i = 0;                           // Compteur
-    const valVibrationsMax = 6;          // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
+    const valVibrationsMax = 6;          // Valeur maxmimale de vibrations. Determine la hauteur max du graphique
 
     //Heure pour le label
     var date = new Date();
     var dataHeures = [date.getHours() - 1 + 'h', date.getHours() + 'h', date.getHours() + 1 + 'h'];
 
-    // Code html a inserer pour creer un graphique, separé en deux pour pouvoir inserer l'id du graphique
+    // Code html a inserer pour créer un graphique, separé pouvoir inserer des données
     var code_html1 = "<div class='col-lg-8'> \n\
     <div class='au-card recent-report'> \n\
     <div class='au-card-inner'> \n\
@@ -167,7 +167,7 @@
     {
         // Recuperer le nombre de capteurs a afficher
         if (graph_created === false) {
-            url = site + 'vibration/index.php/REST/moteur';
+            url = site + '/REST/moteur';
             console.log('getNumCapteurs - début'),
                     $.ajax({
                         type: "GET",
