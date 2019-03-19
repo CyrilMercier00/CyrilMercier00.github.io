@@ -156,6 +156,7 @@
     {
         initWebsocketMQTT();
         getNumCapteurs();
+        $('#btnVal').on('click', insererDataTest); // handler bouton ajouter valeurs
     } catch (error)
     {
         console.log(error);
@@ -184,13 +185,13 @@
                     });
         }
     }
-    
-    
-    
+
+
+
     function creerGraph(prmNbCapteurs)
     {
         console.log("GRAPH - début");
-        console.log("GRAPH - " +prmNbCapteurs + " capteurs");
+        console.log("GRAPH - " + prmNbCapteurs + " capteurs");
         for (i = 0; i < prmNbCapteurs; i++)
         {
             $("#divGraph").append(code_html1 + i + code_html2 + i + code_html3);     // Le code html est separé en deux partie, le i correspond a l'id du graphique 
@@ -199,7 +200,7 @@
             {
                 console.log("GRAPH - Canvas détectté pour le graphique " + i);
                 ctx.height = 230;
-                arrayChart[i] = new Chart(ctx, config);
+                arrayChart.push(new Chart(ctx, config));
             }
         }
         graph_created = true;                     // Pour ne pas recreer les div en boucle
@@ -211,6 +212,10 @@
     function updateGraph(prmJsonDecoded)
     {
         numGraph = prmJsonDecoded['numGraph'];
+        valVibration = prmJsonDecoded['valVibration'];
+
+        arrayChart['numGraph'].data.datasets[0].data.push(valVibration);
+
         arrayChart['numGraph'].update();       // Mise a jour de données
     }
 
@@ -219,54 +224,69 @@
     function initWebsocketMQTT()
     {
         try {
-        host = "172.16.129.32";
-        port = 9001;
-        idClient = "clientjs";
+            host = "172.16.129.32";
+            port = 9001;
+            idClient = "clientjs";
 
-        // Création du client MQTT 
-        console.log(client = new Paho.MQTT.Client(host, port, idClient));   
-        
-        // Definir les handlers a utiliser
-        client.onConnectionLost = onConnectionLost;
-        client.onMessageArrived = onMessageArrived;
+            // Création du client MQTT 
+            console.log(client = new Paho.MQTT.Client(host, port, idClient));
 
-        // Succès de la connexion au serveur MQTT
-        client.connect({onSuccess: function ()
-            {
-                console.log("MQTT - Client MQTT connecté a l'adresse: '"+client.host+"', port: '"+client.port+" path: "+client.path);
-                client.subscribe("vibration");
-                message = new Paho.MQTT.Message("AH");
-                message.destinationName = "vibration";
-                client.send(message);
-                console.log("MQTT - Message '" + message.payloadString +"' envoyé" );
-            }
-        });
+            // Definir les handlers a utiliser
+            client.onConnectionLost = onConnectionLost;
+            client.onMessageArrived = onMessageArrived;
+
+            // Succès de la connexion au serveur MQTT
+            client.connect({onSuccess: function ()
+                {
+                    console.log("MQTT - Client MQTT connecté a l'adresse: '" + client.host + "', port: '" + client.port + " path: " + client.path);
+                    client.subscribe("vibration");
+                    message = new Paho.MQTT.Message("AH");
+                    message.destinationName = "vibration";
+                    client.send(message);
+                    console.log("MQTT - Message '" + message.payloadString + "' envoyé");
+                }
+            });
 
 
 
-        // Handler connection perdue
-        function onConnectionLost(responseObject)
+            // Handler connection perdue
+            function onConnectionLost(responseObject)
             {
                 if (responseObject.errorCode !== 0) {
                     console.log("MQTT - Connection perdue: " + responseObject.errorMessage);
                 }
-            };  
+            }
+            ;
 
 
 
-        // Handler Reception de message
-        function onMessageArrived(message)
+            // Handler Reception de message
+            function onMessageArrived(message)
             {
                 console.log("MQTT - Message reçu: " + message.payloadString);
-                // message_decoded = json_decode( message.payloadString ) ;
-                // updateGraph(message_decoded);           // Logique pour mettre a jour le graphique
-            };
-        
+                message_decoded = json_decode(message.payloadString);
+                updateGraph(message_decoded);           // Logique pour mettre a jour le graphique
+            }
+            ;
+
         } catch (e) {
             console.log("MQTT - Erreur: " + e);
         }
     }
 
 
+    function insererDataTest()
+    { 
+        for (i = 0; i < arrayChart.length; i++)
+        {
+            numGraph = i;
+            valVibration = (Math.random() * (0.80 - 0.0) + 0.0);
+            alert( arrayChart['numGraph'].datasets[0].data.push(valVibration) );
+
+            arrayChart['numGraph'].datasets[0].data.push(valVibration);
+
+            arrayChart['numGraph'].update();       // Mise a jour de données
+        }
+    }
 
 })(jQuery);
