@@ -1,15 +1,18 @@
 (function ($)
 {
     const site = "http://localhost:82/"; // Adresse du site pour le service REST
+    const valVibrationsMax = 6;          // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
+
     var arrayChart = [];                 // Array contenant les graphiques crées 
-    var graph_created = false;           // verifie si les graphiques sont initialisés
+    var graph_created = false;           // Verifie si les graphiques sont initialisés
+    var seuil_added = false;             // Verifie si les seuils ont bien été recupérés
     var nbCapteurs = 0;                  // Nombre max de capteurs
     var i = 0;                           // Compteur
-    const valVibrationsMax = 6;          // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
+    var seuil = [];
 
     //Heure pour le label
     var date = new Date();
-    var dataHeures = [date.getHours() - 1 + 'h', date.getHours() + 'h', date.getHours() + 1 + 'h'];
+    var dataHeures = [];
 
     // Code html a inserer pour creer un graphique, separé en deux pour pouvoir inserer l'id du graphique
     var code_html1 = "<div class='col-lg-8'> \n\
@@ -63,9 +66,9 @@
                     pointHoverBackgroundColor: transparent,
                     borderWidth: 0,
                     pointRadius: 0,
-                    data: [0.71],
+                    data: [],
                     pointBackgroundColor: transparent,
-                    fill: 'origin'
+                    fill: '+1'
                 },
                 {
                     label: 'Seuil B',
@@ -74,9 +77,9 @@
                     pointHoverBackgroundColor: transparent,
                     borderWidth: 0,
                     pointRadius: 0,
-                    data: ['1.8'],
+                    data: [],
                     pointBackgroundColor: transparent,
-                    fill: '-1'
+                    fill: '+1'
                 },
                 {
                     label: 'Seuil C',
@@ -85,9 +88,9 @@
                     pointHoverBackgroundColor: transparent,
                     borderWidth: 0,
                     pointRadius: 0,
-                    data: ['4.5'],
+                    data: [],
                     pointBackgroundColor: transparent,
-                    fill: '-1'
+                    fill: '+1'
                 },
                 {
                     label: 'Seuil D',
@@ -98,7 +101,7 @@
                     pointRadius: 0,
                     data: [],
                     pointBackgroundColor: transparent,
-                    fill: '-1'
+                    fill: 'end'
                 }
             ]
 
@@ -112,6 +115,7 @@
             scales: {
                 xAxes: [{
                         gridLines: {
+                            display: false,
                             drawOnChartArea: true,
                             color: '#f2f2f2'
                         },
@@ -154,9 +158,11 @@
     // --- Code Appli principal --- 
     try
     {
+        initLbl();
         initWebsocketMQTT();
         getNumCapteurs();
         $('#btnVal').on('click', insererDataTest); // handler bouton ajouter valeurs
+
     } catch (error)
     {
         console.log(error);
@@ -167,7 +173,8 @@
     function getNumCapteurs()
     {
         // Recuperer le nombre de capteurs a afficher
-        if (graph_created === false) {
+        if (graph_created === false)
+        {
             url = site + 'vibration/index.php/REST/moteur';
             console.log('getNumCapteurs - début'),
                     $.ajax({
@@ -180,6 +187,7 @@
                             nbCapteurs = result.length;
                             console.log('getNumCapteurs - succes, ' + nbCapteurs + ' capteurs détecté(s)');
                             // setInterval(rafraichirGraphiques, 1000);  // Rafraichir les graphiques toutes les secondes
+                            setInterval(insererDataTest, 1000);
                             creerGraph(nbCapteurs);                   // Creer une div pour chaque capteur
                         }
                     });
@@ -194,7 +202,7 @@
         console.log("GRAPH - " + prmNbCapteurs + " capteurs");
         for (i = 0; i < prmNbCapteurs; i++)
         {
-            $("#divGraph").append(code_html1 + i + code_html2 + i + code_html3);     // Le code html est separé en deux partie, le i correspond a l'id du graphique 
+            $("#divGraph").append(code_html1 + (i + 1).toString() + code_html2 + i + code_html3);     // Le code html est separé en deux partie, le i correspond a l'id du graphique 
             var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div 
             if (ctx)
             {
@@ -203,8 +211,30 @@
                 arrayChart.push(new Chart(ctx, config));
             }
         }
+        getValSeuil();
         graph_created = true;                     // Pour ne pas recreer les div en boucle
         console.log("GRAPH - fait");
+    }
+
+
+    function getValSeuil()
+    {
+        url = site + 'vibration/index.php/REST/norme/1';
+        console.log('getValSeuil - début');
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json",
+            success: function (result)
+            {
+                for (i = 0; i < result.length; i++)
+                {
+                    seuil[i] = result[i]['seuil'];
+                }
+                seuil_added = true;
+            }
+        });
     }
 
 
@@ -214,7 +244,7 @@
         numGraph = prmJsonDecoded['numGraph'];
         valVibration = prmJsonDecoded['valVibration'];
 
-        arrayChart['numGraph'].data.datasets[0].data.push(valVibration);
+        //arrayChart['numGraph'].data.datasets[0].data.push(valVibration);
 
         arrayChart['numGraph'].update();       // Mise a jour de données
     }
@@ -275,18 +305,42 @@
     }
 
 
-    function insererDataTest()
-    { 
-        for (i = 0; i < arrayChart.length; i++)
+
+    function initLbl()
+    {
+        // Heure actuelle
+        dataHeures.push(date.getHours() + 'h');
+        // 60 minutes
+        for (i = 0; i < 60; i++)
         {
-            numGraph = i;
-            valVibration = (Math.random() * (0.80 - 0.0) + 0.0);
-            alert( arrayChart['numGraph'].datasets[0].data.push(valVibration) );
-
-            arrayChart['numGraph'].datasets[0].data.push(valVibration);
-
-            arrayChart['numGraph'].update();       // Mise a jour de données
+            dataHeures.push('');
         }
+        // Heure actuelle +1
+        dataHeures.push(date.getHours() + 1 + 'h');
     }
 
+
+
+    function insererDataTest()
+    {
+        if (seuil_added === true)
+        {
+            for (i = 0; i < arrayChart.length; i++)
+            {
+                arrayChart[i].data.datasets[0].data.push(nbreRandom());
+                arrayChart[i].data.datasets[1].data.push(seuil[0]);
+                arrayChart[i].data.datasets[2].data.push(seuil[1]);
+                arrayChart[i].data.datasets[3].data.push(seuil[2]);
+                arrayChart[i].data.datasets[4].data.push(seuil[3]);
+                arrayChart[i].update();       // Mise a jour de donnéess
+            }
+        }
+
+
+
+        function nbreRandom()
+        {
+            return (Math.random() * (0.80 - 0.0) + 0.0).toFixed(2);
+        }
+    }
 })(jQuery);
