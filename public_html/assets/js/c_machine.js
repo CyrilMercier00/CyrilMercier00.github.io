@@ -4,11 +4,10 @@
     const valVibrationsMax = 6;          // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
 
     var arrayChart = [];                 // Array contenant les graphiques crées 
+    var seuil = [];                      // Array contenant les seuils récupérés 
     var graph_created = false;           // Verifie si les graphiques sont initialisés
     var seuil_added = false;             // Verifie si les seuils ont bien été recupérés
     var nbCapteurs = 0;                  // Nombre max de capteurs
-    var i = 0;                           // Compteur
-    var seuil = [];
 
     //Heure pour le label
     var date = new Date();
@@ -129,7 +128,7 @@
                             beginAtZero: true,
                             maxTicksLimit: 5,
                             stepSize: 1,
-                            max: 6,
+                            max: valVibrationsMax,
                             fontFamily: "Poppins",
                             fontSize: 11
                         },
@@ -146,9 +145,11 @@
                     hoverBorderWidth: 3,
                     backgroundColor: '#333'
                 }
+            },
+
+            tooltips: {
+                mode: 'y'
             }
-
-
         }
     };
     // --- Fin fichier config du graphiqe  ---
@@ -332,8 +333,13 @@
                 arrayChart[i].data.datasets[2].data.push(seuil[1]);
                 arrayChart[i].data.datasets[3].data.push(seuil[2]);
                 arrayChart[i].data.datasets[4].data.push(seuil[3]);
+            }
+
+            for (i = 0; i < arrayChart.length; i++)
+            {
                 arrayChart[i].update();       // Mise a jour de donnéess
             }
+
         }
 
 
