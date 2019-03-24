@@ -1,15 +1,17 @@
 (function ($)
 {
     const  site = $('#url_js').val() ;   // Adresse du site pour le service REST
-    var arrayChart = [];                 // Array contenant les graphiques crées 
-    var graph_created = false;           // verifie si les graphiques sont initialisés
+    var arrayChart = [];                 // Array contenant les graphiques crées
+    var seuil = [];                      // Array contenant les seuils récupérés
+    var graph_created = false;           // Verifie si les graphiques sont initialisés
+    var seuil_added = false;             // Verifie si les seuils ont bien été recupérés
     var nbCapteurs = 0;                  // Nombre max de capteurs
     var i = 0;                           // Compteur
     const valVibrationsMax = 6;          // Valeur maxmimale de vibrations. Determine la hauteur max du graphique
 
     //Heure pour le label
     var date = new Date();
-    var dataHeures = [date.getHours() - 1 + 'h', date.getHours() + 'h', date.getHours() + 1 + 'h'];
+    var dataHeures = [];
 
     // Code html a inserer pour créer un graphique, separé pouvoir inserer des données
     var code_html1 = "<div class='col-lg-8'> \n\
@@ -63,9 +65,9 @@
                     pointHoverBackgroundColor: transparent,
                     borderWidth: 0,
                     pointRadius: 0,
-                    data: [0.71],
+                    data: [],
                     pointBackgroundColor: transparent,
-                    fill: 'origin'
+                    fill: '+1'
                 },
                 {
                     label: 'Seuil B',
@@ -74,9 +76,9 @@
                     pointHoverBackgroundColor: transparent,
                     borderWidth: 0,
                     pointRadius: 0,
-                    data: ['1.8'],
+                    data: [],
                     pointBackgroundColor: transparent,
-                    fill: '-1'
+                    fill: '+1'
                 },
                 {
                     label: 'Seuil C',
@@ -85,9 +87,9 @@
                     pointHoverBackgroundColor: transparent,
                     borderWidth: 0,
                     pointRadius: 0,
-                    data: ['4.5'],
+                    data: [],
                     pointBackgroundColor: transparent,
-                    fill: '-1'
+                    fill: '+1'
                 },
                 {
                     label: 'Seuil D',
@@ -98,7 +100,7 @@
                     pointRadius: 0,
                     data: [],
                     pointBackgroundColor: transparent,
-                    fill: '-1'
+                    fill: 'end'
                 }
             ]
 
@@ -112,6 +114,7 @@
             scales: {
                 xAxes: [{
                         gridLines: {
+                            display: false,
                             drawOnChartArea: true,
                             color: '#f2f2f2'
                         },
@@ -125,7 +128,7 @@
                             beginAtZero: true,
                             maxTicksLimit: 5,
                             stepSize: 1,
-                            max: 6,
+                            max: valVibrationsMax,
                             fontFamily: "Poppins",
                             fontSize: 11
                         },
@@ -142,20 +145,25 @@
                     hoverBorderWidth: 3,
                     backgroundColor: '#333'
                 }
+            },
+
+            tooltips: {
+                mode: 'y'
             }
-
-
         }
     };
     // --- Fin fichier config du graphiqe  ---
 
 
 
-    // --- Code Appli principal --- 
+    // --- Code Appli principal ---
     try
     {
+        initLbl();
         initWebsocketMQTT();
         getNumCapteurs();
+        $('#btnVal').on('click', insererDataTest); // handler bouton ajouter valeurs
+
     } catch (error)
     {
         console.log(error);
@@ -179,31 +187,54 @@
                             nbCapteurs = result.length;
                             console.log('getNumCapteurs - succes, ' + nbCapteurs + ' capteurs détecté(s)');
                             // setInterval(rafraichirGraphiques, 1000);  // Rafraichir les graphiques toutes les secondes
+                            setInterval(insererDataTest, 1000);
                             creerGraph(nbCapteurs);                   // Creer une div pour chaque capteur
                         }
                     });
         }
     }
-    
-    
-    
+
+
+
     function creerGraph(prmNbCapteurs)
     {
         console.log("GRAPH - début");
-        console.log("GRAPH - " +prmNbCapteurs + " capteurs");
+        console.log("GRAPH - " + prmNbCapteurs + " capteurs");
         for (i = 0; i < prmNbCapteurs; i++)
         {
-            $("#divGraph").append(code_html1 + i + code_html2 + i + code_html3);     // Le code html est separé en deux partie, le i correspond a l'id du graphique 
-            var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div 
+            $("#divGraph").append(code_html1 + (i + 1).toString() + code_html2 + i + code_html3);     // Le code html est separé en deux partie, le i correspond a l'id du graphique
+            var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div
             if (ctx)
             {
                 console.log("GRAPH - Canvas détectté pour le graphique " + i);
                 ctx.height = 230;
-                arrayChart[i] = new Chart(ctx, config);
+                arrayChart.push(new Chart(ctx, config));
             }
         }
+        getValSeuil();
         graph_created = true;                     // Pour ne pas recreer les div en boucle
         console.log("GRAPH - fait");
+    }
+
+
+    function getValSeuil()
+    {
+        url = site + 'vibration/index.php/REST/norme/1';
+        console.log('getValSeuil - début');
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json",
+            success: function (result)
+            {
+                for (i = 0; i < result.length; i++)
+                {
+                    seuil[i] = result[i]['seuil'];
+                }
+                seuil_added = true;
+            }
+        });
     }
 
 
@@ -211,6 +242,10 @@
     function updateGraph(prmJsonDecoded)
     {
         numGraph = prmJsonDecoded['numGraph'];
+        valVibration = prmJsonDecoded['valVibration'];
+
+        //arrayChart['numGraph'].data.datasets[0].data.push(valVibration);
+
         arrayChart['numGraph'].update();       // Mise a jour de données
     }
 
@@ -219,53 +254,98 @@
     function initWebsocketMQTT()
     {
         try {
-        host = "172.16.129.32";
-        port = 9001;
-        idClient = "clientjs";
+            host = "172.16.129.32";
+            port = 9001;
+            idClient = "clientjs";
 
-        // Création du client MQTT 
-        console.log(client = new Paho.MQTT.Client(host, port, idClient));   
-        
-        // Definir les handlers a utiliser
-        client.onConnectionLost = onConnectionLost;
-        client.onMessageArrived = onMessageArrived;
+            // Création du client MQTT
+            console.log(client = new Paho.MQTT.Client(host, port, idClient));
 
-        // Succès de la connexion au serveur MQTT
-        client.connect({onSuccess: function ()
-            {
-                console.log("MQTT - Client MQTT connecté a l'adresse: '"+client.host+"', port: '"+client.port+" path: "+client.path);
-                client.subscribe("vibration");
-                message = new Paho.MQTT.Message("AH");
-                message.destinationName = "vibration";
-                client.send(message);
-                console.log("MQTT - Message '" + message.payloadString +"' envoyé" );
-            }
-        });
+            // Definir les handlers a utiliser
+            client.onConnectionLost = onConnectionLost;
+            client.onMessageArrived = onMessageArrived;
+
+            // Succès de la connexion au serveur MQTT
+            client.connect({onSuccess: function ()
+                {
+                    console.log("MQTT - Client MQTT connecté a l'adresse: '" + client.host + "', port: '" + client.port + " path: " + client.path);
+                    client.subscribe("vibration");
+                    message = new Paho.MQTT.Message("AH");
+                    message.destinationName = "vibration";
+                    client.send(message);
+                    console.log("MQTT - Message '" + message.payloadString + "' envoyé");
+                }
+            });
 
 
 
-        // Handler connection perdue
-        function onConnectionLost(responseObject)
+            // Handler connection perdue
+            function onConnectionLost(responseObject)
             {
                 if (responseObject.errorCode !== 0) {
                     console.log("MQTT - Connection perdue: " + responseObject.errorMessage);
                 }
-            };  
+            }
+            ;
 
 
 
-        // Handler Reception de message
-        function onMessageArrived(message)
+            // Handler Reception de message
+            function onMessageArrived(message)
             {
                 console.log("MQTT - Message reçu: " + message.payloadString);
-                // message_decoded = json_decode( message.payloadString ) ;
-                // updateGraph(message_decoded);           // Logique pour mettre a jour le graphique
-            };
-        
+                message_decoded = json_decode(message.payloadString);
+                updateGraph(message_decoded);           // Logique pour mettre a jour le graphique
+            }
+            ;
+
         } catch (e) {
             console.log("MQTT - Erreur: " + e);
         }
     }
 
 
+
+    function initLbl()
+    {
+        // Heure actuelle
+        dataHeures.push(date.getHours() + 'h');
+        // 60 minutes
+        for (i = 0; i < 60; i++)
+        {
+            dataHeures.push('');
+        }
+        // Heure actuelle +1
+        dataHeures.push(date.getHours() + 1 + 'h');
+    }
+
+
+
+    function insererDataTest()
+    {
+        if (seuil_added === true)
+        {
+            for (i = 0; i < arrayChart.length; i++)
+            {
+                arrayChart[i].data.datasets[0].data.push(nbreRandom());
+                arrayChart[i].data.datasets[1].data.push(seuil[0]);
+                arrayChart[i].data.datasets[2].data.push(seuil[1]);
+                arrayChart[i].data.datasets[3].data.push(seuil[2]);
+                arrayChart[i].data.datasets[4].data.push(seuil[3]);
+            }
+
+            for (i = 0; i < arrayChart.length; i++)
+            {
+                arrayChart[i].update();       // Mise a jour de donnéess
+            }
+
+        }
+
+
+
+        function nbreRandom()
+        {
+            return (Math.random() * (0.80 - 0.0) + 0.0).toFixed(2);
+        }
+    }
 })(jQuery);

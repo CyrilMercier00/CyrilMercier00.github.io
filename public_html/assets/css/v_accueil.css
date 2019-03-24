@@ -1,56 +1,74 @@
-.chart {
-    background-color: #212f3d;
+/* --- Commun --- */
+.centrer {
+    margin-top: 2%;
 }
+
+/* --- Liste des machines --- */
 
 .container-list{
     background-color: white;
-    border-radius: 6px;
-    border-color:black;
+    border-radius: 2px;
+    border-color: black;
     margin: 8px 0px 10px 0px ;
+
+    float:left;
+
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-#liste_machines {
-    list-style:  none;
-    width: 100%
+
+
+.list_heading {      /* Titre */
+    font-size: 20px;
+    color: #000 ;
+    text-align: center ;
+
+    border-bottom: 1px solid #000 ;
+    margin-bottom: 3px;
+    position:relative;
 }
+
+
+
+#liste_machines li {
+    list-style:  none;
+
+    font-size: 18px;
+    text-decoration: none;
+
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+}
+
+
+
 #liste_machines li a {
     display: block;
-    color: black;
+    color: #808080;
     text-decoration: none;
+
+    -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+    -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+    -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+    -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+    transition: font-size 0.3s ease, background-color 0.3s ease;
 }
+
+
+
+#liste_machines li:last-child {
+    border: none;
+}
+
+
 
 #liste_machines li a:hover {
-    color: blue;
+    font-size: 22px;
+    color: #ccc ; 
 }
 
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
- 
-li {
-  font: 20px;
-  border-bottom: 1px solid #ccc;
-}
- 
-li:last-child {
-  border: none;
-}
- 
-li a {
-  text-decoration: none;
-  color: #000;
-  display: block;
- 
-  -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
-  -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
-  -o-transition: font-size 0.3s ease, background-color 0.3s ease;
-  -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
-  transition: font-size 0.3s ease, background-color 0.3s ease;
-}
- 
-li a:hover {
-  font-size: 30px;
-  background: #f6f6f6;
-}
+/* --- Journal d'evenement --- */

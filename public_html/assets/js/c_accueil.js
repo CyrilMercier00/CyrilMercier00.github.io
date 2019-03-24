@@ -32,7 +32,7 @@
                     console.log("getAllMachines - succes");
                     for (i = 0; i < result.length; i++)  // pour toute les données recupérées
                     {
-                        $('#liste_machines').append("<li> <a href=" + site_url + "/c_machine/" + i + " class\"list-group-item group-item-action\"> Machine n°" + i + ": " + result[i]['nom'] + "</a> </li>");
+                        $('#liste_machines').append("<li> <a href=" + site_url + "/c_machine/" + i + " class\"list-group-item group-item-action\"> Machine: " + result[i]['nom'] + "</a> </li>");
                     }
                     listeCreated = true;
                 }
