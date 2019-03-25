@@ -58,18 +58,17 @@
                                 <a href="<?php echo site_url() ?>/c_accueil">
                                     <i class="fas fa-home"></i>Accueil</a>
                             </li>
-                            
+
                             <?php
                             // Si l'utilisateur ce trouve sur la page machine activer la redirection
-                            if (isset($data['numMachine']))
-                            {
+                            if (isset($data['numMachine'])) {
                                 echo '<li>';
-                                echo '<a href="<?php echo site_url()?>/c_historique/'+$data[numMachine]+'>';
+                                echo '<a href="' . site_url() . '/c_historique/' . $data['numMachine'] . '">';
                                 echo '<i class="fas fa-clock"></i>Historique</a>';
                                 echo '</li>';
                             }
                             ?>
-                            
+
                             <li class="has-sub">
                                 <a class="js-arrow" href="#">
                                     <i class="fas fa-user"></i>Compte</a>

@@ -1,6 +1,6 @@
 (function ($)
 {
-    const site = "http://localhost:82/"; // Adresse du site pour le service REST
+    const site = $('#base').val();       // Adresse du site pour le service REST
     const valVibrationsMax = 6;          // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
 
     var arrayChart = [];                 // Array contenant les graphiques crées 
@@ -156,18 +156,17 @@
 
 
 
-    // --- Code Appli principal --- 
-    try
-    {
-        initLbl();
-        initWebsocketMQTT();
-        getNumCapteurs();
-        $('#btnVal').on('click', insererDataTest); // handler bouton ajouter valeurs
+// --------------------------------------------
+// --------  DEBUT programme principal  -------
+// --------------------------------------------
+    initLbl();
+    initWebsocketMQTT();
+    getNumCapteurs();
+    $('#btnVal').on('click', insererDataTest); // handler bouton ajouter valeurs
+// --------------------------------------------
+// --------   FIN programme principal  --------
+// --------------------------------------------
 
-    } catch (error)
-    {
-        console.log(error);
-    }
 
 
 
@@ -177,21 +176,22 @@
         if (graph_created === false)
         {
             url = site + 'vibration/index.php/REST/moteur';
-            console.log('getNumCapteurs - début'),
-                    $.ajax({
-                        type: "GET",
-                        url: url,
-                        dataType: "json",
-                        success: function (result)
-                        {
+            console.log('getNumCapteurs - début');
 
-                            nbCapteurs = result.length;
-                            console.log('getNumCapteurs - succes, ' + nbCapteurs + ' capteurs détecté(s)');
-                            // setInterval(rafraichirGraphiques, 1000);  // Rafraichir les graphiques toutes les secondes
-                            setInterval(insererDataTest, 1000);
-                            creerGraph(nbCapteurs);                   // Creer une div pour chaque capteur
-                        }
-                    });
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json",
+                success: function (result)
+                {
+
+                    nbCapteurs = result.length;
+                    console.log('getNumCapteurs - succes, ' + nbCapteurs + ' capteurs détecté(s)');
+                    // setInterval(rafraichirGraphiques, 1000);  // Rafraichir les graphiques toutes les secondes
+                    setInterval(insererDataTest, 1000);
+                    creerGraph(nbCapteurs);                   // Creer une div pour chaque capteur
+                }
+            });
         }
     }
 
@@ -322,6 +322,10 @@
 
 
 
+    // --------------------------------------------
+    // --------  FONCTIONS POUR LES TESTS  -------- 
+    // --------------------------------------------
+
     function insererDataTest()
     {
         if (seuil_added === true)
@@ -341,12 +345,13 @@
             }
 
         }
-
-
-
-        function nbreRandom()
-        {
-            return (Math.random() * (0.80 - 0.0) + 0.0).toFixed(2);
-        }
     }
+
+
+
+    function nbreRandom()
+    {
+        return (Math.random() * (0.80 - 0.0) + 0.0).toFixed(2);
+    }
+
 })(jQuery);
