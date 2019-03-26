@@ -1,4 +1,3 @@
-// ------------------------------ GRAPHIQUES -----------------------------------
 (function ($)
 {
     const site = $('#base').val(); // Adresse du site pour le service REST 

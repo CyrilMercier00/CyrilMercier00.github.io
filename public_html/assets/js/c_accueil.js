@@ -5,32 +5,21 @@
     var listeCreated = false;          // verifie si la liste des machines a été crée
 
     // --- Code Appli principal --- 
-    try
-    {
-        creerListeMachines();
+    try {
+        getAllMachines();
 
-    } catch (error)
+    } catch (error) 
     {
         console.log(error);
     }
-
-
-
-
-
-    function creerListeMachines()
-    {
-        getAllMachines();
-    }
-
-
+// --- Fin code principal --- 
 
 
 
     function getAllMachines()
     {
         console.log("getAllMachines - début");
-        url = site + '/vibration/index.php/REST/machine';
+        url = site_url + '/REST/machine';
 
         if (listeCreated === false)
         {

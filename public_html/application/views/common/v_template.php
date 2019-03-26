@@ -41,7 +41,9 @@
     </head>
 
     <body class="animsition">
-        <input type="hidden" id="base" value="<?php echo site_url(); ?>">  <!-- necessaire pour le javascript. passe l'adresse site_url -->
+        <!-- Passe l'adresse du site au js -->
+        <input type="hidden" id="url_js" value="<?php echo site_url(); ?>">
+        
         <div class="page-wrapper">
 
             <!-- MENU SIDEBAR-->
@@ -60,10 +62,13 @@
                             </li>
 
                             <?php
-                            // Si l'utilisateur ce trouve sur la page machine activer la redirection
-                            if (isset($data['numMachine'])) {
+
+                            /* Si l'utilisateur se trouve sur la page machine,
+                               activer la redirection vers l'historique */
+                            if (isset($data['numMachine']))
+                            {
                                 echo '<li>';
-                                echo '<a href="' . site_url() . '/c_historique/' . $data['numMachine'] . '">';
+                                echo '<a href="' . site_url() . '/c_historique/' . (int)$data['numMachine'].'">';
                                 echo '<i class="fas fa-clock"></i>Historique</a>';
                                 echo '</li>';
                             }
@@ -97,7 +102,7 @@
                 <!-- MAIN CONTENT-->
                 <div class="main-content">        
                     <div class="section__content section__content--p30">
-                        <?php echo $data['page']; ?>
+                        <?php echo $data['page'];?>
                     </div>
                 </div>
                 <!-- END MAIN CONTENT-->

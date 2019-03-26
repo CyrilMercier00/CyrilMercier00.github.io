@@ -53,6 +53,6 @@ $route['default_controller'] = 'c_accueil';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;
 
-$route['REST/([a-zA-Z0-9]+)/(\d+)'] = "REST/$1/index/$2";
-$route['c_machine/(\d+)'] = "c_machine/index/$1";
-$route['c_historique/(\d+)'] = "c_historique/index/$1";
+$route['REST/([a-zA-Z0-9]+)/(\d+)'] = "REST/$1/index/$2";   // Pour le service REST
+$route['c_machine/(\d+)'] = "c_machine/index/$1";           // Pour l'affichage des machines
+$route['c_historique/(\d+)'] = "c_historique/index/$1";        // Pour l'affichage de l'historique

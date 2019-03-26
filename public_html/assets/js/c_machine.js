@@ -8,12 +8,14 @@
     var graph_created = false;           // Verifie si les graphiques sont initialisés
     var seuil_added = false;             // Verifie si les seuils ont bien été recupérés
     var nbCapteurs = 0;                  // Nombre max de capteurs
+    var i = 0;                           // Compteur
+    const valVibrationsMax = 6;          // Valeur maxmimale de vibrations. Determine la hauteur max du graphique
 
     //Heure pour le label
     var date = new Date();
     var dataHeures = [];
 
-    // Code html a inserer pour creer un graphique, separé en deux pour pouvoir inserer l'id du graphique
+    // Code html a inserer pour créer un graphique, separé pouvoir inserer des données
     var code_html1 = "<div class='col-lg-8'> \n\
     <div class='au-card recent-report'> \n\
     <div class='au-card-inner'> \n\
@@ -203,8 +205,8 @@
         console.log("GRAPH - " + prmNbCapteurs + " capteurs");
         for (i = 0; i < prmNbCapteurs; i++)
         {
-            $("#divGraph").append(code_html1 + (i + 1).toString() + code_html2 + i + code_html3);     // Le code html est separé en deux partie, le i correspond a l'id du graphique 
-            var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div 
+            $("#divGraph").append(code_html1 + (i + 1).toString() + code_html2 + i + code_html3);     // Le code html est separé en deux partie, le i correspond a l'id du graphique
+            var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div
             if (ctx)
             {
                 console.log("GRAPH - Canvas détectté pour le graphique " + i);
@@ -259,7 +261,7 @@
             port = 9001;
             idClient = "clientjs";
 
-            // Création du client MQTT 
+            // Création du client MQTT
             console.log(client = new Paho.MQTT.Client(host, port, idClient));
 
             // Definir les handlers a utiliser
