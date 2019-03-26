@@ -9,7 +9,7 @@ Class c_historique extends CI_Controller {
         $this->load->library('form_validation');
     }
 
-    public function index($prmNumMachine) {
+    public function index() {
 
         $page = $this->load->view('v_historique','', true);
         

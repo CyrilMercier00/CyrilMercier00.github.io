@@ -1,6 +1,6 @@
 (function ($)
 {
-    const site = $('#base').val();       // Adresse du site pour le service REST
+    const site = $('#url_js').val();       // Adresse du site pour le service REST
     const valVibrationsMax = 6;          // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
 
     var arrayChart = [];                 // Array contenant les graphiques crées 
@@ -8,8 +8,6 @@
     var graph_created = false;           // Verifie si les graphiques sont initialisés
     var seuil_added = false;             // Verifie si les seuils ont bien été recupérés
     var nbCapteurs = 0;                  // Nombre max de capteurs
-    var i = 0;                           // Compteur
-    const valVibrationsMax = 6;          // Valeur maxmimale de vibrations. Determine la hauteur max du graphique
 
     //Heure pour le label
     var date = new Date();
@@ -31,18 +29,15 @@
     </div> \n\
     </div>";
 
-    // Couleurs utilisées dans les grapgiques
     const ln_blue = 'rgba(80, 140, 200, 1)';
     const ln_vert = 'rgba(140, 210, 65, 1)';
     const ln_jaune = 'rgba(220, 220, 60, 1)';
     const ln_orange = 'rgba(255, 160 55, 1)';
     const ln_rouge = 'rgba(250, 66, 81, 1)';
-
     const bg_vert = 'rgba(140, 210, 65, 0.82)';
     const bg_jaune = 'rgba(220, 220, 60, 0.82)';
     const bg_orange = 'rgba(255, 160, 55, 0.82)';
     const bg_rouge = 'rgba(250, 66, 81, 0.82)';
-
     const transparent = 'transparent';
 
     // --- Début fichier config du graphiqe  ---
@@ -148,13 +143,12 @@
                     backgroundColor: '#333'
                 }
             },
-
             tooltips: {
                 mode: 'y'
             }
         }
     };
-    // --- Fin fichier config du graphiqe  ---
+// --- Fin fichier config du graphiqe  ---
 
 
 
@@ -164,7 +158,6 @@
     initLbl();
     initWebsocketMQTT();
     getNumCapteurs();
-    $('#btnVal').on('click', insererDataTest); // handler bouton ajouter valeurs
 // --------------------------------------------
 // --------   FIN programme principal  --------
 // --------------------------------------------
@@ -177,7 +170,7 @@
         // Recuperer le nombre de capteurs a afficher
         if (graph_created === false)
         {
-            url = site + 'vibration/index.php/REST/moteur';
+            url = site + '/REST/moteur';
             console.log('getNumCapteurs - début');
 
             $.ajax({
@@ -186,12 +179,9 @@
                 dataType: "json",
                 success: function (result)
                 {
-
                     nbCapteurs = result.length;
-                    console.log('getNumCapteurs - succes, ' + nbCapteurs + ' capteurs détecté(s)');
-                    // setInterval(rafraichirGraphiques, 1000);  // Rafraichir les graphiques toutes les secondes
-                    setInterval(insererDataTest, 1000);
-                    creerGraph(nbCapteurs);                   // Creer une div pour chaque capteur
+                    setInterval(insererDataTest, 1000); // Rafeaichir les données du graphique        
+                    creerGraph(nbCapteurs);             // Creer une div pour chaque capteur
                 }
             });
         }
@@ -199,30 +189,28 @@
 
 
 
+    // Créer les graphiques danns la page
     function creerGraph(prmNbCapteurs)
     {
-        console.log("GRAPH - début");
-        console.log("GRAPH - " + prmNbCapteurs + " capteurs");
         for (i = 0; i < prmNbCapteurs; i++)
         {
-            $("#divGraph").append(code_html1 + (i + 1).toString() + code_html2 + i + code_html3);     // Le code html est separé en deux partie, le i correspond a l'id du graphique
+            $("#divGraph").append(code_html1 + (i + 1).toString() + code_html2 + i + code_html3);
+
             var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div
             if (ctx)
             {
-                console.log("GRAPH - Canvas détectté pour le graphique " + i);
                 ctx.height = 230;
                 arrayChart.push(new Chart(ctx, config));
             }
         }
         getValSeuil();
         graph_created = true;                     // Pour ne pas recreer les div en boucle
-        console.log("GRAPH - fait");
     }
 
 
     function getValSeuil()
     {
-        url = site + 'vibration/index.php/REST/norme/1';
+        url = site + '/REST/norme/1';
         console.log('getValSeuil - début');
 
         $.ajax({

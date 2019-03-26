@@ -1,7 +1,7 @@
 // ------------------------------ GRAPHIQUES -----------------------------------
 (function ($)
 {   
-    const site = $('#base').val();
+    const site = $('#url_js').val();
     var listeCreated = false;          // verifie si la liste des machines a été crée
 
     // --- Code Appli principal --- 
@@ -19,7 +19,7 @@
     function getAllMachines()
     {
         console.log("getAllMachines - début");
-        url = site_url + '/REST/machine';
+        url = site + '/REST/machine';
 
         if (listeCreated === false)
         {
@@ -32,7 +32,7 @@
                     console.log("getAllMachines - succes");
                     for (i = 0; i < result.length; i++)  // pour toute les données recupérées
                     {
-                        $('#liste_machines').append("<li> <a href=" + site_url + "/c_machine/" + i + " class\"list-group-item group-item-action\"> Machine: " + result[i]['nom'] + "</a> </li>");
+                        $('#liste_machines').append("<li> <a href=" + site + "/c_machine/" + i + " class\"list-group-item group-item-action\"> Machine: " + result[i]['nom'] + "</a> </li>");
                     }
                     listeCreated = true;
                 }

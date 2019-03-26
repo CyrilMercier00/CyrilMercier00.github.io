@@ -1,14 +1,14 @@
 (function ($)
 {
-    const site = $('#base').val(); // Adresse du site pour le service REST 
+    const site = $('#url_js').val();       // Adresse du site
+    const base = $('#url2_js').val();       // Adresse du site sans index
     const valVibrationsMax = 6;          // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
-
 
     var arrayChart = [];                 // Array contenant les graphiques crées 
     var seuil = [];                      // Array contenant les seuils récupérés 
     var graph_created = false;           // Verifie si les graphiques sont initialisés
     var seuil_added = false;             // Verifie si les seuils ont bien été recupérés
-    var nbCapteurs = 0;                  // Nombre max de capteurs
+    var numMachine = window.location.pathname.split("/").pop(); // Extraire le numero de la machine depui l'url
 
     // Code html a inserer pour creer un graphique, separé en deux pour pouvoir inserer l'id du graphique
     var code_html1 = "<div class='col-lg-8'> \n\
@@ -155,11 +155,6 @@
     };
     // --- Fin fichier config du graphiqe  ---
 
-    // Extraire le parametre de l'url
-    query = window.location.toString();
-    query = query.split("/");
-    query = query.pop();
-
 
 
 // --------------------------------------------
@@ -178,7 +173,7 @@
     // ------ Recupere les capteurs ------
     function getCapteurs() {
         if (graph_created === false) {
-            url = site + "/REST/capteur/" + query;
+            url = site + "/REST/capteur/" + numMachine;
 
             $.ajax({
                 type: "GET",
@@ -186,34 +181,24 @@
                 dataType: "json",
                 success: function (result)
                 {
-                    for (i = 0; i < result.length; i++)
-                    {
-                        $("#divGraph").append(code_html1 + (i + 1).toString() + code_html2 + i + code_html3);
-                        var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div 
-                        if (ctx)
+                    if (result.length > 0) {
+                        for (i = 0; i < result.length; i++)
                         {
-                            console.log("GRAPH - Canvas détectté pour le graphique " + i);
-                            ctx.height = 230;
-                            arrayChart.push(new Chart(ctx, config));
+                            $("#divGraph").append(code_html1 + (i + 1).toString() + code_html2 + i + code_html3);
+                            var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div 
+                            if (ctx)
+                            {
+                                ctx.height = 230;
+                                arrayChart.push(new Chart(ctx, config));
+                            }
                         }
+                        getValSeuil();
+                    } else {
+                        $("#divGraph").append('<img src="'+base+'/assets/images/icon/sad-512.png" class="img-fluid mx-auto d-block">');
                     }
-                    console.log('getCapteur OK');
                 }
             });
         }
-    }
-
-
-
-    // ------ Creer et afficher les graphs ------
-    function creerGraph(prmNbCapteurs)
-    {
-
-        console.log("GRAPH - début");
-
-        getValSeuil();
-        graph_created = true;
-        console.log("GRAPH - fait");
     }
 
 
@@ -230,7 +215,6 @@
         }
         // Heure actuelle +1
         dataHeures.push(date.getHours() + 1 + 'h');
-        console.log('label OK');
     }
 
 
@@ -241,7 +225,6 @@
         if (seuil_added !== true)
         {
             url = site + '/REST/norme/1';
-            console.log(url);
 
             $.ajax({
                 type: "GET",
@@ -257,7 +240,6 @@
                 }
             });
         }
-        console.log('seuil OK');
     }
 
 
