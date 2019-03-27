@@ -1,16 +1,19 @@
 (function ($)
 {
-    const site = $('#url_js').val();       // Adresse du site
-    const base = $('#url2_js').val();       // Adresse du site sans index
-    const valVibrationsMax = 6;          // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
+    const site = $('#url_js').val();     // Adresse du site
+    const base = $('#url2_js').val();    // Adresse du site sans index
+    const valVibrationsMax = 6;          // Hauteur du graphique
 
     var arrayChart = [];                 // Array contenant les graphiques crées 
     var seuil = [];                      // Array contenant les seuils récupérés 
     var graph_created = false;           // Verifie si les graphiques sont initialisés
     var seuil_added = false;             // Verifie si les seuils ont bien été recupérés
+    var data_added = false;              // Verifie si les données ont été récupérés
+    var nbCapteurs;                     // Nombre de capteurs pour la machine
+
     var numMachine = window.location.pathname.split("/").pop(); // Extraire le numero de la machine depui l'url
 
-    // Code html a inserer pour creer un graphique, separé en deux pour pouvoir inserer l'id du graphique
+    // Code html pour creer un graphique. 
     var code_html1 = "<div class='col-lg-8'> \n\
     <div class='au-card recent-report'> \n\
     <div class='au-card-inner'> \n\
@@ -162,7 +165,7 @@
 // --------------------------------------------
     initLbl();
     getCapteurs();
-    setInterval(insererDataTest, 1000);
+    //setInterval(insererDataTest, 1000);
 // --------------------------------------------
 // --------   FIN programme principal  --------
 // --------------------------------------------
@@ -170,7 +173,7 @@
 
 
 
-    // ------ Recupere les capteurs ------
+    // ------ Recuperer les capteurs ------
     function getCapteurs() {
         if (graph_created === false) {
             url = site + "/REST/capteur/" + numMachine;
@@ -182,10 +185,11 @@
                 success: function (result)
                 {
                     if (result.length > 0) {
-                        for (i = 0; i < result.length; i++)
+                        nbCapteurs = result.length;
+                        for (i = 0; i < nbCapteurs; i++)
                         {
                             $("#divGraph").append(code_html1 + (i + 1).toString() + code_html2 + i + code_html3);
-                            var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div 
+                            var ctx = document.getElementById("graphCapteur" + [i]);
                             if (ctx)
                             {
                                 ctx.height = 230;
@@ -194,28 +198,20 @@
                         }
                         getValSeuil();
                     } else {
-                        $("#divGraph").append('<img src="'+base+'/assets/images/icon/sad-512.png" class="img-fluid mx-auto d-block">');
+                        // Afficher un message si il n'y a aucun capteur
+                        $("#divGraph").append('<figure> \n\
+                        <img src="' + base + '/assets/images/icon/sad-512.png" class="img-fluid mx-auto d-block" alt=":("> \n\
+                        <figcaption> <br> Il n\'y a aucun capteur pour cette machine. </figcaption> \n\
+                        </figure> ');
+
+                        $("#divGraph").css("margin-top", "5%");
                     }
+                    getData();
                 }
             });
         }
     }
-
-
-
-    // ------ Ajouter les labels ------
-    function initLbl()
-    {
-        // Heure actuelle
-        dataHeures.push(date.getHours() + 'h');
-        // 60 minutes
-        for (i = 0; i < 60; i++)
-        {
-            dataHeures.push('');
-        }
-        // Heure actuelle +1
-        dataHeures.push(date.getHours() + 1 + 'h');
-    }
+    // -------------------------------------------
 
 
 
@@ -241,6 +237,89 @@
             });
         }
     }
+    // --------------------------------------------
+
+
+
+    // ------ Recuperer les valeurs des capteurs------
+    function getData() {
+        if (data_added === false)
+        {
+            url = site + '/REST/vibration/' + numMachine;
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json",
+                success: function (result)
+                {
+                    for (j = 0; j < result.length; j++)
+                    {
+                        
+                        // Ajouter valeur
+                        arrayChart[j].data.datasets[0].data.push(result[j]['valeur']);
+console.log(seuil[1]);
+                        // Ajouter seuil
+                        arrayChart[j].data.datasets[1].data.push(seuil[0]);
+                        arrayChart[j].data.datasets[2].data.push(seuil[1]);
+                        arrayChart[j].data.datasets[3].data.push(seuil[2]);
+                        arrayChart[j].data.datasets[4].data.push(seuil[3]);
+                    }
+
+                    for (j = 0; j < arrayChart.length; j++)
+                    {
+                        arrayChart[j].update();       // Mise a jour de donnéess
+                    }
+
+                    data_added = true;
+                }
+            });
+        }
+    }
+    // ----------------------------------------------
+
+
+
+    // ------ Ajouter les labels ------
+    function initLbl()
+    {
+        // Heure actuelle
+        dataHeures.push(date.getHours() + 'h');
+        // 60 minutes
+        for (i = 0; i < 60; i++)
+        {
+            dataHeures.push('');
+        }
+        // Heure actuelle +1
+        dataHeures.push(date.getHours() + 1 + 'h');
+        setInterval(updateLbl, 3000);
+    }
+    // --------------------------------
+
+
+
+    // ------  Mise a jour des valeurs du label ------ 
+    function updateLbl()
+    {
+        // Verifier si il faut rajouter des minutes
+        if (arrayChart[0].data.labels.last < date.getHours())
+        {
+            console.log("if");
+
+            // Enlever la derniere heure
+            for (i = 0; i < 59; i++)
+            {
+                arrayChart[i].data.labels.slice();
+            }
+            // Ajouter une heure
+            for (i = 0; i < 59; i++)
+            {
+                arrayChart[i].data.labels.push('');
+            }
+        }
+    }
+    // ------------------------------------------------ 
+
+
 
 
 
@@ -275,4 +354,5 @@
     {
         return (Math.random() * (0.80 - 0.0) + 0.0).toFixed(2);
     }
+    
 })(jQuery);

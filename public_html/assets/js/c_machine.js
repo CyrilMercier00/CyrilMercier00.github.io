@@ -1,7 +1,7 @@
 (function ($)
 {
-    const site = $('#url_js').val();       // Adresse du site pour le service REST
-    const valVibrationsMax = 6;          // Valeur maxmimale de vibratios. Determine la hauteur max du graphique
+    const site = $('#url_js').val();     // Adresse du site pour le service REST
+    const valVibrationsMax = 6;          // Hauteur du graphiqie
 
     var arrayChart = [];                 // Array contenant les graphiques crées 
     var seuil = [];                      // Array contenant les seuils récupérés 
@@ -29,6 +29,7 @@
     </div> \n\
     </div>";
 
+    // Couleur sutilisées dans le graphique
     const ln_blue = 'rgba(80, 140, 200, 1)';
     const ln_vert = 'rgba(140, 210, 65, 1)';
     const ln_jaune = 'rgba(220, 220, 60, 1)';
@@ -40,7 +41,7 @@
     const bg_rouge = 'rgba(250, 66, 81, 0.82)';
     const transparent = 'transparent';
 
-    // --- Début fichier config du graphiqe  ---
+// --- Début fichier config du graphiqe  ---
     config = {
         type: 'line',
         data: {
@@ -164,10 +165,10 @@
 
 
 
-
+    // ------  Recuperer le nombre de capteurs a afficher ------ 
     function getNumCapteurs()
     {
-        // Recuperer le nombre de capteurs a afficher
+
         if (graph_created === false)
         {
             url = site + '/REST/moteur';
@@ -189,7 +190,7 @@
 
 
 
-    // Créer les graphiques danns la page
+    // ------  Créer les graphiques danns la page ------ 
     function creerGraph(prmNbCapteurs)
     {
         for (i = 0; i < prmNbCapteurs; i++)
@@ -208,10 +209,11 @@
     }
 
 
+
+    // ------ Recupere les valeurs de seuil ------ 
     function getValSeuil()
     {
         url = site + '/REST/norme/1';
-        console.log('getValSeuil - début');
 
         $.ajax({
             type: "GET",
@@ -227,21 +229,49 @@
             }
         });
     }
+    // ------------------------------------------------
 
 
 
+    // ------  Mise a jour des graph avec les valeurs instant ------ 
     function updateGraph(prmJsonDecoded)
     {
         numGraph = prmJsonDecoded['numGraph'];
         valVibration = prmJsonDecoded['valVibration'];
 
-        //arrayChart['numGraph'].data.datasets[0].data.push(valVibration);
+        arrayChart['numGraph'].data.datasets[0].data.push(valVibration);
 
         arrayChart['numGraph'].update();       // Mise a jour de données
     }
+    // ------------------------------------------------ 
 
 
 
+    // ------  Mise a jour des valeurs du label ------ 
+    function updateLbl()
+    {
+        // Verifier si il faut rajouter des minutes
+        if (arrayChart[0].data.labels.last < date.getHours())
+        {
+            console.log("if");
+
+            // Enlever la derniere heure
+            for (i = 0; i < 59; i++)
+            {
+                arrayChart[i].data.labels.slice();
+            }
+            // Ajouter une heure
+            for (i = 0; i < 59; i++)
+            {
+                arrayChart[i].data.labels.push('');
+            }
+        }
+    }
+    // ------------------------------------------------ 
+
+
+
+    // ------  Initialisation de l'ecoute MQTT ------ 
     function initWebsocketMQTT()
     {
         try {
@@ -261,13 +291,12 @@
                 {
                     console.log("MQTT - Client MQTT connecté a l'adresse: '" + client.host + "', port: '" + client.port + " path: " + client.path);
                     client.subscribe("vibration");
-                    message = new Paho.MQTT.Message("AH");
+                    message = new Paho.MQTT.Message("site web connecté");
                     message.destinationName = "vibration";
                     client.send(message);
                     console.log("MQTT - Message '" + message.payloadString + "' envoyé");
                 }
             });
-
 
 
             // Handler connection perdue
@@ -280,13 +309,11 @@
             ;
 
 
-
             // Handler Reception de message
             function onMessageArrived(message)
             {
                 console.log("MQTT - Message reçu: " + message.payloadString);
-                message_decoded = json_decode(message.payloadString);
-                updateGraph(message_decoded);           // Logique pour mettre a jour le graphique
+                updateGraph(message.payloadString);  // Logique pour mettre a jour le graphique
             }
             ;
 
@@ -294,28 +321,34 @@
             console.log("MQTT - Erreur: " + e);
         }
     }
+    // ------------------------------------------------ 
 
 
 
+    // ------  Affichage de l'heure actuelle ------ 
     function initLbl()
     {
         // Heure actuelle
         dataHeures.push(date.getHours() + 'h');
+
         // 60 minutes
-        for (i = 0; i < 60; i++)
+        for (i = 0; i < 59; i++)
         {
             dataHeures.push('');
         }
         // Heure actuelle +1
         dataHeures.push(date.getHours() + 1 + 'h');
+        setInterval(updateLbl, 3000);
     }
+    // --------------------------------------------
+
+
 
 
 
     // --------------------------------------------
     // --------  FONCTIONS POUR LES TESTS  -------- 
     // --------------------------------------------
-
     function insererDataTest()
     {
         if (seuil_added === true)

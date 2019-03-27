@@ -14637,3 +14637,7 @@ section {
 .vue-lists ul, .vue-lists ol {
     padding-left: 30px;
 }
+
+figure figcaption {
+    text-align: center;
+}
