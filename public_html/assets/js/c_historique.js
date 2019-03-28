@@ -252,17 +252,20 @@
                 dataType: "json",
                 success: function (result)
                 {
+                    console.log(result);
                     for (j = 0; j < result.length; j++)
                     {
-                        
-                        // Ajouter valeur
-                        arrayChart[j].data.datasets[0].data.push(result[j]['valeur']);
-console.log(seuil[1]);
-                        // Ajouter seuil
-                        arrayChart[j].data.datasets[1].data.push(seuil[0]);
-                        arrayChart[j].data.datasets[2].data.push(seuil[1]);
-                        arrayChart[j].data.datasets[3].data.push(seuil[2]);
-                        arrayChart[j].data.datasets[4].data.push(seuil[3]);
+                        for (k = 0; k < arrayChart.length; j++)
+                        {
+                            // Ajouter valeur
+                            arrayChart[k].data.datasets[0].data.push(result[j]['valeur']);
+
+                            // Ajouter seuil
+                            arrayChart[k].data.datasets[1].data.push(seuil[0]);
+                            arrayChart[k].data.datasets[2].data.push(seuil[1]);
+                            arrayChart[k].data.datasets[3].data.push(seuil[2]);
+                            arrayChart[k].data.datasets[4].data.push(seuil[3]);
+                        }
                     }
 
                     for (j = 0; j < arrayChart.length; j++)
@@ -354,5 +357,5 @@ console.log(seuil[1]);
     {
         return (Math.random() * (0.80 - 0.0) + 0.0).toFixed(2);
     }
-    
+
 })(jQuery);
