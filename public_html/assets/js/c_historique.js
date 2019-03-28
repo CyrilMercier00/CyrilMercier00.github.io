@@ -252,7 +252,6 @@
                 dataType: "json",
                 success: function (result)
                 {
-                    console.log(result);
                     for (j = 0; j < result.length; j++)
                     {
                         for (k = 0; k < arrayChart.length; j++)
