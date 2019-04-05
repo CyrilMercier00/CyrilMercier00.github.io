@@ -1,12 +1,13 @@
 (function ($)
 {
-    const site = $('#url_js').val(); // Adresse du site
+    const site = $('#url_js').val();  // Adresse du site
     const base = $('#url2_js').val(); // Adresse du site sans index
-    const valVibrationsMax = 6; // Hauteur du graphique
+    const valVibrationsMax = 6;       // Hauteur du graphique
 
-    var arrayChart = []; // Array contenant les graphiques crées 
-    var seuil = []; // Array contenant les seuils récupérés 
-    var moteurs; // Resultat de la requete ajax sur les moteurs
+    var arrayChart = [];   // Array contenant les graphiques crées 
+    var arrayConfig = [];  // Array contenant les config pour les graphiques   
+    var seuil = [];        // Array contenant les seuils récupérés 
+    var moteurs;           // Resultat de la requete ajax sur les moteurs
 
     var numMachine = window.location.pathname.split("/").pop(); // Extraire le numero de la machine depui l'url
 
@@ -15,17 +16,21 @@
     <div class='au-card recent-report'> \n\
     <div class='au-card-inner'> \n\
     <h3 class='title-2'>";
+
     var code_html2 = "</h3> \n\
     <div class='recent-report__chart'> \n\
     <canvas id='graphCapteur";
+
     var code_html3 = "'></canvas> \n\
     </div> \n\
     </div> \n\
     </div> \n\
     </div>";
+
     //Heure pour le label
     var date = new Date();
     var dataHeures = [];
+
     // Couleurs utilisées dans les grapgiques
     const ln_blue = 'rgba(80, 140, 200, 1)';
     const ln_vert = 'rgba(140, 210, 65, 1)';
@@ -37,116 +42,6 @@
     const bg_orange = 'rgba(255, 160, 55, 0.82)';
     const bg_rouge = 'rgba(250, 66, 81, 0.82)';
     const transparent = 'transparent';
-    // --- Début fichier config du graphiqe  ---
-    config = {
-        type: 'line',
-        data: {
-            labels: dataHeures,
-            datasets: [
-                {
-                    label: 'Valeur des vibrations',
-                    backgroundColor: transparent,
-                    borderColor: ln_blue,
-                    pointHoverBackgroundColor: '#fff',
-                    borderWidth: 0,
-                    data: [],
-                    pointBackgroundColor: ln_blue
-                },
-                {
-                    label: 'Seuil A',
-                    backgroundColor: bg_vert,
-                    borderColor: ln_vert,
-                    pointHoverBackgroundColor: transparent,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    data: [],
-                    pointBackgroundColor: transparent,
-                    fill: '+1'
-                },
-                {
-                    label: 'Seuil B',
-                    backgroundColor: bg_jaune,
-                    borderColor: ln_jaune,
-                    pointHoverBackgroundColor: transparent,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    data: [],
-                    pointBackgroundColor: transparent,
-                    fill: '+1'
-                },
-                {
-                    label: 'Seuil C',
-                    backgroundColor: bg_orange,
-                    borderColor: ln_orange,
-                    pointHoverBackgroundColor: transparent,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    data: [],
-                    pointBackgroundColor: transparent,
-                    fill: '+1'
-                },
-                {
-                    label: 'Seuil D',
-                    backgroundColor: bg_rouge,
-                    borderColor: transparent,
-                    pointHoverBackgroundColor: transparent,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    data: [],
-                    pointBackgroundColor: transparent,
-                    fill: 'end'
-                }
-            ]
-
-        },
-        options: {
-            maintainAspectRatio: false,
-            legend: {
-                display: false
-            },
-            responsive: true,
-            scales: {
-                xAxes: [{
-                        gridLines: {
-                            display: false,
-                            drawOnChartArea: true,
-                            color: '#f2f2f2'
-                        },
-                        ticks: {
-                            fontFamily: "Poppins",
-                            fontSize: 11
-                        }
-                    }],
-                yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            maxTicksLimit: 5,
-                            stepSize: 1,
-                            max: valVibrationsMax,
-                            fontFamily: "Poppins",
-                            fontSize: 11
-                        },
-                        gridLines: {
-                            display: false,
-                            color: '#f2f2f2'
-                        }
-                    }]
-            },
-            elements: {
-                point: {
-                    radius: 3,
-                    hoverRadius: 4,
-                    hoverBorderWidth: 3,
-                    backgroundColor: '#333'
-                }
-            },
-            tooltips: {
-                mode: 'y'
-            }
-        }
-    };
-    // --- Fin fichier config du graphiqe  ---
-
 
 
 // --------------------------------------------
@@ -182,7 +77,6 @@
     // ------ Recuperer les capteurs ------
     function getCapteurs()
     {
-
         url = site + "/REST/capteur/" + numMachine;
         $.ajax({
             type: "GET",
@@ -194,14 +88,13 @@
                 {
                     for (i = 0; i < result.length; i++)
                     {
-                        console.log(moteurs);
                         // Creation du graphique
                         $("#divGraph").append(code_html1 + moteurs[i]['fonction'] + code_html2 + i + code_html3);
                         var ctx = document.getElementById("graphCapteur" + [i]);
                         if (ctx)
                         {
                             ctx.height = 230;
-                            arrayChart.push(new Chart(ctx, config));
+                            arrayChart.push(new Chart(ctx, getNewConfig()));
                         }
                     }
                     getValSeuil();
@@ -223,7 +116,6 @@
     // ------ Recuperer les valeurs du seuil ------
     function getValSeuil()
     {
-
         url = site + '/REST/norme/1';
         $.ajax({
             type: "GET",
@@ -236,6 +128,18 @@
                     seuil[i] = result[i]['seuil'];
                 }
 
+                // Afficher les seuils sur tout le graphique
+                for (i = 0; i < arrayConfig.length; i++)    // Pour tous les graph
+                {
+                    for (j = 0; j < arrayConfig[i].data.labels.length; j++) // Pour tout les labels
+                    {
+                        // Ajouter la valeurs du seuil
+                        arrayConfig[i].data.datasets[1].data.push(seuil[0]);
+                        arrayConfig[i].data.datasets[2].data.push(seuil[1]);
+                        arrayConfig[i].data.datasets[3].data.push(seuil[2]);
+                        arrayConfig[i].data.datasets[4].data.push(seuil[3]);
+                    }
+                }
                 getData();
             }
         });
@@ -247,25 +151,42 @@
     // ------ Recuperer les valeurs des capteurs------
     function getData()
     {
-        {
-            url = site + '/REST/vibration/' + numMachine;
-            $.ajax({
-                type: "GET",
-                url: url,
-                dataType: "json",
-                success: function (result)
+        url = site + '/REST/vibration/' + numMachine;
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json",
+            success: function (result)
+            {
+                console.log(result);
+                var indexChart = 0;         // Index du graphique dans l'array
+                var idMoteurMin = parseInt(result[0]['idMoteur']);  // Id du moteur min recupéré
+
+                // Ajouter les données
+                for (i = 0; i < result.length; i++) // Pour tous les resultats
                 {
-
-
-                    // Mettre a jour les grpahiques 
-                    for (i = 0; i < arrayChart.length; i++)
+                    if (idMoteurMin === parseInt(result[i]['idMoteur']))
                     {
-                        arrayChart[i].update(); // Mise a jour de donnéess
-                    }
+                        // Valeurs reçues
+                        arrayConfig[indexChart].data.datasets[0].data.push(result[i]['valeur']);
 
+                    } else {
+                        indexChart = indexChart + 1;
+                        do
+                        {
+                            idMoteurMin = idMoteurMin + 1;
+                        } while (idMoteurMin < result[i]['idMoteur']);
+                    }
                 }
-            });
-        }
+
+                // Mettre a jour les grpahiques 
+                for (i = 0; i < arrayChart.length; i++)
+                {
+                    arrayChart[i].update(); // Mise a jour de donnéess
+                }
+
+            }
+        });
     }
     // ----------------------------------------------
 
@@ -276,11 +197,13 @@
     {
         // Heure actuelle
         dataHeures.push(date.getHours() + 'h');
+
         // 60 minutes
-        for (i = 0; i < 60; i++)
+        for (i = 0; i < 59; i++)
         {
             dataHeures.push('');
         }
+
         // Heure actuelle +1
         dataHeures.push(date.getHours() + 1 + 'h');
         setInterval(updateLbl, 3000);
@@ -295,12 +218,12 @@
         // Verifier si il faut rajouter des minutes
         if (arrayChart[0].data.labels.last < date.getHours())
         {
-            console.log("if");
             // Enlever la derniere heure
             for (i = 0; i < 59; i++)
             {
                 arrayChart[i].data.labels.slice();
             }
+
             // Ajouter une heure
             for (i = 0; i < 59; i++)
             {
@@ -312,35 +235,125 @@
 
 
 
-
-
-    // --------------------------------------------
-    // --------  FONCTIONS POUR LES TESTS  -------- 
-    // --------------------------------------------
-
-    function insererDataTest()
+    // ------ Creer une config pour chaque graph ------
+    function getNewConfig()
     {
-        for (i = 0; i < arrayChart.length; i++)
-        {
-            arrayChart[i].data.datasets[0].data.push(nbreRandom());
-            arrayChart[i].data.datasets[1].data.push(seuil[0]);
-            arrayChart[i].data.datasets[2].data.push(seuil[1]);
-            arrayChart[i].data.datasets[3].data.push(seuil[2]);
-            arrayChart[i].data.datasets[4].data.push(seuil[3]);
-        }
 
-        for (i = 0; i < arrayChart.length; i++)
-        {
-            arrayChart[i].update(); // Mise a jour de donnéess
-        }
+        // --- Début fichier config du graphiqe  ---
+        config = {
+            type: 'line',
+            data: {
+                labels: dataHeures, datasets: [
+                    {
+                        label: 'Valeur des vibrations',
+                        backgroundColor: transparent,
+                        borderColor: ln_blue,
+                        pointHoverBackgroundColor: '#fff',
+                        borderWidth: 0,
+                        data: [],
+                        pointBackgroundColor: ln_blue
+                    },
+                    {
+                        label: 'Seuil A',
+                        backgroundColor: bg_vert,
+                        borderColor: ln_vert,
+                        pointHoverBackgroundColor: transparent,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        data: [],
+                        pointBackgroundColor: transparent,
+                        fill: '+1'
+                    },
+                    {
+                        label: 'Seuil B',
+                        backgroundColor: bg_jaune,
+                        borderColor: ln_jaune,
+                        pointHoverBackgroundColor: transparent,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        data: [],
+                        pointBackgroundColor: transparent,
+                        fill: '+1'
+                    },
+                    {
+                        label: 'Seuil C',
+                        backgroundColor: bg_orange,
+                        borderColor: ln_orange,
+                        pointHoverBackgroundColor: transparent,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        data: [],
+                        pointBackgroundColor: transparent,
+                        fill: '+1'
+                    },
+                    {
+                        label: 'Seuil D',
+                        backgroundColor: bg_rouge,
+                        borderColor: transparent,
+                        pointHoverBackgroundColor: transparent,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        data: [],
+                        pointBackgroundColor: transparent,
+                        fill: 'end'
+                    }
+                ]
 
+            },
+            options: {
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                            gridLines: {
+                                display: false,
+                                drawOnChartArea: true,
+                                color: '#f2f2f2'
+                            },
+                            ticks: {
+                                fontFamily: "Poppins",
+                                fontSize: 11,
+                                beginAtZero: true
+                            }
+                        }],
+                    yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                maxTicksLimit: 5,
+                                stepSize: 1,
+                                max: valVibrationsMax,
+                                fontFamily: "Poppins",
+                                fontSize: 11
+                            },
+                            gridLines: {
+                                display: false,
+                                color: '#f2f2f2'
+                            }
+                        }]
+                },
+                elements: {
+                    point: {
+                        radius: 3,
+                        hoverRadius: 4,
+                        hoverBorderWidth: 3,
+                        backgroundColor: '#333'
+                    }
+                },
+                tooltips: {
+                    mode: 'y'
+                }
+            }
+        };
+        // --- Fin fichier config du graphiqe  ---
+
+        arrayConfig.push(config);
+        return arrayConfig[arrayConfig.length - 1];  // Derniere valeur
     }
+    // ------------------------------------------------ 
 
 
-
-    function nbreRandom()
-    {
-        return (Math.random() * (0.80 - 0.0) + 0.0).toFixed(2);
-    }
 
 })(jQuery);
