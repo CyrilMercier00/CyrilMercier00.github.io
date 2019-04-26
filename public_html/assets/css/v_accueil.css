@@ -72,3 +72,9 @@
     font-size: 22px;
     color: #ccc ; 
 }
+
+
+/* ------ Graphiques ------ */
+#divGraph {
+    padding-bottom: 100px ;
+}

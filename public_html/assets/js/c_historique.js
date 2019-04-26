@@ -47,7 +47,7 @@
 // --------------------------------------------
 // --------  DEBUT programme principal  -------
 // --------------------------------------------
-    initLbl();
+    initTime();
     getMoteur();
 // --------------------------------------------
 // --------   FIN programme principal  --------
@@ -78,6 +78,7 @@
     function getCapteurs()
     {
         url = site + "/REST/capteur/" + numMachine;
+        
         $.ajax({
             type: "GET",
             url: url,
@@ -101,7 +102,7 @@
                 } else {
                     // Afficher un message si il n'y a aucun capteur
                     $("#divGraph").append('<figure> \n\
-                        <img src="' + base + '/assets/images/icon/sad-512.png" class="img-fluid mx-auto d-block" alt=":("> \n\
+                        <img src="' + base + '/assets/images/icon/supersad.png" class="img-fluid mx-auto d-block" alt=":("> \n\
                         <figcaption> <br> Il n\'y a aucun capteur pour cette machine. </figcaption> \n\
                         </figure> ');
                     $("#divGraph").css("margin-top", "5%");
@@ -148,7 +149,7 @@
 
 
 
-    // ------ Recuperer les valeurs des capteurs------
+    // ------ Recuperer les valeurs des vibrations------
     function getData()
     {
         url = site + '/REST/vibration/' + numMachine;
@@ -193,7 +194,7 @@
 
 
     // ------ Ajouter les labels ------
-    function initLbl()
+    function initTime()
     {
         // Heure actuelle
         dataHeures.push(date.getHours() + 'h');

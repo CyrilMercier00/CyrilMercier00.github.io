@@ -1,18 +1,12 @@
 // ------------------------------ GRAPHIQUES -----------------------------------
 (function ($)
-{   
+{
     const site = $('#url_js').val();
     var listeCreated = false;          // verifie si la liste des machines a été crée
 
     // --- Code Appli principal --- 
-    try {
         getAllMachines();
-
-    } catch (error) 
-    {
-        console.log(error);
-    }
-// --- Fin code principal --- 
+    // --- Fin code principal --- 
 
 
 
@@ -27,17 +21,29 @@
                 type: "GET",
                 url: url,
                 dataType: "json",
-                success: function (result)
-                {
-                    console.log("getAllMachines - succes");
-                    for (i = 0; i < result.length; i++)  // pour toute les données recupérées
-                    {
-                        $('#liste_machines').append("<li> <a href=" + site + "/c_machine/" + i + " class\"list-group-item group-item-action\"> Machine: " + result[i]['nom'] + "</a> </li>");
-                    }
-                    listeCreated = true;
-                }
+                success: affichage()
             });
         }
     }
 
+
+
+    function affichage(prmData)
+    {
+        console.log("getAllMachines - succes");
+        for (i = 0; i < prmData.length; i++)  // pour toute les données recupérées
+        {
+            $('#liste_machines').append("<li> <a href=" 
+                    + site 
+                    + "/c_machine/" 
+                    + i 
+                    + " class\"list-group-item group-item-action\"> Machine: " 
+                    + prmData[i]['nom'] 
+                    + "</a> </li>");
+        }
+        listeCreated = true;
+    }
+    
+    
+    
 })(jQuery);

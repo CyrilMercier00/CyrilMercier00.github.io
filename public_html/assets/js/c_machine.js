@@ -156,7 +156,7 @@
 // --------------------------------------------
 // --------  DEBUT programme principal  -------
 // --------------------------------------------
-    initLbl();
+    initTime();
     initWebsocketMQTT();
     getNumCapteurs();
 // --------------------------------------------
@@ -326,7 +326,7 @@
 
 
     // ------  Affichage de l'heure actuelle ------ 
-    function initLbl()
+    function initTime()
     {
         // Heure actuelle
         dataHeures.push(date.getHours() + 'h');

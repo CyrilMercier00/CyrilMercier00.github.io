@@ -16,10 +16,11 @@ class m_vibration extends CI_Model {
 
     public function get_vibration($prmIdMachine) {
         // ---- Selectionner tous les moteurs de la machine ----
-        $result = $this->db->get_where('moteur', array('idMachine' => $prmIdMachine))
+        $result = $this->db
+                ->get_where('moteur', array('idMachine' => $prmIdMachine))
                 ->result_array();
 
-        $i = 0;
+        $i = 0;     // Compter le nombre de moteurs
         foreach ($result as $row) {
             $moteur[$i] = $row['idMoteur'];
             $i++;
@@ -29,10 +30,14 @@ class m_vibration extends CI_Model {
         $this->db->select('valeur, idMoteur')
                 ->where_in('idMoteur', $moteur);
 
-        return $this->db->get('vibration')->result();
+        return $this->db
+                        ->order_by('idMoteur', 'ASC')      // Besoin pour les graph
+                        ->order_by('idVibration', 'ASC')   // Besoin pour les graph
+                        ->get('vibration')->result();
     }
 
     public function get_seuil($prmOrdreSeuil) {
         return $this->db->get_where('vibration.idMoteur', array('ordre' => $prmOrdreSeuil))->result();
     }
+
 }
