@@ -17,6 +17,8 @@
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    
+    opacity: 0.94 ;
 }
 
 
@@ -49,6 +51,7 @@
     display: block;
     color: #808080;
     text-decoration: none;
+    font-color: rgba(0, 0, 0, 0);
 
     -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
     -moz-transition: font-size 0.3s ease, background-color 0.3s ease;

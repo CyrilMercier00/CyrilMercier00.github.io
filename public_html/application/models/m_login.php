@@ -6,7 +6,6 @@ class m_login extends CI_Model {
 
     public function check_pass($data) {
         $valid = false;    // Renvoie true si le login est valide
-
         // Where
         $condition = array(
             'login' => $data['user_name']
@@ -17,11 +16,12 @@ class m_login extends CI_Model {
         $result = $query->result_array();
 
         // Verification du mot de passe
-            if ($row['pass'] == $data['user_password'] > 0) {
+        if (isset($result[0])) {
+            if ($result[0]['pass'] == $data['user_password']) {
                 $valid = true;
             }
-             print_r($row);
-       
+        }
+
         return $valid;
     }
 

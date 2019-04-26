@@ -276,6 +276,8 @@ section {
 /*Page Objects*/
 .page-wrapper {
     overflow: hidden;
+    max-height: 100%;
+    max-width: 100%;
 }
 
 .page-container {
