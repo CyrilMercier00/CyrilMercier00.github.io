@@ -9,7 +9,7 @@
     var seuil = [];        // Array contenant les seuils récupérés 
     var moteurs;           // Resultat de la requete ajax sur les moteurs
 
-    var numMachine = window.location.pathname.split("/").pop(); // Extraire le numero de la machine depui l'url
+    var numMachine = parseInt(window.location.pathname.split("/").pop() +1); // Extraire le numero de la machine depui l'url
 
     // Code html pour creer un graphique. 
     var code_html1 = "<div class='col-lg-8'> \n\
@@ -66,6 +66,7 @@
             success: function (result)
             {
                 moteurs = result;
+                console.log(result);
                 getCapteurs();
             }
         });
@@ -85,6 +86,8 @@
             dataType: "json",
             success: function (result)
             {
+                console.log(url);
+                console.log(result);
                 if (result.length > 0)
                 {
                     for (i = 0; i < result.length; i++)
@@ -129,7 +132,7 @@
                     seuil[i] = result[i]['seuil'];
                 }
 
-                // Afficher les seuils sur tout le graphique
+                // Afficher les seuils sur tous les graphique
                 for (i = 0; i < arrayConfig.length; i++)    // Pour tous les graph
                 {
                     for (j = 0; j < arrayConfig[i].data.labels.length; j++) // Pour tout les labels

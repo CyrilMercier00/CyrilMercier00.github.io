@@ -168,7 +168,6 @@
     // ------  Recuperer le nombre de capteurs a afficher ------ 
     function getNumCapteurs()
     {
-
         if (graph_created === false)
         {
             url = site + '/REST/moteur';
@@ -181,7 +180,7 @@
                 success: function (result)
                 {
                     nbCapteurs = result.length;
-                    setInterval(insererDataTest, 1000); // Rafeaichir les données du graphique        
+                    setInterval(insererDataTest, 1000); // Rafraichir les données du graphique        
                     creerGraph(nbCapteurs);             // Creer une div pour chaque capteur
                 }
             });

@@ -14,14 +14,14 @@
     {
         console.log("getAllMachines - début");
         url = site + '/REST/machine';
-
+        console.log(url);
         if (listeCreated === false)
         {
             $.ajax({
                 type: "GET",
                 url: url,
                 dataType: "json",
-                success: affichage()
+                success: affichage
             });
         }
     }
