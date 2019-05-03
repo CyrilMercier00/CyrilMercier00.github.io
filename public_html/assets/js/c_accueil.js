@@ -12,9 +12,7 @@
 
     function getAllMachines()
     {
-        console.log("getAllMachines - début");
         url = site + '/REST/machine';
-        console.log(url);
         if (listeCreated === false)
         {
             $.ajax({
@@ -30,14 +28,13 @@
 
     function affichage(prmData)
     {
-        console.log("getAllMachines - succes");
         for (i = 0; i < prmData.length; i++)  // pour toute les données recupérées
         {
             $('#liste_machines').append("<li> <a href=" 
                     + site 
                     + "/c_machine/" 
                     + i 
-                    + " class\"list-group-item group-item-action\"> Machine: " 
+                    + " class\"list-group-item group-item-action\">" 
                     + prmData[i]['nom'] 
                     + "</a> </li>");
         }

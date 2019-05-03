@@ -223,7 +223,7 @@
         if (arrayChart[0].data.labels.last < date.getHours())
         {
             // Enlever la derniere heure
-            for (i = 0; i < 59; i++)
+            for (i = 0; i < 60; i++)
             {
                 arrayChart[i].data.labels.slice();
             }
@@ -233,6 +233,7 @@
             {
                 arrayChart[i].data.labels.push('');
             }
+            arrayChart[i].data.labels.push(date.getHours());
         }
     }
     // ------------------------------------------------ 
