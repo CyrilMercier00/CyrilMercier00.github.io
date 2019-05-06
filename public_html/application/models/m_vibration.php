@@ -14,7 +14,7 @@ class m_vibration extends CI_Model {
         return $this->db->insert('vibration', $data);
     }
 
-    public function get_vibration($prmIdMachine) {
+    public function get_vibration($prmIdMachine, $prmDate) {
         // ---- Selectionner tous les moteurs de la machine ----
         $result = $this->db
                 ->get_where('moteur', array('idMachine' => $prmIdMachine))
@@ -26,8 +26,9 @@ class m_vibration extends CI_Model {
             $i++;
         }
 
-        // ---- Selectionner les vibrations pour les moteurs ----
-        $this->db->select('valeur, idMoteur')
+        // ---- Selectionner les vibrations pour les moteurs avec la date ----
+        $this->db->like('date', $prmDate)
+                ->select('valeur, idMoteur, date')
                 ->where_in('idMoteur', $moteur);
 
         return $this->db
