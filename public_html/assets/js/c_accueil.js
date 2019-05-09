@@ -1,20 +1,17 @@
 // ------------------------------ GRAPHIQUES -----------------------------------
-(function ($)
-{
+(function($) {
     const site = $('#url_js').val();
-    var listeCreated = false;          // verifie si la liste des machines a été crée
+    var listeCreated = false; // verifie si la liste des machines a été crée
 
     // --- Code Appli principal --- 
-        getAllMachines();
+    getAllMachines();
     // --- Fin code principal --- 
 
 
 
-    function getAllMachines()
-    {
+    function getAllMachines() {
         url = site + '/REST/machine';
-        if (listeCreated === false)
-        {
+        if (listeCreated === false) {
             $.ajax({
                 type: "GET",
                 url: url,
@@ -26,21 +23,22 @@
 
 
 
-    function affichage(prmData)
-    {
-        for (i = 0; i < prmData.length; i++)  // pour toute les données recupérées
-        {
-            $('#liste_machines').append("<li> <a href=" 
-                    + site 
-                    + "/c_machine/" 
-                    + i 
-                    + " class\"list-group-item group-item-action\">" 
-                    + prmData[i]['nom'] 
-                    + "</a> </li>");
+    function affichage(prmData) {
+        for (i = 0; i < prmData.length; i++) {
+            $('#divmap').append("<a class='tooltip' href='" +
+                site +
+                "/c_machine/" +
+                i +
+                "' id='machine" + i + "'>" +
+                "<span class='tooltiptext'>" +
+                prmData[i]['nom'] +
+                "</span>  </a>"
+            );
         }
         listeCreated = true;
     }
-    
-    
-    
+
+    // "<area shape='rect' coords='0,0,0,0' href='" + site + "/c_machine/" + i + "' alt='test '>"
+
+
 })(jQuery);
