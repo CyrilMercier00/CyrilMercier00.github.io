@@ -1,15 +1,16 @@
 (function ($)
 {
-    const site = $('#url_js').val();  // Adresse du site
+    const site = $('#url_js').val(); // Adresse du site
     const base = $('#url2_js').val(); // Adresse du site sans index
-    const valVibrationsMax = 6;       // Hauteur du graphique
+    const valVibrationsMax = 6; // Hauteur du graphique
 
-    var arrayChart = [];   // Array contenant les graphiques crées 
-    var arrayConfig = [];  // Array contenant les config pour les graphiques   
-    var seuil = [];        // Array contenant les seuils récupérés 
-    var moteurs;           // Resultat de la requete ajax sur les moteurs
+    var arrayChart = []; // Array contenant les graphiques crées 
+    var arrayConfig = []; // Array contenant les config pour les graphiques   
+    var seuil = []; // Array contenant les seuils récupérés 
+    var moteurs; // Resultat de la requete ajax sur les moteurs
+    var nbrCapteurs; // Nombre de capteurs pour la machine
 
-    var numMachine = parseInt(window.location.pathname.split("/").pop() +1); // Extraire le numero de la machine depui l'url
+    var numMachine = parseInt(window.location.pathname.split("/").pop() + 1); // Extraire le numero de la machine depui l'url
 
     // Code html pour creer un graphique. 
     var code_html1 = "<div class='col-lg-8'> \n\
@@ -24,7 +25,10 @@
     var code_html3 = "'></canvas> \n\
     </div> \n\
     </div> \n\
-    </div> \n\
+    <input type='date' id='choixDate";
+
+    var code_html4 = "'> \n\
+    </div>\n\
     </div>";
 
     //Heure pour le label
@@ -42,8 +46,6 @@
     const bg_orange = 'rgba(255, 160, 55, 0.82)';
     const bg_rouge = 'rgba(250, 66, 81, 0.82)';
     const transparent = 'transparent';
-
-
 // --------------------------------------------
 // --------  DEBUT programme principal  -------
 // --------------------------------------------
@@ -66,7 +68,6 @@
             success: function (result)
             {
                 moteurs = result;
-                console.log(result);
                 getCapteurs();
             }
         });
@@ -79,21 +80,19 @@
     function getCapteurs()
     {
         url = site + "/REST/capteur/" + numMachine;
-        
         $.ajax({
             type: "GET",
             url: url,
             dataType: "json",
             success: function (result)
             {
-                console.log(url);
-                console.log(result);
                 if (result.length > 0)
                 {
-                    for (i = 0; i < result.length; i++)
+                    nbrCapteurs = result.length;
+                    for (i = 0; i < nbrCapteurs; i++)
                     {
                         // Creation du graphique
-                        $("#divGraph").append(code_html1 + moteurs[i]['fonction'] + code_html2 + i + code_html3);
+                        $("#divGraph").append(code_html1 + moteurs[i]['fonction'] + code_html2 + i + code_html3 + i + code_html4);
                         var ctx = document.getElementById("graphCapteur" + [i]);
                         if (ctx)
                         {
@@ -144,7 +143,7 @@
                         arrayConfig[i].data.datasets[4].data.push(seuil[3]);
                     }
                 }
-                getData();
+                initCalendrier();
             }
         });
     }
@@ -152,19 +151,35 @@
 
 
 
-    // ------ Recuperer les valeurs des vibrations------
-    function getData()
+    // ------ Initialiser l'input date------
+    function initCalendrier()
     {
-        url = site + '/REST/vibration/' + numMachine;
+        // Initialiser le calendrier
+        for (i = 0; i < nbrCapteurs; i++)
+        {
+            document.getElementById("choixDate" + i).value = date.toISOString().slice(0, 10);
+            $("#choixDate" + i).change(updateData(i));
+        }
+
+        getData();
+    }
+    // ------ Recuperer les valeurs des vibrations------
+
+
+
+    // ------ MAJ des donnes quand changement de date ------
+    function updateData(prmIdGraph)
+    {
+        url = site + '/REST/vibration/' + numMachine + "/" + document.getElementById("choixDate0").value;
+
         $.ajax({
             type: "GET",
             url: url,
             dataType: "json",
             success: function (result)
             {
-                console.log(result);
-                var indexChart = 0;         // Index du graphique dans l'array
-                var idMoteurMin = parseInt(result[0]['idMoteur']);  // Id du moteur min recupéré
+                var indexChart = 0; // Index du graphique dans l'array
+                var idMoteurMin = parseInt(result[0]['idMoteur']); // Id du moteur min recupéré
 
                 // Ajouter les données
                 for (i = 0; i < result.length; i++) // Pour tous les resultats
@@ -173,7 +188,6 @@
                     {
                         // Valeurs reçues
                         arrayConfig[indexChart].data.datasets[0].data.push(result[i]['valeur']);
-
                     } else {
                         indexChart = indexChart + 1;
                         do
@@ -192,6 +206,53 @@
             }
         });
     }
+    // --------------------------------------------------
+
+
+
+    // ------ Recuperer les valeurs des vibrations------
+    function getData()
+    {
+        for (x = 0; x < nbrCapteurs; x++)
+        {
+            console.log("ahhhhhhhh");
+            url = site + '/REST/vibration/' + numMachine + "/" + document.getElementById("choixDate" + x).value;
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json",
+                success: function (result)
+                {
+                    var indexChart = 0; // Index du graphique dans l'array
+                    var idMoteurMin = parseInt(result[0]['idMoteur']); // Id du moteur min recupéré
+
+                    // Ajouter les données
+                    for (i = 0; i < result.length; i++) // Pour tous les resultats
+                    {
+                        if (idMoteurMin === parseInt(result[i]['idMoteur']))
+                        {
+                            // Valeurs reçues
+                            arrayConfig[indexChart].data.datasets[0].data.push(result[i]['valeur']);
+                        } else {
+                            indexChart = indexChart + 1;
+                            do
+                            {
+                                idMoteurMin = idMoteurMin + 1;
+                            } while (idMoteurMin < result[i]['idMoteur']);
+                        }
+                    }
+
+                    // Mettre a jour les grpahiques 
+                    for (i = 0; i < arrayChart.length; i++)
+                    {
+                        arrayChart[i].update(); // Mise a jour de donnéess
+                    }
+
+                }
+            });
+        }
+    }
     // ----------------------------------------------
 
 
@@ -201,7 +262,6 @@
     {
         // Heure actuelle
         dataHeures.push(date.getHours() + 'h');
-
         // 60 minutes
         for (i = 0; i < 59; i++)
         {
@@ -355,7 +415,7 @@
         // --- Fin fichier config du graphiqe  ---
 
         arrayConfig.push(config);
-        return arrayConfig[arrayConfig.length - 1];  // Derniere valeur
+        return arrayConfig[arrayConfig.length - 1]; // Derniere valeur
     }
     // ------------------------------------------------ 
 
