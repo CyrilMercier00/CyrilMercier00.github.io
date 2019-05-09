@@ -145,7 +145,7 @@
         // Initialiser le calendrier
         for (i = 0; i < nbrCapteurs; i++) {
             document.getElementById("choixDate" + i).value = date.toISOString().slice(0, 10);
-            $("#choixDate" + i).change(updateData(i));
+            $("#choixDate" + i).on('change ', updateData(i));
         }
 
         getData();
@@ -153,11 +153,58 @@
     // ------ Recuperer les valeurs des vibrations------
 
 
+    /*
+        // ------ Recuperer les valeurs des vibrations------
+        function getData() {
+            console.log('Get');
+            for (x = 0; x < nbrCapteurs; x++) {
+
+                dates_url = document.getElementById("choixDate0").value.split("-")
+                url = site + '/REST/vibration/' + numMachine + "/" + dates_url[0] + dates_url[1] + dates_url[2];
+                console.log(url);
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    dataType: "json",
+                    success: function(result) {
+                        var indexChart = 0; // Index du graphique dans l'array
+                        var idMoteurMin = parseInt(result[0]['idMoteur']); // Id du moteur min recupéré
+
+                        // Ajouter les données
+                        for (i = 0; i < result.length; i++) // Pour tous les resultats
+                        {
+                            if (idMoteurMin === parseInt(result[i]['idMoteur'])) {
+                                // Valeurs reçues
+                                arrayConfig[indexChart].data.datasets[0].data.push(result[i]['valeur']);
+                            } else {
+                                indexChart = indexChart + 1;
+                                do {
+                                    idMoteurMin = idMoteurMin + 1;
+                                } while (idMoteurMin < result[i]['idMoteur']);
+                            }
+                        }
+
+                        // Mettre a jour les grpahiques 
+                        for (i = 0; i < arrayChart.length; i++) {
+                            arrayChart[i].update(); // Mise a jour de donnéess
+                        }
+
+                    }
+                });
+            }
+        }
+        // ----------------------------------------------
+    */
+
 
     // ------ MAJ des donnes quand changement de date ------
     function updateData(prmIdGraph) {
+        console.log("update");
+
         dates_url = document.getElementById("choixDate0").value.split("-")
         url = site + '/REST/vibration/' + numMachine + "/" + dates_url[0] + dates_url[1] + dates_url[2];
+
         console.log(url);
         $.ajax({
             type: "GET",
@@ -190,47 +237,6 @@
         });
     }
     // --------------------------------------------------
-
-
-
-    // ------ Recuperer les valeurs des vibrations------
-    function getData() {
-        for (x = 0; x < nbrCapteurs; x++) {
-            console.log("ahhhhhhhh");
-            url = site + '/REST/vibration/' + numMachine + "/" + document.getElementById("choixDate" + x).value;
-
-            $.ajax({
-                type: "GET",
-                url: url,
-                dataType: "json",
-                success: function(result) {
-                    var indexChart = 0; // Index du graphique dans l'array
-                    var idMoteurMin = parseInt(result[0]['idMoteur']); // Id du moteur min recupéré
-
-                    // Ajouter les données
-                    for (i = 0; i < result.length; i++) // Pour tous les resultats
-                    {
-                        if (idMoteurMin === parseInt(result[i]['idMoteur'])) {
-                            // Valeurs reçues
-                            arrayConfig[indexChart].data.datasets[0].data.push(result[i]['valeur']);
-                        } else {
-                            indexChart = indexChart + 1;
-                            do {
-                                idMoteurMin = idMoteurMin + 1;
-                            } while (idMoteurMin < result[i]['idMoteur']);
-                        }
-                    }
-
-                    // Mettre a jour les grpahiques 
-                    for (i = 0; i < arrayChart.length; i++) {
-                        arrayChart[i].update(); // Mise a jour de donnéess
-                    }
-
-                }
-            });
-        }
-    }
-    // ----------------------------------------------
 
 
 
