@@ -1,42 +1,58 @@
 /* --- Liste des machines --- */
-
 .container-list {
     background-color: white;
+    
     border-radius: 6px;
-    border-style: solid;
+    border-style: solid ;
     border-width: 2px;
     border-color: rgba(6, 6, 6, 0.4);
-    float: left;
+
+    margin-top: 23%;        /* centrer */
+    margin-left: 30%;
+
+    float:left;
+
     font-family: "Poppins", sans-serif;
     font-weight: 400;
+
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    opacity: 0.94;
+    
+    opacity: 0.94 ;
 }
 
-.list_heading {
-    /* Titre */
+
+
+.list_heading {      /* Titre */
     font-size: 20px;
-    color: #000;
-    text-align: center;
-    border-bottom: 1px solid #000;
+    color: #000 ;
+    text-align: center ;
+
+    border-bottom: 1px solid #000 ;
     margin-bottom: 3px;
-    position: relative;
+    position:relative;
 }
+
+
 
 #liste_machines li {
-    list-style: none;
+    list-style:  none;
+
     font-size: 18px;
     text-decoration: none;
+
     width: 100%;
     border-bottom: 1px solid #ccc;
 }
+
+
 
 #liste_machines li a {
     display: block;
     color: #555;
     text-decoration: none;
     font-color: rgba(0, 0, 0, 0);
+
     -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
     -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
     -o-transition: font-size 0.3s ease, background-color 0.3s ease;
@@ -44,106 +60,21 @@
     transition: font-size 0.3s ease, background-color 0.3s ease;
 }
 
+
+
 #liste_machines li:last-child {
     border: none;
 }
 
+
+
 #liste_machines li a:hover {
     font-size: 22px;
-    color: #ccc;
+    color: #ccc ; 
 }
 
 
 /* ------ Graphiques ------ */
-
 #divGraph {
-    padding-bottom: 100px;
-}
-
-
-/*------ Map ------*/
-
-#divmap {
-    margin-top: 8%;
-    margin-left: 23%;
-}
-
-#divmap img {
-    max-width: 100%;
-    max-height: 100%;
-    z-index: 0;
-}
-
-#divmap a {
-    border: 1px solid #fff;
-    width: 50px;
-    height: 50px;
-    display: block;
-    position: absolute;
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-#divmap a:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-}
-
-#machine0 {
-    position: absolute;
-    left: 100px;
-    top: 100px;
-    z-index: 0;
-}
-
-#machine1 {
-    position: absolute;
-    left: 150px;
-    top: 100px;
-    z-index: 0;
-}
-
-#machine2 {
-    position: absolute;
-    left: 200px;
-    top: 100px;
-    z-index: 0;
-}
-
-
-/* ------ Tooltip------ */
-
-.tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
-    opacity: 1 !important;
-}
-
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    top: 150%;
-    left: 50%;
-    margin-left: -60px;
-}
-
-.tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent black transparent;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
+    padding-bottom: 100px ;
 }

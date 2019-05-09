@@ -3,7 +3,11 @@
     <div class="centrer"></div>
 
     <!-- DEBUT liste de machines -->
-    <div class="col-md-6" id="divmap">
-        <img src="https://i.imgur.com/WpTeCA6.jpg">
+    <div class="container-list col-sm-5" id="divliste">
+        <div class="au-card-inner">
+            <div class="list_heading">Liste des machines</div>
+            <ul class="list-group" id="liste_machines">
+            </ul>
+        </div>
     </div>
     <!--FIN liste des machines -->
