@@ -8,7 +8,7 @@ class vibration extends REST_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('m_vibration');
+        $this->load->model('M_vibration');
     }
 
     public function index_post() {

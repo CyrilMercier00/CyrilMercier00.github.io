@@ -8,7 +8,7 @@ class colonne extends REST_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('m_colonne');
+        $this->load->model('M_colonne');
     }
 
     public function index_get($idMachine) {

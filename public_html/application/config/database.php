@@ -75,11 +75,11 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 
-  $db['default'] = array(
-    'dsn'	=> 'mysql:host=localhost:3306;port=3306;dbname=bddvibration;charset=utf8',
-    'hostname' => 'http://localhost:3306',
-    'username' => 'root',
-    'password' => '',
+$db['default'] = array(
+    'dsn' => 'mysql:host=172.16.129.32;port=3306;dbname=bddvibration;charset=utf8;',
+    'hostname' => 'http://172.16.129.32:3306',
+    'username' => 'respMaint',
+    'password' => 'snir2pjt',
     'database' => 'bddvibration',
     'dbdriver' => 'pdo',
     'dbprefix' => '',
@@ -95,7 +95,7 @@ $query_builder = TRUE;
     'stricton' => FALSE,
     'failover' => array(),
     'save_queries' => TRUE
-  );
+);
 
 
 /*  RASP SNIR 

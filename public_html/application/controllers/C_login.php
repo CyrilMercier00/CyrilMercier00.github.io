@@ -14,7 +14,7 @@ Class C_login extends CI_Controller {
     }
 
     public function check_login() {
-        $this->load->model('m_login');      // Contient les methodes pour la verification du mdp
+        $this->load->model('M_login');      // Contient les methodes pour la verification du mdp
         
         // Nettoyer l'input    
         $this->form_validation->set_rules('username', 'nom d\'utilisateur', 'trim|required');
@@ -22,7 +22,7 @@ Class C_login extends CI_Controller {
 
         if ($this->form_validation->run() == FALSE) {
             // Input invalide
-            $this->load->view('v_login');   
+            $this->load->view('V_login');   
             
         } else {
             // Sauvegarde de l'input
@@ -39,12 +39,12 @@ Class C_login extends CI_Controller {
                     'logged_in' => TRUE,
                 );
                 $this->session->set_userdata($data_session);
-                redirect('c_accueil');
+                redirect('C_accueil');
                 
             } else {
                 // Echec, redirection avec message d'erreur
                 $data['error_message'] = "Nom d'utilisateur ou mot de passe incorrect";
-                $this->load->view('v_login', $data);
+                $this->load->view('V_login', $data);
             }
         }
     }

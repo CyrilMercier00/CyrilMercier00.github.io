@@ -11,12 +11,12 @@ Class C_historique extends CI_Controller {
 
     public function index() {
 
-        $page = $this->load->view('v_historique','', true);
+        $page = $this->load->view('V_historique','', true);
         
         $data = array(
             'page' => $page,
-            'css_location' => 'v_historique.css',
-            'javascript_location' => 'c_historique.js'
+            'css_location' => 'V_historique.css',
+            'javascript_location' => 'C_historique.js'
         );
         
         $this->load->view('common/v_template', array('data' => $data), false);

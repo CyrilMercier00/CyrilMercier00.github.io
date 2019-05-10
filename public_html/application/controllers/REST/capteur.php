@@ -8,7 +8,7 @@ class capteur extends REST_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('m_capteur');
+        $this->load->model('M_capteur');
     }
 
     // Ajouter un capteur

@@ -8,7 +8,7 @@ class moteur extends REST_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('m_moteur');
+        $this->load->model('M_moteur');
     }
 
     public function index_get() {
