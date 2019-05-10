@@ -48,7 +48,6 @@
     // --------------------------------------------
     // --------  DEBUT programme principal  -------
     // --------------------------------------------
-    initTime();
     getMoteur();
     // --------------------------------------------
     // --------   FIN programme principal  --------
@@ -75,24 +74,32 @@
 
     // ------ Recuperer les capteurs ------
     function getCapteurs() {
+
         url = site_url + "/REST/capteur/" + numMachine;
+
         $.ajax({
             type: "GET",
             url: url,
             dataType: "json",
             success: function (result) {
                 if (result.length > 0) {
+
+                    initTime();
                     nbrCapteurs = result.length;
+
                     for (i = 0; i < nbrCapteurs; i++) {
                         // Creation du graphique
                         $("#divGraph").append(code_html1 + moteurs[i]['fonction'] + code_html2 + i + code_html3 + i + code_html4);
                         var ctx = document.getElementById("graphCapteur" + [i]);
+
                         if (ctx) {
                             ctx.height = 230;
                             arrayChart.push(new Chart(ctx, getNewConfig()));
                         }
                     }
+
                     getValSeuil();
+
                 } else {
                     // Afficher un message si il n'y a aucun capteur
                     $("#divGraph").append('<figure> \n\
@@ -101,6 +108,7 @@
                         </figure> ');
                     $("#divGraph").css("margin-top", "5%");
                 }
+
             }
         });
     }
@@ -110,7 +118,9 @@
 
     // ------ Recuperer les valeurs du seuil ------
     function getValSeuil() {
+
         url = site_url + '/REST/norme/1';
+
         $.ajax({
             type: "GET",
             url: url,
@@ -209,7 +219,9 @@
             url: url,
             dataType: "json",
             success: function (result) {
+
                 if (result.length > 1) {
+
                     console.log("resultat");
                     var indexChart = 0; // Index du graphique dans l'array
                     var idMoteurMin = parseInt(result[0]['idMoteur']); // Id du moteur min recupéré
@@ -227,6 +239,7 @@
                             } while (idMoteurMin < result[i]['idMoteur']);
                         }
                     }
+
                 } else {
                     console.log("noresult");
                 }
@@ -261,38 +274,20 @@
 
     // ------ Ajouter les labels ------
     function initTime() {
-        // Heure actuelle
-        dataHeures.push(date.getHours() + 'h');
-        // 60 minutes
-        for (i = 0; i < 59; i++) {
-            dataHeures.push('');
-        }
 
-        // Heure actuelle +1
-        dataHeures.push(date.getHours() + 1 + 'h');
-        setInterval(updateLbl, 3000);
+        for (j = 0; j < 24; j++)
+        {
+
+            dataHeures.push(("0" + j).slice(-2) + 'h');
+
+            // 60 minutes
+            for (i = 0; i < 59; i++) {
+                dataHeures.push('');
+            }
+        }
     }
     // --------------------------------
 
-
-
-    // ------  Mise a jour des valeurs du label ------ 
-    function updateLbl() {
-        // Verifier si il faut rajouter des minutes
-        if (arrayChart[0].data.labels.last < date.getHours()) {
-            // Enlever la derniere heure
-            for (i = 0; i < 60; i++) {
-                arrayChart[i].data.labels.slice();
-            }
-
-            // Ajouter une heure
-            for (i = 0; i < 59; i++) {
-                arrayChart[i].data.labels.push('');
-            }
-            arrayChart[i].data.labels.push(date.getHours());
-        }
-    }
-    // ------------------------------------------------ 
 
 
 
@@ -363,7 +358,7 @@
             options: {
                 maintainAspectRatio: false,
                 legend: {
-                    display: false
+                    display: true
                 },
                 responsive: true,
                 scales: {
@@ -376,6 +371,7 @@
                             ticks: {
                                 fontFamily: "Poppins",
                                 fontSize: 11,
+                                autoSkip: false,
                                 beginAtZero: true
                             }
                         }],
@@ -384,6 +380,7 @@
                                 beginAtZero: true,
                                 maxTicksLimit: 5,
                                 stepSize: 1,
+                                autoSkip: false,
                                 max: valVibrationsMax,
                                 fontFamily: "Poppins",
                                 fontSize: 11
