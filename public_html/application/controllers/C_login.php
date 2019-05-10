@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-Class c_login extends CI_Controller {
+Class C_login extends CI_Controller {
 
     public function __construct() {
         parent::__construct();

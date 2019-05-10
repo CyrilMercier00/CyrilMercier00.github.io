@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-Class c_historique extends CI_Controller {
+Class C_historique extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
