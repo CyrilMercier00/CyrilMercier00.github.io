@@ -18,7 +18,7 @@ class c_user extends CI_Controller {
 
     public function logout() {
         $this->session->sess_destroy();
-        redirect('c_login');
+        redirect('C_login');
     }
 
 }

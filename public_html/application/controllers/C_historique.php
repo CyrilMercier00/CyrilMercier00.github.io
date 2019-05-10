@@ -10,16 +10,19 @@ Class C_historique extends CI_Controller {
     }
 
     public function index() {
+        if (($this->session->userdata('logged_in') == true)) {
 
-        $page = $this->load->view('V_historique','', true);
-        
-        $data = array(
-            'page' => $page,
-            'css_location' => 'V_historique.css',
-            'javascript_location' => 'C_historique.js'
-        );
-        
-        $this->load->view('common/v_template', array('data' => $data), false);
+            $page = $this->load->view('V_historique', '', true);
+
+            $data = array(
+                'page' => $page,
+                'css_location' => 'V_historique.css',
+                'javascript_location' => 'C_historique.js'
+            );
+
+            $this->load->view('common/v_template', array('data' => $data), false);
+        } else {
+            redirect('C_login');
+        }
     }
-
 }

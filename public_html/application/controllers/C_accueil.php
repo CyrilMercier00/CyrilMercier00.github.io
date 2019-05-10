@@ -22,7 +22,7 @@ class C_accueil extends CI_Controller {
             
             $this->load->view('common/v_template', array('data' => $data), false);
         } else {
-            redirect('c_login');
+            redirect('C_login');
         }
     }
 

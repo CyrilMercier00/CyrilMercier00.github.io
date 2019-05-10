@@ -13,7 +13,7 @@ class norme extends REST_Controller {
 
     // Recuperer les capteur & colonnes en rapport avec l'id moteur
     public function index_get($idOrdre) {
-        $this->response($this->m_norme->get_seuil($idOrdre));
+        $this->response($this->M_norme->get_seuil($idOrdre));
     }
    
 }

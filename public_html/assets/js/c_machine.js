@@ -8,7 +8,8 @@
     var graph_created = false;           // Verifie si les graphiques sont initialisés
     var seuil_added = false;             // Verifie si les seuils ont bien été recupérés
     var nbCapteurs = 0;                  // Nombre max de capteurs
-
+    var numMachine = parseInt(window.location.pathname.split("/").pop()) +1; // Extraire le numero de la machine depui l'url
+    
     //Heure pour le label
     var date = new Date();
     var dataHeures = [];
@@ -170,8 +171,7 @@
     {
         if (graph_created === false)
         {
-            url = site + '/REST/moteur';
-            console.log('getNumCapteurs - début');
+            url = site + '/REST/moteur/' + numMachine;
 
             $.ajax({
                 type: "GET",

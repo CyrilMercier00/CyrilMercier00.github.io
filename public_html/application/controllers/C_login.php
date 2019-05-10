@@ -10,7 +10,7 @@ Class C_login extends CI_Controller {
     }
 
     public function index() {
-        $this->load->view('v_login');
+        $this->load->view('V_login');
     }
 
     public function check_login() {
@@ -32,7 +32,7 @@ Class C_login extends CI_Controller {
             );
 
             // Verification du mdp dans la BDD
-            if ($this->m_login->check_pass($data)) {
+            if ($this->M_login->check_pass($data)) {
                 // Succes: Demmarer session avec les données suivantes
                 $data_session = array(
                     'username' => $this->input->post('username'),

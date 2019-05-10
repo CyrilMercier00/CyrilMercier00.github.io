@@ -12,7 +12,7 @@ class machine extends REST_Controller {
     }
 
     public function index_get() {
-        $this->response($this->m_machine->get_all_machine());
+        $this->response($this->M_machine->get_all_machine());
     }
 
 }

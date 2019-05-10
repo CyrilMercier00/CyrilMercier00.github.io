@@ -9,8 +9,7 @@
     var moteurs; // Resultat de la requete ajax sur les moteurs
     var nbrCapteurs; // Nombre de capteurs pour la machine
 
-    var numMachine = parseInt(window.location.pathname.split("/").pop() + 1); // Extraire le numero de la machine depui l'url
-
+    var numMachine = parseInt(window.location.pathname.split("/").pop()) +1; // Extraire le numero de la machine depui l'url
     // Code html pour creer un graphique. 
     var code_html1 = "<div class='col-lg-8'> \n\
     <div class='au-card recent-report'> \n\
@@ -156,9 +155,12 @@
 
     // ------ MAJ des donnes quand changement de date ------
     function updateData(prmIdGraph) {
+        
+        console.log("update");
         dates_url = document.getElementById("choixDate0").value.split("-")
-        url = site + '/REST/vibration/' + numMachine + "/" + dates_url[0] + dates_url[1] + dates_url[2];
+        url = site + '/REST/vibration/' + prmIdGraph + "/" + dates_url[0] + dates_url[1] + dates_url[2];
         console.log(url);
+        
         $.ajax({
             type: "GET",
             url: url,

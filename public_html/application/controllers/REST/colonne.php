@@ -12,7 +12,7 @@ class colonne extends REST_Controller {
     }
 
     public function index_get($idMachine) {
-        $this->response($this->m_colonne->get_all_colonne($idMachine));
+        $this->response($this->M_colonne->get_all_colonne($idMachine));
     }
 
 }
