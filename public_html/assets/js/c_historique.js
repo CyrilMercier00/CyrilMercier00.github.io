@@ -1,6 +1,6 @@
-(function($) {
-    const site = $('#url_js').val(); // Adresse du site
-    const base = $('#url2_js').val(); // Adresse du site sans index
+(function ($) {
+    const site_url = $('#url_js').val(); // Adresse du site
+    const base_url = $('#url2_js').val(); // Adresse du site sans index
     const valVibrationsMax = 6; // Hauteur du graphique
 
     var arrayChart = []; // Array contenant les graphiques crées 
@@ -8,8 +8,9 @@
     var seuil = []; // Array contenant les seuils récupérés 
     var moteurs; // Resultat de la requete ajax sur les moteurs
     var nbrCapteurs; // Nombre de capteurs pour la machine
+    var idGraph // Id du graphique a mettre a hour
 
-    var numMachine = parseInt(window.location.pathname.split("/").pop()) +1; // Extraire le numero de la machine depui l'url
+    var numMachine = parseInt(window.location.pathname.split("/").pop()); // Extraire le numero de la machine depui l'url
     // Code html pour creer un graphique. 
     var code_html1 = "<div class='col-lg-8'> \n\
     <div class='au-card recent-report'> \n\
@@ -57,12 +58,12 @@
 
     // ------ Recuperer les infos sur les moteurs ------
     function getMoteur() {
-        url = site + '/REST/moteur/' + numMachine;
+        url = site_url + '/REST/moteur/' + numMachine;
         $.ajax({
             type: "GET",
             url: url,
             dataType: "json",
-            success: function(result) {
+            success: function (result) {
                 moteurs = result;
                 getCapteurs();
             }
@@ -74,12 +75,12 @@
 
     // ------ Recuperer les capteurs ------
     function getCapteurs() {
-        url = site + "/REST/capteur/" + numMachine;
+        url = site_url + "/REST/capteur/" + numMachine;
         $.ajax({
             type: "GET",
             url: url,
             dataType: "json",
-            success: function(result) {
+            success: function (result) {
                 if (result.length > 0) {
                     nbrCapteurs = result.length;
                     for (i = 0; i < nbrCapteurs; i++) {
@@ -95,7 +96,7 @@
                 } else {
                     // Afficher un message si il n'y a aucun capteur
                     $("#divGraph").append('<figure> \n\
-                        <img src="' + base + '/assets/images/icon/supersad.png" class="img-fluid mx-auto d-block" alt=":("> \n\
+                        <img src="' + base_url + '/assets/images/icon/supersad.png" class="img-fluid mx-auto d-block"> \n\
                         <figcaption> <br> Il n\'y a aucun capteur pour cette machine. </figcaption> \n\
                         </figure> ');
                     $("#divGraph").css("margin-top", "5%");
@@ -109,12 +110,12 @@
 
     // ------ Recuperer les valeurs du seuil ------
     function getValSeuil() {
-        url = site + '/REST/norme/1';
+        url = site_url + '/REST/norme/1';
         $.ajax({
             type: "GET",
             url: url,
             dataType: "json",
-            success: function(result) {
+            success: function (result) {
                 for (i = 0; i < result.length; i++) {
                     seuil[i] = result[i]['seuil'];
                 }
@@ -144,7 +145,8 @@
         // Initialiser le calendrier
         for (i = 0; i < nbrCapteurs; i++) {
             document.getElementById("choixDate" + i).value = date.toISOString().slice(0, 10);
-            $("#choixDate" + i).change(updateData(i));
+            idGraph = i;
+            $("#choixDate" + i).on('change', updateData);
         }
 
         getData();
@@ -154,58 +156,19 @@
 
 
     // ------ MAJ des donnes quand changement de date ------
-    function updateData(prmIdGraph) {
-        
-        console.log("update");
-        dates_url = document.getElementById("choixDate0").value.split("-")
-        url = site + '/REST/vibration/' + prmIdGraph + "/" + dates_url[0] + dates_url[1] + dates_url[2];
-        console.log(url);
-        
+    function updateData() {
+
+        clearGraph();
+
+        dates_url = document.getElementById("choixDate0").value.split("-");
+        url = site_url + '/REST/vibration/' + idGraph + "/" + dates_url[0] + dates_url[1] + dates_url[2];
+
         $.ajax({
             type: "GET",
             url: url,
             dataType: "json",
-            success: function(result) {
-                var indexChart = 0; // Index du graphique dans l'array
-                var idMoteurMin = parseInt(result[0]['idMoteur']); // Id du moteur min recupéré
-
-                // Ajouter les données
-                for (i = 0; i < result.length; i++) // Pour tous les resultats
-                {
-                    if (idMoteurMin === parseInt(result[i]['idMoteur'])) {
-                        // Valeurs reçues
-                        arrayConfig[indexChart].data.datasets[0].data.push(result[i]['valeur']);
-                    } else {
-                        indexChart = indexChart + 1;
-                        do {
-                            idMoteurMin = idMoteurMin + 1;
-                        } while (idMoteurMin < result[i]['idMoteur']);
-                    }
-                }
-
-                // Mettre a jour les grpahiques 
-                for (i = 0; i < arrayChart.length; i++) {
-                    arrayChart[i].update(); // Mise a jour de donnéess
-                }
-
-            }
-        });
-    }
-    // --------------------------------------------------
-
-
-
-    // ------ Recuperer les valeurs des vibrations------
-    function getData() {
-        for (x = 0; x < nbrCapteurs; x++) {
-            console.log("ahhhhhhhh");
-            url = site + '/REST/vibration/' + numMachine + "/" + document.getElementById("choixDate" + x).value;
-
-            $.ajax({
-                type: "GET",
-                url: url,
-                dataType: "json",
-                success: function(result) {
+            success: function (result) {
+                if (result.length) {
                     var indexChart = 0; // Index du graphique dans l'array
                     var idMoteurMin = parseInt(result[0]['idMoteur']); // Id du moteur min recupéré
 
@@ -227,12 +190,72 @@
                     for (i = 0; i < arrayChart.length; i++) {
                         arrayChart[i].update(); // Mise a jour de donnéess
                     }
-
                 }
-            });
-        }
+            }
+        });
+    }
+    // --------------------------------------------------
+
+
+
+    // ------ Recuperer les valeurs des vibrations------
+    function getData() {
+
+        dates_url = document.getElementById("choixDate0").value.split("-");
+        url = site_url + '/REST/vibration/' + numMachine + "/" + dates_url[0] + dates_url[1] + dates_url[2];
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json",
+            success: function (result) {
+                if (result.length > 1) {
+                    console.log("resultat");
+                    var indexChart = 0; // Index du graphique dans l'array
+                    var idMoteurMin = parseInt(result[0]['idMoteur']); // Id du moteur min recupéré
+
+                    // Ajouter les données
+                    for (i = 0; i < result.length; i++) // Pour tous les resultats
+                    {
+                        if (idMoteurMin === parseInt(result[i]['idMoteur'])) {
+                            // Valeurs reçues
+                            arrayConfig[indexChart].data.datasets[0].data.push(result[i]['valeur']);
+                        } else {
+                            indexChart = indexChart + 1;
+                            do {
+                                idMoteurMin = idMoteurMin + 1;
+                            } while (idMoteurMin < result[i]['idMoteur']);
+                        }
+                    }
+                } else {
+                    console.log("noresult");
+                }
+
+                // Mettre a jour les grpahiques 
+                for (i = 0; i < arrayChart.length; i++) {
+                    arrayChart[i].update(); // Mise a jour de donnéess
+                }
+
+            }
+        });
+
     }
     // ----------------------------------------------
+
+
+
+    // ---------------- Vider le graph ----------------
+    function clearGraph() {
+
+        tailleArray = arrayChart[idGraph - 1].data.datasets[0].data.length;
+
+        for (i = 0; i < tailleArray; i++) {
+            arrayChart[idGraph - 1].data.datasets[0].data.shift();
+        }
+
+        arrayChart[idGraph - 1].update();
+    }
+    // ------------------------------------------------
 
 
 
@@ -345,31 +368,31 @@
                 responsive: true,
                 scales: {
                     xAxes: [{
-                        gridLines: {
-                            display: false,
-                            drawOnChartArea: true,
-                            color: '#f2f2f2'
-                        },
-                        ticks: {
-                            fontFamily: "Poppins",
-                            fontSize: 11,
-                            beginAtZero: true
-                        }
-                    }],
+                            gridLines: {
+                                display: false,
+                                drawOnChartArea: true,
+                                color: '#f2f2f2'
+                            },
+                            ticks: {
+                                fontFamily: "Poppins",
+                                fontSize: 11,
+                                beginAtZero: true
+                            }
+                        }],
                     yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            maxTicksLimit: 5,
-                            stepSize: 1,
-                            max: valVibrationsMax,
-                            fontFamily: "Poppins",
-                            fontSize: 11
-                        },
-                        gridLines: {
-                            display: false,
-                            color: '#f2f2f2'
-                        }
-                    }]
+                            ticks: {
+                                beginAtZero: true,
+                                maxTicksLimit: 5,
+                                stepSize: 1,
+                                max: valVibrationsMax,
+                                fontFamily: "Poppins",
+                                fontSize: 11
+                            },
+                            gridLines: {
+                                display: false,
+                                color: '#f2f2f2'
+                            }
+                        }]
                 },
                 elements: {
                     point: {

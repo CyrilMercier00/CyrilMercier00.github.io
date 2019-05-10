@@ -22,9 +22,9 @@ class M_vibration extends CI_Model
 
         // ---- Selectionner tous les moteurs de la machine ----
         $result = $this->db
-            ->get_where('moteur', array('idMachine' => $prmIdMachine))
+            ->get('moteur', array('idMachine' => $prmIdMachine))
             ->result_array();
-       
+        
         foreach ($result as $row) {
             $moteur[$i] = $row['idMoteur'];
             $i++;

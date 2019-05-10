@@ -1,6 +1,8 @@
 (function ($)
 {
-    const site = $('#url_js').val();     // Adresse du site pour le service REST
+    const site_url = $('#url_js').val(); // Adresse du site
+    const base_url = $('#url2_js').val();// Adresse du site sans index
+
     const valVibrationsMax = 6;          // Hauteur du graphiqie
 
     var arrayChart = [];                 // Array contenant les graphiques crées 
@@ -8,8 +10,8 @@
     var graph_created = false;           // Verifie si les graphiques sont initialisés
     var seuil_added = false;             // Verifie si les seuils ont bien été recupérés
     var nbCapteurs = 0;                  // Nombre max de capteurs
-    var numMachine = parseInt(window.location.pathname.split("/").pop()) +1; // Extraire le numero de la machine depui l'url
-    
+    var numMachine = parseInt(window.location.pathname.split("/").pop()); // Extraire le numero de la machine depui l'url
+
     //Heure pour le label
     var date = new Date();
     var dataHeures = [];
@@ -171,7 +173,7 @@
     {
         if (graph_created === false)
         {
-            url = site + '/REST/moteur/' + numMachine;
+            url = site_url + '/REST/moteur/' + numMachine;
 
             $.ajax({
                 type: "GET",
@@ -180,8 +182,17 @@
                 success: function (result)
                 {
                     nbCapteurs = result.length;
-                    setInterval(insererDataTest, 1000); // Rafraichir les données du graphique        
-                    creerGraph(nbCapteurs);             // Creer une div pour chaque capteur
+                    if (nbCapteurs > 0) {
+                        setInterval(insererDataTest, 1000); // Rafraichir les données du graphique        
+                        creerGraph(nbCapteurs);             // Creer une div pour chaque capteur
+                    } else {
+                        // Afficher un message si il n'y a aucun capteur
+                        $("#divGraph").append('<figure> \n\
+                        <img src="' + base_url + 'assets/images/icon/supersad.png" class="img-fluid mx-auto d-block" > \n\
+                        <figcaption> <br> Il n\'y a aucun capteur pour cette machine. </figcaption> \n\
+                        </figure> ');
+                        $("#divGraph").css("margin-top", "5%");
+                    }
                 }
             });
         }
@@ -212,7 +223,7 @@
     // ------ Recupere les valeurs de seuil ------ 
     function getValSeuil()
     {
-        url = site + '/REST/norme/1';
+        url = site_url + '/REST/norme/1';
 
         $.ajax({
             type: "GET",
