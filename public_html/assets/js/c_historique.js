@@ -208,6 +208,7 @@
 
 
 
+
     // ------ Recuperer les valeurs des vibrations------
     function getData() {
 

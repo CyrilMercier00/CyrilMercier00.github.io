@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require APPPATH . '/libraries/REST_controller.php';
 
-class vibration extends REST_Controller {
+class Vibration extends REST_Controller {
 
     public function __construct() {
         parent::__construct();
