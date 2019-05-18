@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class m_vibration extends CI_Model
+class M_vibration extends CI_Model
 {
 
     public function insert_vibration($prmDto)
@@ -18,12 +18,13 @@ class m_vibration extends CI_Model
 
     public function get_vibration($prmIdMachine, $prmDate)
     {
+        $i = 0;     // Compter le nombre de moteurs
+
         // ---- Selectionner tous les moteurs de la machine ----
         $result = $this->db
-            ->get_where('moteur', array('idMachine' => $prmIdMachine))
+            ->get('moteur', array('idMachine' => $prmIdMachine))
             ->result_array();
-
-        $i = 0;     // Compter le nombre de moteurs
+        
         foreach ($result as $row) {
             $moteur[$i] = $row['idMoteur'];
             $i++;

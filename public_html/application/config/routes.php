@@ -50,11 +50,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   | Examples: my-controller/index -> my_controller/index
   |   my-controller/my-method -> my_controller/my_method
  */
-$route['default_controller'] = 'c_accueil';
+$route['default_controller'] = 'C_accueil';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;
 
-$route['REST/([a-zA-Z0-9]+)/(\d+)/(\d+)'] = "REST/$1/index/$2/$3";   // Pour le service REST
+$route['REST/([a-zA-Z0-9]+)/(\d+)/(\d+)'] = "REST/$1/index/$2/$3";  // Pour le service REST
 $route['REST/([a-zA-Z0-9]+)/(\d+)'] = "REST/$1/index/$2";           // Pour le service REST
 $route['c_machine/(\d+)'] = "c_machine/index/$1";                   // Pour l'affichage des machines
 $route['c_historique/(\d+)'] = "c_historique/index/$1";             // Pour l'affichage de l'historique

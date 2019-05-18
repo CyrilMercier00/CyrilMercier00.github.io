@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class m_capteur extends CI_Model {
+class M_capteur extends CI_Model {
 
     public function insert_capteur($prmDto) {
         // Donnees a inserer

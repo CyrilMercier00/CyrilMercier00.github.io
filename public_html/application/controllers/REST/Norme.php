@@ -8,12 +8,12 @@ class norme extends REST_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('m_norme');
+        $this->load->model('M_norme');
     }
 
     // Recuperer les capteur & colonnes en rapport avec l'id moteur
     public function index_get($idOrdre) {
-        $this->response($this->m_norme->get_seuil($idOrdre));
+        $this->response($this->M_norme->get_seuil($idOrdre));
     }
    
 }

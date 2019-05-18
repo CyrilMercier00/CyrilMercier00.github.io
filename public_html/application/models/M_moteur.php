@@ -1,6 +1,6 @@
 <?php
 
-class m_moteur extends CI_Model {
+class M_moteur extends CI_Model {
 
     public function get_all_moteurs() {
         return $this->db->select('idMoteur,fonction')->get('moteur')->result();
