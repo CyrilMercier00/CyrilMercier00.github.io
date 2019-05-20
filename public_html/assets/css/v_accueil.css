@@ -63,51 +63,43 @@
 
 /*------ Map ------*/
 
-#divmap {
+#mapContainer {
+    /* centrer la div */
     margin-top: 8%;
-    margin-left: 23%;
+    margin-left: 17%;
+
+    background-image: url("https://i.imgur.com/ulAwj90.png") ;
+    background-size:     contain;                    
+    background-repeat:   no-repeat;
+    background-position: center center;
+
+    min-height:600px;
+    min-width:800px ;
+
+    position: relative ;
 }
 
-#divmap img {
+#map {
     max-width: 100%;
     max-height: 100%;
     z-index: 0;
+
+    position:absolute;
 }
 
-#divmap a {
-    border: 1px solid #fff;
-    width: 50px;
-    height: 50px;
+#map a {
+    width: 100px;
+    height: 100px;
+
     display: block;
-    position: absolute;
+
+    border: 1px solid #fff;
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-#divmap a:hover {
+#map a:hover {
     background-color: rgba(255, 255, 255, 0.3);
 }
-
-#machine0 {
-    position: absolute;
-    left: 100px;
-    top: 100px;
-    z-index: 0;
-}
-
-#machine1 {
-    position: absolute;
-    left: 250px;
-    top: 100px;
-    z-index: 0;
-}
-
-#machine2 {
-    position: absolute;
-    left: 200px;
-    top: 100px;
-    z-index: 0;
-}
-
 
 /* ------ Tooltip------ */
 
@@ -120,15 +112,20 @@
 
 .tooltip .tooltiptext {
     visibility: hidden;
-    width: 120px;
+    width: 100px;
+    height: 70px;
+    
     background-color: black;
     color: #fff;
     text-align: center;
+    
     border-radius: 6px;
     padding: 5px 0;
+    
     position: absolute;
     z-index: 1;
-    top: 150%;
+    
+    top: 100%;
     left: 50%;
     margin-left: -60px;
 }
