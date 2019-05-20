@@ -279,7 +279,6 @@
 
         for (j = 0; j < 24; j++)
         {
-
             dataHeures.push(("0" + j).slice(-2) + 'h');
 
             // 60 minutes
@@ -360,7 +359,7 @@
             options: {
                 maintainAspectRatio: false,
                 legend: {
-                    display: true
+                    display: false
                 },
                 responsive: true,
                 scales: {

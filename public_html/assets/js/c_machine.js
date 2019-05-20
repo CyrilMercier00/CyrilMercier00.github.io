@@ -47,8 +47,7 @@
 
 // --------------------------------------------
 // --------  DEBUT programme principal  -------
-// --------------------------------------------
-    initTime();
+// --------------------------------------------  
     initWebsocketMQTT();
     getNumCapteurs();
 // --------------------------------------------
@@ -100,7 +99,8 @@
             if (ctx)
             {
                 ctx.height = 230;
-                arrayChart.push(new Chart(ctx, getNewConfig() ));
+                initTime(prmResult[i]['freqMesure']);
+                arrayChart.push(new Chart(ctx, getNewConfig()));
             }
         }
         getValSeuil();
@@ -125,6 +125,23 @@
                     seuil[i] = result[i]['seuil'];
                 }
                 seuil_added = true;
+
+                // Afficher les seuils sur tous les graphique
+                for (i = 0; i < arrayConfig.length; i++) // Pour tous les graph
+                {
+                    for (j = 0; j < arrayConfig[i].data.labels.length; j++) // Pour tout les labels
+                    {
+                        // Ajouter la valeurs du seuil
+                        arrayConfig[i].data.datasets[1].data.push(seuil[0]);
+                        arrayConfig[i].data.datasets[2].data.push(seuil[1]);
+                        arrayConfig[i].data.datasets[3].data.push(seuil[2]);
+                        arrayConfig[i].data.datasets[4].data.push(seuil[3]);
+                    }
+                }
+                for (i = 0; i < arrayChart.length; i++)
+                {
+                    arrayChart[i].update;
+                }
             }
         });
     }
@@ -225,13 +242,17 @@
 
 
     // ------  Affichage de l'heure actuelle ------ 
-    function initTime()
+    function initTime(prmFreqMesure)
     {
         // Heure actuelle
         dataHeures.push(date.getHours() + 'h');
 
+        debugger;
+
         // 60 minutes
-        for (i = 0; i < 59; i++)
+        nbMesureMin = 59 / prmFreqMesure;
+        nbMesureHeure = nbMesureMin * 60;
+        for (i = 0; i < nbMesureHeure; i++)
         {
             dataHeures.push('');
         }
@@ -306,13 +327,13 @@
                         fill: 'end'
                     }
                 ]
-
             },
             options: {
                 maintainAspectRatio: false,
                 legend: {
-                    display: false
+                    display: true
                 },
+               
                 responsive: true,
                 scales: {
                     xAxes: [{

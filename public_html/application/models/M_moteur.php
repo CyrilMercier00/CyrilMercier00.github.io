@@ -12,7 +12,7 @@ class M_moteur extends CI_Model {
             'idMachine' => $idMoteur,
         );
         
-        return $this->db->select('idMoteur,fonction')->get_where('moteur',$condition)->result();
+        return $this->db->select('idMoteur,fonction,freqMesure')->get_where('moteur',$condition)->result();
     }
     
     public function insert_moteur($prmDto) {
