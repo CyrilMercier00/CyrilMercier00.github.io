@@ -27,7 +27,7 @@
         for (i = 0; i < prmData.length; i++) {
             $('#divmap').append("<a class='tooltip' href='" +
                 site +
-                "/c_machine/" +
+                "C_machine/" +
                 i +
                 "' id='machine" + i + "'>" +
                 "<span class='tooltiptext'>" +

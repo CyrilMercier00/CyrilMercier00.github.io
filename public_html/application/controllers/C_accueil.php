@@ -16,8 +16,8 @@ class C_accueil extends CI_Controller {
             
             $data = array(
                 'page' => $page,
-                'css_location' => 'V_accueil.css',
-                'javascript_location' => 'C_accueil.js'
+                'css_location' => 'v_accueil.css',
+                'javascript_location' => 'c_accueil.js'
             );
             
             $this->load->view('common/v_template', array('data' => $data), false);

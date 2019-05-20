@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require APPPATH . '/libraries/REST_controller.php';
+require APPPATH . '/libraries/REST_Controller.php';
 
 class Moteur extends REST_Controller {
 

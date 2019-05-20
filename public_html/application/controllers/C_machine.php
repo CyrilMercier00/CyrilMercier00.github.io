@@ -12,9 +12,9 @@ class C_machine extends CI_Controller {
         // Verification de la validitee de la session
         if (($this->session->userdata('logged_in') == true)) {
             if (isset($prmIdMachine)) {
-                $this->load->model('m_capteur');
+                $this->load->model('M_capteur');
 
-                $page = $this->load->view('v_machine', '', true);
+                $page = $this->load->view('V_machine', '', true);
                 $data = array(
                     'page' => $page,
                     'css_location' => 'machine.css',
@@ -22,12 +22,12 @@ class C_machine extends CI_Controller {
                     'numMachine' => $this->uri->segment(2)
                 );
 
-                $this->load->view('common/v_template', array('data' => $data), false);
+                $this->load->view('common/V_template', array('data' => $data), false);
             } else {
-                redirect('c_accueil');
+                redirect('C_accueil');
             }
         } else {
-            redirect('c_login');
+            redirect('C_login');
         }
     }
 
