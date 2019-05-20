@@ -5,7 +5,8 @@
 
     const valVibrationsMax = 6;          // Hauteur du graphiqie
 
-    var arrayChart = [];                 // Array contenant les graphiques crées 
+    var arrayChart = [];                 // Array contenant les graphiques crées
+    var arrayConfig = [];                // Array contenant les config pour les graphiques   
     var seuil = [];                      // Array contenant les seuils récupérés 
     var graph_created = false;           // Verifie si les graphiques sont initialisés
     var seuil_added = false;             // Verifie si les seuils ont bien été recupérés
@@ -20,7 +21,7 @@
     var code_html1 = "<div class='col-lg-8'> \n\
     <div class='au-card recent-report'> \n\
     <div class='au-card-inner'> \n\
-    <h3 class='title-2'>Capteur ";
+    <h3 class='title-2'>";
 
     var code_html2 = "</h3> \n\
     <div class='recent-report__chart'> \n\
@@ -43,118 +44,6 @@
     const bg_orange = 'rgba(255, 160, 55, 0.82)';
     const bg_rouge = 'rgba(250, 66, 81, 0.82)';
     const transparent = 'transparent';
-
-// --- Début fichier config du graphiqe  ---
-    config = {
-        type: 'line',
-        data: {
-            labels: dataHeures,
-            datasets: [
-                {
-                    label: 'Valeur des vibrations',
-                    backgroundColor: transparent,
-                    borderColor: ln_blue,
-                    pointHoverBackgroundColor: '#fff',
-                    borderWidth: 0,
-                    data: [],
-                    pointBackgroundColor: ln_blue
-                },
-                {
-                    label: 'Seuil A',
-                    backgroundColor: bg_vert,
-                    borderColor: ln_vert,
-                    pointHoverBackgroundColor: transparent,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    data: [],
-                    pointBackgroundColor: transparent,
-                    fill: '+1'
-                },
-                {
-                    label: 'Seuil B',
-                    backgroundColor: bg_jaune,
-                    borderColor: ln_jaune,
-                    pointHoverBackgroundColor: transparent,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    data: [],
-                    pointBackgroundColor: transparent,
-                    fill: '+1'
-                },
-                {
-                    label: 'Seuil C',
-                    backgroundColor: bg_orange,
-                    borderColor: ln_orange,
-                    pointHoverBackgroundColor: transparent,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    data: [],
-                    pointBackgroundColor: transparent,
-                    fill: '+1'
-                },
-                {
-                    label: 'Seuil D',
-                    backgroundColor: bg_rouge,
-                    borderColor: transparent,
-                    pointHoverBackgroundColor: transparent,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    data: [],
-                    pointBackgroundColor: transparent,
-                    fill: 'end'
-                }
-            ]
-
-        },
-        options: {
-            maintainAspectRatio: false,
-            legend: {
-                display: false
-            },
-            responsive: true,
-            scales: {
-                xAxes: [{
-                        gridLines: {
-                            display: false,
-                            drawOnChartArea: true,
-                            color: '#f2f2f2'
-                        },
-                        ticks: {
-                            fontFamily: "Poppins",
-                            fontSize: 11
-                        }
-                    }],
-                yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            maxTicksLimit: 5,
-                            stepSize: 1,
-                            max: valVibrationsMax,
-                            fontFamily: "Poppins",
-                            fontSize: 11
-                        },
-                        gridLines: {
-                            display: false,
-                            color: '#f2f2f2'
-                        }
-                    }]
-            },
-            elements: {
-                point: {
-                    radius: 3,
-                    hoverRadius: 4,
-                    hoverBorderWidth: 3,
-                    backgroundColor: '#333'
-                }
-            },
-            tooltips: {
-                mode: 'y'
-            }
-        }
-    };
-// --- Fin fichier config du graphiqe  ---
-
-
 
 // --------------------------------------------
 // --------  DEBUT programme principal  -------
@@ -184,7 +73,7 @@
                     nbCapteurs = result.length;
                     if (nbCapteurs > 0) {
                         setInterval(insererDataTest, 1000); // Rafraichir les données du graphique        
-                        creerGraph(nbCapteurs);             // Creer une div pour chaque capteur
+                        creerGraph(nbCapteurs, result);             // Creer une div pour chaque capteur
                     } else {
                         // Afficher un message si il n'y a aucun capteur
                         $("#divGraph").append('<figure> \n\
@@ -201,17 +90,17 @@
 
 
     // ------  Créer les graphiques danns la page ------ 
-    function creerGraph(prmNbCapteurs)
+    function creerGraph(prmNbCapteurs, prmResult)
     {
         for (i = 0; i < prmNbCapteurs; i++)
         {
-            $("#divGraph").append(code_html1 + (i + 1).toString() + code_html2 + i + code_html3);
+            $("#divGraph").append(code_html1 + prmResult[i]['fonction'] + code_html2 + i + code_html3);
 
             var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div
             if (ctx)
             {
                 ctx.height = 230;
-                arrayChart.push(new Chart(ctx, config));
+                arrayChart.push(new Chart(ctx, getNewConfig() ));
             }
         }
         getValSeuil();

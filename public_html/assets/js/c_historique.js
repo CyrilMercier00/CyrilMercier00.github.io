@@ -8,7 +8,7 @@
     var seuil = []; // Array contenant les seuils récupérés 
     var moteurs; // Resultat de la requete ajax sur les moteurs
     var nbrCapteurs; // Nombre de capteurs pour la machine
-    var idGraph // Id du graphique a mettre a hour
+    var idGraph; // Id du graphique a mettre a hour
 
     var numMachine = parseInt(window.location.pathname.split("/").pop()); // Extraire le numero de la machine depui l'url
     // Code html pour creer un graphique. 
@@ -45,6 +45,7 @@
     const bg_orange = 'rgba(255, 160, 55, 0.82)';
     const bg_rouge = 'rgba(250, 66, 81, 0.82)';
     const transparent = 'transparent';
+    
     // --------------------------------------------
     // --------  DEBUT programme principal  -------
     // --------------------------------------------
