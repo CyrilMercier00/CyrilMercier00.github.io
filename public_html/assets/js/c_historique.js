@@ -394,7 +394,7 @@
                 },
                 elements: {
                     point: {
-                        radius: 3,
+                        radius: 0,
                         hoverRadius: 4,
                         hoverBorderWidth: 3,
                         backgroundColor: '#333'

@@ -331,9 +331,8 @@
             options: {
                 maintainAspectRatio: false,
                 legend: {
-                    display: true
+                    display: false
                 },
-               
                 responsive: true,
                 scales: {
                     xAxes: [{
@@ -365,7 +364,7 @@
                 },
                 elements: {
                     point: {
-                        radius: 3,
+                        radius: 0,
                         hoverRadius: 4,
                         hoverBorderWidth: 3,
                         backgroundColor: '#333'
