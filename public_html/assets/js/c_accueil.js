@@ -44,7 +44,7 @@
     function addCSS(prmID, prmData) {
         var style = document.createElement('style');
         style.type = 'text/css';
-        style.innerHTML = '.machine' + prmID + '{ position: absolute; top: ' + prmData[prmID]['posX'] + 'px; left:' + prmData[prmID]['posY'] + 'px; background-image: url("assets\images\Usine\' +  prmData[prmID]["image"]);';
+        style.innerHTML = '.machine' + prmID + '{ position: absolute; top: ' + prmData[prmID]['posY'] + 'px; left:' + prmData[prmID]['posX'] + 'px; background-image: url("/assets/images/Usine/' +  prmData[prmID]["image"] + '");';
         document.getElementsByTagName('head')[0].appendChild(style);
         
         document.getElementById('machine' + prmID).className += ' machine' + prmID;

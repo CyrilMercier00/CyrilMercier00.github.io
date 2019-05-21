@@ -10,7 +10,6 @@
         <meta name="description" content="au theme template">
         <meta name="author" content="Hau Nguyen">
         <meta name="keywords" content="au theme template">
-
         <!-- Title Page-->
         <title>Maintenance des moteurs</title>
 
@@ -73,12 +72,14 @@
                                 <a class="js-arrow" href="#">
                                     <i class="fas fa-user"></i>Compte</a>
                                 <ul class="list-unstyled navbar__sub-list js-sub-list">
+                                    <!--
                                     <li>
                                         <a href=<?php echo site_url('C_user/newUser') ?> >Nouvel utilisateur</a>
                                     </li>
                                     <li>
                                         <a href=<?php echo site_url('C_user/changePass') ?>>Changer le mot de passe</a>
                                     </li>
+                                    -->
                                     <li>
                                         <a href="<?php echo site_url('C_user/logout') ?>">Déonnexion</a>
                                     </li>
