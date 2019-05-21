@@ -9,10 +9,17 @@ class Machine extends REST_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('M_machine');
+        $this->load->model('M_moteur');
     }
 
     public function index_get() {
-        $this->response($this->M_machine->get_all_machine());
+        $idMachine = $this->uri->segment(3);
+
+        if (isset($idMachine)) {
+            $this->response($this->M_moteur->get_moteur_by_id_machine($idMachine));
+        } else {
+            $this->response($this->M_machine->get_all_machine());
+        }
     }
 
 }

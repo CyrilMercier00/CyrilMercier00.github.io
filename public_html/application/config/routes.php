@@ -58,3 +58,4 @@ $route['REST/([a-zA-Z0-9]+)/(\d+)/(\d+)'] = "REST/$1/index/$2/$3";  // Pour le s
 $route['REST/([a-zA-Z0-9]+)/(\d+)'] = "REST/$1/index/$2";           // Pour le service REST
 $route['C_machine/(\d+)'] = "C_machine/index/$1";                   // Pour l'affichage des machines
 $route['C_historique/(\d+)'] = "C_historique/index/$1";             // Pour l'affichage de l'historique
+$route['C_moteur/(\d+)'] = "C_moteur/index/$1";             // Pour l'affichage de l'historique

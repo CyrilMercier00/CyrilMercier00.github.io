@@ -4,6 +4,7 @@
     const base_url = $('#url2_js').val();// Adresse du site sans index
 
     const valVibrationsMax = 6;          // Hauteur du graphiqie
+    const tentativeRecoMQTTMax = 3;     // Nombre de tentatives de reconnexion autorisées
 
     var arrayChart = [];                 // Array contenant les graphiques crées
     var arrayConfig = [];                // Array contenant les config pour les graphiques   
@@ -12,6 +13,7 @@
     var seuil_added = false;             // Verifie si les seuils ont bien été recupérés
     var nbCapteurs = 0;                  // Nombre max de capteurs
     var numMachine = parseInt(window.location.pathname.split("/").pop()); // Extraire le numero de la machine depui l'url
+    var freqMes = 0                      // Frequence de mesure d'un moteur
 
     //Heure pour le label
     var date = new Date();
@@ -99,7 +101,8 @@
             if (ctx)
             {
                 ctx.height = 230;
-                initTime(prmResult[i]['freqMesure']);
+                freqMes = prmResult[i]['freqMesure'];
+                initTime(freqMes);
                 arrayChart.push(new Chart(ctx, getNewConfig()));
             }
         }
@@ -163,27 +166,18 @@
 
 
 
-    // ------  Mise a jour des valeurs du label ------ 
-    function updateLbl()
+    // ------  Affichage de l'heure actuelle ------ 
+    function initTime(prmFreqMesure)
     {
-        // Verifier si il faut rajouter des minutes
-        if (arrayChart[0].data.labels.last < date.getHours())
-        {
-            console.log("if");
+        // Heure actuelle
+        dataHeures.push(date.getHours() + 'h' + date.getMinutes());
 
-            // Enlever la derniere heure
-            for (i = 0; i < 59; i++)
-            {
-                arrayChart[i].data.labels.slice();
-            }
-            // Ajouter une heure
-            for (i = 0; i < 59; i++)
-            {
-                arrayChart[i].data.labels.push('');
-            }
-        }
+        // 60 minutes
+        nbMesureMin = 59 / prmFreqMesure;
+        nbMesureHeure = nbMesureMin * 60;
+
     }
-    // ------------------------------------------------ 
+    // --------------------------------------------
 
 
 
@@ -221,6 +215,11 @@
                 if (responseObject.errorCode !== 0) {
                     console.log("MQTT - Connection perdue: " + responseObject.errorMessage);
                 }
+
+                for (i = 0; i < tentativeRecoMQTTMax; i++) {
+                    client.connect();
+                    console.log("Tentative de reconnexion " + i + " de " + tentativeRecoMQTTMax);
+                }
             }
             ;
 
@@ -238,29 +237,6 @@
         }
     }
     // ------------------------------------------------ 
-
-
-
-    // ------  Affichage de l'heure actuelle ------ 
-    function initTime(prmFreqMesure)
-    {
-        // Heure actuelle
-        dataHeures.push(date.getHours() + 'h');
-
-        debugger;
-
-        // 60 minutes
-        nbMesureMin = 59 / prmFreqMesure;
-        nbMesureHeure = nbMesureMin * 60;
-        for (i = 0; i < nbMesureHeure; i++)
-        {
-            dataHeures.push('');
-        }
-        // Heure actuelle +1
-        dataHeures.push(date.getHours() + 1 + 'h');
-        setInterval(updateLbl, 3000);
-    }
-    // --------------------------------------------
 
 
 
