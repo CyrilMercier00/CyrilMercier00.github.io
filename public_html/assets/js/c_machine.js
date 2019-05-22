@@ -63,7 +63,7 @@
     {
         if (graph_created === false)
         {
-            url = site_url + '/REST/moteur/' + numMachine;
+            url = site_url + 'REST/machine/' + numMachine;
 
             $.ajax({
                 type: "GET",
@@ -170,7 +170,11 @@
     function initTime(prmFreqMesure)
     {
         // Heure actuelle
-        dataHeures.push(date.getHours() + 'h' + date.getMinutes());
+        if (date.getMinutes() < 10) {
+            dataHeures.push(date.getHours() + 'h0' + date.getMinutes());
+        } else {
+            dataHeures.push(date.getHours() + 'h' + date.getMinutes());
+        }
 
         // 60 minutes
         nbMesureMin = 59 / prmFreqMesure;

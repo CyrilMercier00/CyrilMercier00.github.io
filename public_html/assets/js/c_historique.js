@@ -76,7 +76,7 @@
     // ------ Recuperer les capteurs ------
     function getCapteurs() {
 
-        url = site_url + "/REST/capteur/" + numMachine;
+        url = site_url + "REST/machine/" + numMachine;
 
         $.ajax({
             type: "GET",
@@ -89,8 +89,10 @@
                     nbrCapteurs = result.length;
 
                     for (i = 0; i < nbrCapteurs; i++) {
+                        
                         // Creation du graphique
-                        $("#divGraph").append(code_html1 + moteurs[i]['fonction'] + code_html2 + i + code_html3 + i + code_html4);
+                        $("#divGraph").append(code_html1 + result[i]['fonction'] + code_html2 + i + code_html3 + i + code_html4);
+                        
                         var ctx = document.getElementById("graphCapteur" + [i]);
 
                         if (ctx) {
