@@ -17,8 +17,8 @@ class Vibration extends REST_Controller {
         $this->response($this->M_vibration->insert_vibration($dto));
     }
 
-    public function index_get($idMoteur, $date) {
-        $this->response($this->M_vibration->get_vibration($idMoteur, $date));
+    public function index_get($idMachine, $date) {
+        $this->response($this->M_vibration->get_vibration($idMachine, $date));
     }
 
 }

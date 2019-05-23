@@ -2,7 +2,9 @@
 
 <div class="main-div">
     <div id="divGraph">
-        
+
     </div>
+
+    <input type='date' id='choixDate'>
 
 </div>

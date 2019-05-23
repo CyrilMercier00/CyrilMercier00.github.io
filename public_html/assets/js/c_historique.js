@@ -8,9 +8,9 @@
     var seuil = []; // Array contenant les seuils récupérés 
     var moteurs; // Resultat de la requete ajax sur les moteurs
     var nbrCapteurs; // Nombre de capteurs pour la machine
-    var idGraph; // Id du graphique a mettre a hour
 
     var numMachine = parseInt(window.location.pathname.split("/").pop()); // Extraire le numero de la machine depui l'url
+
     // Code html pour creer un graphique. 
     var code_html1 = "<div class='col-lg-8'> \n\
     <div class='au-card recent-report'> \n\
@@ -24,9 +24,6 @@
     var code_html3 = "'></canvas> \n\
     </div> \n\
     </div> \n\
-    <input type='date' id='choixDate";
-
-    var code_html4 = "'> \n\
     </div>\n\
     </div>";
 
@@ -45,7 +42,7 @@
     const bg_orange = 'rgba(255, 160, 55, 0.82)';
     const bg_rouge = 'rgba(250, 66, 81, 0.82)';
     const transparent = 'transparent';
-    
+
     // --------------------------------------------
     // --------  DEBUT programme principal  -------
     // --------------------------------------------
@@ -80,6 +77,7 @@
 
         $.ajax({
             type: "GET",
+            async: false,
             url: url,
             dataType: "json",
             success: function (result) {
@@ -89,10 +87,10 @@
                     nbrCapteurs = result.length;
 
                     for (i = 0; i < nbrCapteurs; i++) {
-                        
+
                         // Creation du graphique
-                        $("#divGraph").append(code_html1 + result[i]['fonction'] + code_html2 + i + code_html3 + i + code_html4);
-                        
+                        $("#divGraph").append(code_html1 + result[i]['fonction'] + code_html2 + i + code_html3);
+
                         var ctx = document.getElementById("graphCapteur" + [i]);
 
                         if (ctx) {
@@ -122,10 +120,11 @@
     // ------ Recuperer les valeurs du seuil ------
     function getValSeuil() {
 
-        url = site_url + '/REST/norme/1';
+        url = site_url + 'REST/norme/1';
 
         $.ajax({
             type: "GET",
+            async: false,
             url: url,
             dataType: "json",
             success: function (result) {
@@ -157,122 +156,85 @@
     function initCalendrier() {
         // Initialiser le calendrier
         for (i = 0; i < nbrCapteurs; i++) {
-            document.getElementById("choixDate" + i).value = date.toISOString().slice(0, 10);
-            idGraph = i;
-            $("#choixDate" + i).on('change', updateData);
+            $("#choixDate").on('change', updateData);
+            document.getElementById("choixDate").value = date.toISOString().slice(0, 10);
         }
 
-        getData();
+        for (i = 0; i < arrayChart.length; i++) {
+            arrayChart[i].update(); // Mise a jour de donnéess
+        }
     }
-    // ------ Recuperer les valeurs des vibrations------
+
 
 
 
     // ------ MAJ des donnes quand changement de date ------
     function updateData() {
 
+        dates_url = document.getElementById("choixDate").value.split("-");
+
+        url = site_url + 'REST/vibration/' + numMachine + "/" + dates_url[0] + dates_url[1] + dates_url[2];
+
+        $.ajax({
+            type: "GET",
+            async: false,
+            url: url,
+            dataType: "json",
+            success: succesUpdate
+        });
+
+    }
+
+
+
+
+
+    function succesUpdate(prmResult) {
+
         clearGraph();
 
-        dates_url = document.getElementById("choixDate0").value.split("-");
-        url = site_url + '/REST/vibration/' + idGraph + "/" + dates_url[0] + dates_url[1] + dates_url[2];
+        if (prmResult.length) {
+            var indexChart = 0; // Index du graphique dans l'array
+            var idMoteurMin = parseInt(prmResult[0]['idMoteur']); // Id du moteur min recupéré
 
-        $.ajax({
-            type: "GET",
-            url: url,
-            dataType: "json",
-            success: function (result) {
-                if (result.length) {
-                    var indexChart = 0; // Index du graphique dans l'array
-                    var idMoteurMin = parseInt(result[0]['idMoteur']); // Id du moteur min recupéré
-
-                    // Ajouter les données
-                    for (i = 0; i < result.length; i++) // Pour tous les resultats
-                    {
-                        if (idMoteurMin === parseInt(result[i]['idMoteur'])) {
-                            // Valeurs reçues
-                            arrayConfig[indexChart].data.datasets[0].data.push(result[i]['valeur']);
-                        } else {
-                            indexChart = indexChart + 1;
-                            do {
-                                idMoteurMin = idMoteurMin + 1;
-                            } while (idMoteurMin < result[i]['idMoteur']);
-                        }
-                    }
-
-                    // Mettre a jour les grpahiques 
-                    for (i = 0; i < arrayChart.length; i++) {
-                        arrayChart[i].update(); // Mise a jour de donnéess
-                    }
-                }
-            }
-        });
-    }
-    // --------------------------------------------------
-
-
-
-
-    // ------ Recuperer les valeurs des vibrations------
-    function getData() {
-
-        dates_url = document.getElementById("choixDate0").value.split("-");
-        url = site_url + '/REST/vibration/' + numMachine + "/" + dates_url[0] + dates_url[1] + dates_url[2];
-
-        $.ajax({
-            type: "GET",
-            url: url,
-            dataType: "json",
-            success: function (result) {
-
-                if (result.length > 1) {
-
-                    console.log("resultat");
-                    var indexChart = 0; // Index du graphique dans l'array
-                    var idMoteurMin = parseInt(result[0]['idMoteur']); // Id du moteur min recupéré
-
-                    // Ajouter les données
-                    for (i = 0; i < result.length; i++) // Pour tous les resultats
-                    {
-                        if (idMoteurMin === parseInt(result[i]['idMoteur'])) {
-                            // Valeurs reçues
-                            arrayConfig[indexChart].data.datasets[0].data.push(result[i]['valeur']);
-                        } else {
-                            indexChart = indexChart + 1;
-                            do {
-                                idMoteurMin = idMoteurMin + 1;
-                            } while (idMoteurMin < result[i]['idMoteur']);
-                        }
-                    }
-
+            // Ajouter les données
+            for (i = 0; i < prmResult.length; i++) {
+                if (idMoteurMin === parseInt(prmResult[i]['idMoteur'])) {
+                    arrayConfig[indexChart].data.datasets[0].data.push(prmResult[i]['valeur']);
                 } else {
-                    console.log("noresult");
+                    indexChart = indexChart + 1;
+                    do {
+                        idMoteurMin = idMoteurMin + 1;
+                    } while (idMoteurMin < prmResult[i]['idMoteur']);
                 }
-
-                // Mettre a jour les grpahiques 
-                for (i = 0; i < arrayChart.length; i++) {
-                    arrayChart[i].update(); // Mise a jour de donnéess
-                }
-
             }
-        });
 
+            // Mettre a jour les grpahiques 
+            for (i = 0; i < arrayChart.length; i++) {
+                arrayChart[i].update(); // Mise a jour de donnéess
+            }
+        }
     }
-    // ----------------------------------------------
 
 
 
     // ---------------- Vider le graph ----------------
     function clearGraph() {
 
-        tailleArray = arrayChart[idGraph - 1].data.datasets[0].data.length;
+        for (i = 0; i < arrayChart.length; i++) {
 
-        for (i = 0; i < tailleArray; i++) {
-            arrayChart[idGraph - 1].data.datasets[0].data.shift();
+            nbDonnees = arrayChart[i].data.datasets[0].data.length;
+            for (j = 0; j < nbDonnees; j++) {
+                arrayChart[i].data.datasets[0].data.shift();
+            }
         }
 
-        arrayChart[idGraph - 1].update();
+        for (i = 0; i < arrayChart.length; i++) {
+            arrayChart[i].update(); // Mise a jour de donnéess
+        }
+
     }
-    // ------------------------------------------------
+
 
 
 
@@ -289,7 +251,7 @@
             }
         }
     }
-    // --------------------------------
+
 
 
 
@@ -412,7 +374,7 @@
         arrayConfig.push(config);
         return arrayConfig[arrayConfig.length - 1]; // Derniere valeur
     }
-    // ------------------------------------------------ 
+
 
 
 

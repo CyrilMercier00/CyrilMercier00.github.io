@@ -148,7 +148,7 @@
             }
         });
     }
-    // ------------------------------------------------
+
 
 
 
@@ -159,10 +159,11 @@
         valVibration = prmJsonDecoded['valVibration'];
 
         arrayChart['numGraph'].data.datasets[0].data.push(valVibration);
-
+        arrayChart['numGraph'].data.labels.push("");
+        
         arrayChart['numGraph'].update();       // Mise a jour de données
     }
-    // ------------------------------------------------ 
+
 
 
 
@@ -181,7 +182,7 @@
         nbMesureHeure = nbMesureMin * 60;
 
     }
-    // --------------------------------------------
+
 
 
 
@@ -240,7 +241,7 @@
             console.log("MQTT - Erreur: " + e);
         }
     }
-    // ------------------------------------------------ 
+
 
 
 
@@ -360,7 +361,7 @@
         arrayConfig.push(config);
         return arrayConfig[arrayConfig.length - 1];  // Derniere valeur
     }
-    // ------------------------------------------------ 
+
 
 
 
