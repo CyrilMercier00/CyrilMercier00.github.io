@@ -1,41 +1,37 @@
 (function ($)
 {
     const site_url = $('#url_js').val(); // Adresse du site
-    const base_url = $('#url2_js').val();// Adresse du site sans index
+    const base_url = $('#url2_js').val(); // Adresse du site sans index
 
-    const valVibrationsMax = 6;          // Hauteur du graphiqie
-    const tentativeRecoMQTTMax = 3;      // Nombre de tentatives de reconnexion autorisées
+    const valVibrationsMax = 6; // Hauteur du graphiqie
+    const tentativeRecoMQTTMax = 3; // Nombre de tentatives de reconnexion autorisées
 
-    var arrayChart = [];                 // Array contenant les graphiques crées
-    var arrayConfig = [];                // Array contenant les config pour les graphiques   
-    var seuil = [];                      // Array contenant les seuils récupérés 
-    var graph_created = false;           // Verifie si les graphiques sont initialisés
-    var seuil_added = false;             // Verifie si les seuils ont bien été recupérés
-    var nbCapteurs = 0;                  // Nombre max de capteurs
+    var arrayChart = []; // Array contenant les graphiques crées
+    var arrayConfig = []; // Array contenant les config pour les graphiques   
+    var seuil = []; // Array contenant les seuils récupérés 
+    var graph_created = false; // Verifie si les graphiques sont initialisés
+    var seuil_added = false; // Verifie si les seuils ont bien été recupérés
+    var nbCapteurs = 0; // Nombre max de capteurs
     var numMachine = parseInt(window.location.pathname.split("/").pop()); // Extraire le numero de la machine depui l'url
-    var freqMes = 0;                    // Frequence de mesure d'un moteur
-    var doOnce = false;                 // Pour ne faire qu'une fois la requete 
+    var freqMes = 0; // Frequence de mesure d'un moteur
+    var doOnce = false; // Pour ne faire qu'une fois la requete  
 
     //Heure pour le label
     var date = new Date();
     var dataHeures = [];
-
     // Code html a inserer pour créer un graphique, separé pouvoir inserer des données
     var code_html1 = "<div class='col-lg-8'> \n\
     <div class='au-card recent-report'> \n\
     <div class='au-card-inner'> \n\
     <h3 class='title-2'>";
-
     var code_html2 = "</h3> \n\
     <div class='recent-report__chart'> \n\
     <canvas id='graphCapteur";
-
     var code_html3 = "'></canvas> \n\
     </div> \n\
     </div> \n\
     </div> \n\
     </div>";
-
     // Couleur sutilisées dans le graphique
     const ln_blue = 'rgba(80, 140, 200, 1)';
     const ln_vert = 'rgba(140, 210, 65, 1)';
@@ -47,7 +43,6 @@
     const bg_orange = 'rgba(255, 160, 55, 0.82)';
     const bg_rouge = 'rgba(250, 66, 81, 0.82)';
     const transparent = 'transparent';
-
 // --------------------------------------------
 // --------  DEBUT programme principal  -------
 // --------------------------------------------  
@@ -65,7 +60,6 @@
         if (graph_created === false)
         {
             url = site_url + 'REST/machine/' + numMachine;
-
             $.ajax({
                 type: "GET",
                 url: url,
@@ -74,7 +68,8 @@
                 {
                     nbCapteurs = result.length;
                     if (nbCapteurs > 0) {
-                        creerGraph(nbCapteurs, result);             // Creer une div pour chaque capteur
+                        setInterval(insererDataTest, 1000); // Rafraichir les données du graphique        
+                        creerGraph(nbCapteurs, result); // Creer une div pour chaque capteur
                     } else {
                         // Afficher un message si il n'y a aucun capteur
                         $("#divGraph").append('<figure> \n\
@@ -96,8 +91,7 @@
         for (i = 0; i < prmNbCapteurs; i++)
         {
             $("#divGraph").append(code_html1 + prmResult[i]['fonction'] + code_html2 + i + code_html3);
-
-            var ctx = document.getElementById("graphCapteur" + [i]);     // Creer un graphique pour chaque div
+            var ctx = document.getElementById("graphCapteur" + [i]); // Creer un graphique pour chaque div
             if (ctx)
             {
                 ctx.height = 230;
@@ -107,15 +101,15 @@
             }
         }
         getValSeuil();
-        graph_created = true;                     // Pour ne pas recreer les div en boucle
+        graph_created = true; // Pour ne pas recreer les div en boucle
     }
 
 
 
     // ------ Recupere les valeurs de seuil ------ 
-    function getValSeuil() {
+    function getValSeuil()
+    {
         url = site_url + '/REST/norme/1';
-
         $.ajax({
             type: "GET",
             url: url,
@@ -123,13 +117,11 @@
             success: function (result)
             {
                 if (doOnce === false) {
-                    doOnce = true;
                     for (i = 0; i < result.length; i++)
                     {
                         seuil[i] = result[i]['seuil'];
                     }
                     seuil_added = true;
-
                     // Afficher les seuils sur tous les graphique
                     for (i = 0; i < arrayConfig.length; i++) // Pour tous les graph
                     {
@@ -147,6 +139,7 @@
                         arrayChart[i].update;
                     }
                 }
+                doOnce = true;
             }
         });
     }
@@ -157,13 +150,11 @@
     // ------  Mise a jour des graph avec les valeurs instant ------ 
     function updateGraph(prmJsonDecoded)
     {
-        numGraph = prmJsonDecoded['numGraph'];
+        numGraph = prmJsonDecoded['idMoteur'];
         valVibration = prmJsonDecoded['valVibration'];
-
         arrayChart['numGraph'].data.datasets[0].data.push(valVibration);
         arrayChart['numGraph'].data.labels.push("");
-
-        arrayChart['numGraph'].update();       // Mise a jour de données
+        arrayChart['numGraph'].update(); // Mise a jour de données
     }
 
 
@@ -172,8 +163,6 @@
     // ------  Affichage de l'heure actuelle ------ 
     function initTime(prmIdCapteur)
     {
-        debugger;
-        console.log(arrayChart[prmIdCapteur]);
         // Heure actuelle
         if (date.getMinutes() < 10) {
             arrayConfig[prmIdCapteur].data.labels.push(date.getHours() + 'h0' + date.getMinutes());
@@ -192,14 +181,11 @@
             host = "172.16.129.32";
             port = 9001;
             idClient = "clientjs";
-
             // Création du client MQTT
             console.log(client = new Paho.MQTT.Client(host, port, idClient));
-
             // Definir les handlers a utiliser
             client.onConnectionLost = onConnectionLost;
             client.onMessageArrived = onMessageArrived;
-
             // Succès de la connexion au serveur MQTT
             client.connect({onSuccess: function ()
                 {
@@ -211,8 +197,6 @@
                     console.log("MQTT - Message '" + message.payloadString + "' envoyé");
                 }
             });
-
-
             // Handler connection perdue
             function onConnectionLost(responseObject)
             {
@@ -223,19 +207,17 @@
                 for (i = 0; i < tentativeRecoMQTTMax; i++) {
                     client.connect();
                     console.log("Tentative de reconnexion " + i + " de " + tentativeRecoMQTTMax);
+                    sleep(2000);
                 }
             }
             ;
-
-
             // Handler Reception de message
             function onMessageArrived(message)
             {
                 console.log("MQTT - Message reçu: " + message.payloadString);
-                updateGraph(message.payloadString);  // Logique pour mettre a jour le graphique
+                updateGraph(message.payloadString); // Logique pour mettre a jour le graphique
             }
             ;
-
         } catch (e) {
             console.log("MQTT - Erreur: " + e);
         }
@@ -358,9 +340,19 @@
         // --- Fin fichier config du graphiqe  ---
 
         arrayConfig.push(config);
-        return arrayConfig[arrayConfig.length - 1];  // Derniere valeur
+        return arrayConfig[arrayConfig.length - 1]; // Derniere valeur
     }
 
+
+
+    function sleep(milliseconds) {
+        var start = new Date().getTime();
+        for (var i = 0; i < 1e7; i++) {
+            if ((new Date().getTime() - start) > milliseconds) {
+                break;
+            }
+        }
+    }
 
 
 
@@ -382,7 +374,7 @@
 
             for (i = 0; i < arrayChart.length; i++)
             {
-                arrayChart[i].update();       // Mise a jour de donnéess
+                arrayChart[i].update(); // Mise a jour de donnéess
             }
 
         }
