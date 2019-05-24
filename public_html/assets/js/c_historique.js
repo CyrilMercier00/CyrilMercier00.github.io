@@ -1,13 +1,13 @@
 (function ($) {
-    const site_url = $('#url_js').val(); // Adresse du site
-    const base_url = $('#url2_js').val(); // Adresse du site sans index
-    const valVibrationsMax = 6; // Hauteur du graphique
+    const site_url = $('#url_js').val();    // Adresse du site
+    const base_url = $('#url2_js').val();   // Adresse du site sans index
+    const valVibrationsMax = 6;             // Hauteur du graphique
 
-    var arrayChart = []; // Array contenant les graphiques crées 
-    var arrayConfig = []; // Array contenant les config pour les graphiques   
-    var seuil = []; // Array contenant les seuils récupérés 
-    var moteurs; // Resultat de la requete ajax sur les moteurs
-    var nbrCapteurs; // Nombre de capteurs pour la machine
+    var arrayChart = [];    // Array contenant les graphiques crées 
+    var arrayConfig = [];   // Array contenant les config pour les graphiques   
+    var seuil = [];         // Array contenant les seuils récupérés 
+    var moteurs;            // Resultat de la requete ajax sur les moteurs
+    var nbrCapteurs;        // Nombre de capteurs pour la machine
 
     var numMachine = parseInt(window.location.pathname.split("/").pop()); // Extraire le numero de la machine depui l'url
 
@@ -83,10 +83,11 @@
             success: function (result) {
                 if (result.length > 0) {
 
-                    initTime();
                     nbrCapteurs = result.length;
 
                     for (i = 0; i < nbrCapteurs; i++) {
+
+                        freqence = result[i]['freqMesure'];
 
                         // Creation du graphique
                         $("#divGraph").append(code_html1 + result[i]['fonction'] + code_html2 + i + code_html3);
@@ -95,11 +96,14 @@
 
                         if (ctx) {
                             ctx.height = 230;
-                            arrayChart.push(new Chart(ctx, getNewConfig()));
+                            arrayChart.push(new Chart(ctx, getNewConfig() ));
                         }
+
+                        initTime(freqence, i);
                     }
 
                     getValSeuil();
+                    updateData();
 
                 } else {
                     // Afficher un message si il n'y a aucun capteur
@@ -174,7 +178,7 @@
         dates_url = document.getElementById("choixDate").value.split("-");
 
         url = site_url + 'REST/vibration/' + numMachine + "/" + dates_url[0] + dates_url[1] + dates_url[2];
-
+console.log(url);
         $.ajax({
             type: "GET",
             async: false,
@@ -199,6 +203,7 @@
 
             // Ajouter les données
             for (i = 0; i < prmResult.length; i++) {
+
                 if (idMoteurMin === parseInt(prmResult[i]['idMoteur'])) {
                     arrayConfig[indexChart].data.datasets[0].data.push(prmResult[i]['valeur']);
                 } else {
@@ -238,17 +243,21 @@
 
 
 
+
     // ------ Ajouter les labels ------
-    function initTime() {
+    function initTime(prmFreqMesure, prmIdGraph) {
 
-        for (j = 0; j < 24; j++)
-        {
-            dataHeures.push(("0" + j).slice(-2) + 'h');
+        // 60 minutes
+        nbMesureMin = 60 / prmFreqMesure;
+        nbMesureHeure = nbMesureMin * 60 - 1;
 
-            // 60 minutes
-            for (i = 0; i < 59; i++) {
-                dataHeures.push('');
+        for (j = 0; j < 24; j++) {
+            arrayConfig[prmIdGraph].data.labels.push(("0" + j).slice(-2) + 'h');
+
+            for (v = 0; v < nbMesureHeure; v++) {
+                arrayConfig[prmIdGraph].data.labels.push("");
             }
+
         }
     }
 
@@ -263,7 +272,7 @@
         config = {
             type: 'line',
             data: {
-                labels: dataHeures,
+                labels: [],
                 datasets: [{
                         label: 'Valeur des vibrations',
                         backgroundColor: transparent,

@@ -16,8 +16,12 @@ class mac extends REST_Controller {
         $this->response($this->M_mac->get_mac());
     }
 
-    public function index_post($dto) {
-        $this->response($this->M_mac->post_mac($dto));
+    public function index_put($idMachine) {
+        
+        $dto = $this->put('dto');
+        $dto = (array) json_decode($dto);
+        
+        $this->response($this->M_mac->put_mac($dto, $idMachine));
     }
 
 }

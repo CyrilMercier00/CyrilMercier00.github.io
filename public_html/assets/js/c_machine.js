@@ -4,7 +4,7 @@
     const base_url = $('#url2_js').val();// Adresse du site sans index
 
     const valVibrationsMax = 6;          // Hauteur du graphiqie
-    const tentativeRecoMQTTMax = 3;     // Nombre de tentatives de reconnexion autorisées
+    const tentativeRecoMQTTMax = 3;      // Nombre de tentatives de reconnexion autorisées
 
     var arrayChart = [];                 // Array contenant les graphiques crées
     var arrayConfig = [];                // Array contenant les config pour les graphiques   
@@ -13,7 +13,8 @@
     var seuil_added = false;             // Verifie si les seuils ont bien été recupérés
     var nbCapteurs = 0;                  // Nombre max de capteurs
     var numMachine = parseInt(window.location.pathname.split("/").pop()); // Extraire le numero de la machine depui l'url
-    var freqMes = 0                      // Frequence de mesure d'un moteur
+    var freqMes = 0;                    // Frequence de mesure d'un moteur
+    var doOnce = false;                 // Pour ne faire qu'une fois la requete 
 
     //Heure pour le label
     var date = new Date();
@@ -73,7 +74,6 @@
                 {
                     nbCapteurs = result.length;
                     if (nbCapteurs > 0) {
-                        setInterval(insererDataTest, 1000); // Rafraichir les données du graphique        
                         creerGraph(nbCapteurs, result);             // Creer une div pour chaque capteur
                     } else {
                         // Afficher un message si il n'y a aucun capteur
@@ -102,8 +102,8 @@
             {
                 ctx.height = 230;
                 freqMes = prmResult[i]['freqMesure'];
-                initTime(freqMes);
                 arrayChart.push(new Chart(ctx, getNewConfig()));
+                initTime(i);
             }
         }
         getValSeuil();
@@ -113,8 +113,7 @@
 
 
     // ------ Recupere les valeurs de seuil ------ 
-    function getValSeuil()
-    {
+    function getValSeuil() {
         url = site_url + '/REST/norme/1';
 
         $.ajax({
@@ -123,27 +122,30 @@
             dataType: "json",
             success: function (result)
             {
-                for (i = 0; i < result.length; i++)
-                {
-                    seuil[i] = result[i]['seuil'];
-                }
-                seuil_added = true;
-
-                // Afficher les seuils sur tous les graphique
-                for (i = 0; i < arrayConfig.length; i++) // Pour tous les graph
-                {
-                    for (j = 0; j < arrayConfig[i].data.labels.length; j++) // Pour tout les labels
+                if (doOnce === false) {
+                    doOnce = true;
+                    for (i = 0; i < result.length; i++)
                     {
-                        // Ajouter la valeurs du seuil
-                        arrayConfig[i].data.datasets[1].data.push(seuil[0]);
-                        arrayConfig[i].data.datasets[2].data.push(seuil[1]);
-                        arrayConfig[i].data.datasets[3].data.push(seuil[2]);
-                        arrayConfig[i].data.datasets[4].data.push(seuil[3]);
+                        seuil[i] = result[i]['seuil'];
                     }
-                }
-                for (i = 0; i < arrayChart.length; i++)
-                {
-                    arrayChart[i].update;
+                    seuil_added = true;
+
+                    // Afficher les seuils sur tous les graphique
+                    for (i = 0; i < arrayConfig.length; i++) // Pour tous les graph
+                    {
+                        for (j = 0; j < arrayConfig[i].data.labels.length; j++) // Pour tout les labels
+                        {
+                            // Ajouter la valeurs du seuil
+                            arrayConfig[i].data.datasets[1].data.push(seuil[0]);
+                            arrayConfig[i].data.datasets[2].data.push(seuil[1]);
+                            arrayConfig[i].data.datasets[3].data.push(seuil[2]);
+                            arrayConfig[i].data.datasets[4].data.push(seuil[3]);
+                        }
+                    }
+                    for (i = 0; i < arrayChart.length; i++)
+                    {
+                        arrayChart[i].update;
+                    }
                 }
             }
         });
@@ -160,7 +162,7 @@
 
         arrayChart['numGraph'].data.datasets[0].data.push(valVibration);
         arrayChart['numGraph'].data.labels.push("");
-        
+
         arrayChart['numGraph'].update();       // Mise a jour de données
     }
 
@@ -168,19 +170,16 @@
 
 
     // ------  Affichage de l'heure actuelle ------ 
-    function initTime(prmFreqMesure)
+    function initTime(prmIdCapteur)
     {
+        debugger;
+        console.log(arrayChart[prmIdCapteur]);
         // Heure actuelle
         if (date.getMinutes() < 10) {
-            dataHeures.push(date.getHours() + 'h0' + date.getMinutes());
+            arrayConfig[prmIdCapteur].data.labels.push(date.getHours() + 'h0' + date.getMinutes());
         } else {
-            dataHeures.push(date.getHours() + 'h' + date.getMinutes());
+            arrayConfig[prmIdCapteur].data.labels.push(date.getHours() + 'h' + date.getMinutes());
         }
-
-        // 60 minutes
-        nbMesureMin = 59 / prmFreqMesure;
-        nbMesureHeure = nbMesureMin * 60;
-
     }
 
 
@@ -253,7 +252,7 @@
         config = {
             type: 'line',
             data: {
-                labels: dataHeures, datasets: [
+                labels: [], datasets: [
                     {
                         label: 'Valeur des vibrations',
                         backgroundColor: transparent,
