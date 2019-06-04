@@ -13,11 +13,12 @@ class M_mac extends CI_Model {
     }
 
     public function put_mac($prmDto, $prmIdMachine) {
+        return $prmDto ;
         // Donnees a inserer
         $data = array('addrMac' => $prmDto['adresse']);
 
         $this->db->where('idMachine', $prmIdMachine);
-        $this->db->update('colonne', $data);
+        return $this->db->update('colonne', $data);
     }
 
 }
