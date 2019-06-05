@@ -1,5 +1,6 @@
-(function ($)
-{
+(function ($) {
+    /* ---------- DECLARATION DES VARIABLES ----------- */
+
     const site_url = $('#url_js').val(); // Adresse du site
     const base_url = $('#url2_js').val(); // Adresse du site sans index
 
@@ -19,19 +20,23 @@
     //Heure pour le label
     var date = new Date();
     var dataHeures = [];
+
     // Code html a inserer pour créer un graphique, separé pouvoir inserer des données
     var code_html1 = "<div class='col-lg-8'> \n\
     <div class='au-card recent-report'> \n\
     <div class='au-card-inner'> \n\
     <h3 class='title-2'>";
+
     var code_html2 = "</h3> \n\
     <div class='recent-report__chart'> \n\
     <canvas id='graphCapteur";
+
     var code_html3 = "'></canvas> \n\
     </div> \n\
     </div> \n\
     </div> \n\
     </div>";
+
     // Couleur sutilisées dans le graphique
     const ln_blue = 'rgba(80, 140, 200, 1)';
     const ln_vert = 'rgba(140, 210, 65, 1)';
@@ -43,29 +48,21 @@
     const bg_orange = 'rgba(255, 160, 55, 0.82)';
     const bg_rouge = 'rgba(250, 66, 81, 0.82)';
     const transparent = 'transparent';
-// --------------------------------------------
-// --------  DEBUT programme principal  -------
-// --------------------------------------------  
+    /*----------------- FIN DECLARATION ------------------*/
+
     initWebsocketMQTT();
     getNumCapteurs();
-// --------------------------------------------
-// --------   FIN programme principal  --------
-// --------------------------------------------
-
 
 
     // ------  Recuperer le nombre de capteurs a afficher ------ 
-    function getNumCapteurs()
-    {
-        if (graph_created === false)
-        {
+    function getNumCapteurs() {
+        if (graph_created === false) {
             url = site_url + 'REST/machine/' + numMachine;
             $.ajax({
                 type: "GET",
                 url: url,
                 dataType: "json",
-                success: function (result)
-                {
+                success: function (result) {
                     nbCapteurs = result.length;
                     if (nbCapteurs > 0) {
                         setInterval(insererDataTest, 1000); // Rafraichir les données du graphique        
@@ -86,14 +83,11 @@
 
 
     // ------  Créer les graphiques danns la page ------ 
-    function creerGraph(prmNbCapteurs, prmResult)
-    {
-        for (i = 0; i < prmNbCapteurs; i++)
-        {
+    function creerGraph(prmNbCapteurs, prmResult) {
+        for (i = 0; i < prmNbCapteurs; i++) {
             $("#divGraph").append(code_html1 + prmResult[i]['fonction'] + code_html2 + i + code_html3);
             var ctx = document.getElementById("graphCapteur" + [i]); // Creer un graphique pour chaque div
-            if (ctx)
-            {
+            if (ctx) {
                 ctx.height = 230;
                 freqMes = prmResult[i]['freqMesure'];
                 arrayChart.push(new Chart(ctx, getNewConfig()));
@@ -107,18 +101,15 @@
 
 
     // ------ Recupere les valeurs de seuil ------ 
-    function getValSeuil()
-    {
+    function getValSeuil() {
         url = site_url + '/REST/norme/1';
         $.ajax({
             type: "GET",
             url: url,
             dataType: "json",
-            success: function (result)
-            {
+            success: function (result) {
                 if (doOnce === false) {
-                    for (i = 0; i < result.length; i++)
-                    {
+                    for (i = 0; i < result.length; i++) {
                         seuil[i] = result[i]['seuil'];
                     }
                     seuil_added = true;
@@ -134,8 +125,7 @@
                             arrayConfig[i].data.datasets[4].data.push(seuil[3]);
                         }
                     }
-                    for (i = 0; i < arrayChart.length; i++)
-                    {
+                    for (i = 0; i < arrayChart.length; i++) {
                         arrayChart[i].update;
                     }
                 }
@@ -148,8 +138,7 @@
 
 
     // ------  Mise a jour des graph avec les valeurs instant ------ 
-    function updateGraph(prmJsonDecoded)
-    {
+    function updateGraph(prmJsonDecoded) {
         numGraph = prmJsonDecoded['idMoteur'];
         valVibration = prmJsonDecoded['valVibration'];
         arrayChart['numGraph'].data.datasets[0].data.push(valVibration);
@@ -161,8 +150,7 @@
 
 
     // ------  Affichage de l'heure actuelle ------ 
-    function initTime(prmIdCapteur)
-    {
+    function initTime(prmIdCapteur) {
         // Heure actuelle
         if (date.getMinutes() < 10) {
             arrayConfig[prmIdCapteur].data.labels.push(date.getHours() + 'h0' + date.getMinutes());
@@ -175,20 +163,20 @@
 
 
     // ------  Initialisation de l'ecoute MQTT ------ 
-    function initWebsocketMQTT()
-    {
+    function initWebsocketMQTT() {
         try {
             host = "172.16.129.32";
             port = 9001;
             idClient = "clientjs";
+
             // Création du client MQTT
             console.log(client = new Paho.MQTT.Client(host, port, idClient));
             // Definir les handlers a utiliser
             client.onConnectionLost = onConnectionLost;
             client.onMessageArrived = onMessageArrived;
             // Succès de la connexion au serveur MQTT
-            client.connect({onSuccess: function ()
-                {
+            client.connect({
+                onSuccess: function () {
                     console.log("MQTT - Client MQTT connecté a l'adresse: '" + client.host + "', port: '" + client.port + " path: " + client.path);
                     client.subscribe("vibration");
                     message = new Paho.MQTT.Message("site web connecté");
@@ -198,8 +186,7 @@
                 }
             });
             // Handler connection perdue
-            function onConnectionLost(responseObject)
-            {
+            function onConnectionLost(responseObject) {
                 if (responseObject.errorCode !== 0) {
                     console.log("MQTT - Connection perdue: " + responseObject.errorMessage);
                 }
@@ -212,8 +199,7 @@
             }
             ;
             // Handler Reception de message
-            function onMessageArrived(message)
-            {
+            function onMessageArrived(message) {
                 console.log("MQTT - Message reçu: " + message.payloadString);
                 updateGraph(message.payloadString); // Logique pour mettre a jour le graphique
             }
@@ -227,8 +213,7 @@
 
 
     // ------ Creer une config pour chaque graph ------
-    function getNewConfig()
-    {
+    function getNewConfig() {
 
         // --- Début fichier config du graphiqe  ---
         config = {
@@ -298,31 +283,31 @@
                 responsive: true,
                 scales: {
                     xAxes: [{
-                            gridLines: {
-                                display: false,
-                                drawOnChartArea: true,
-                                color: '#f2f2f2'
-                            },
-                            ticks: {
-                                fontFamily: "Poppins",
-                                fontSize: 11,
-                                beginAtZero: true
-                            }
-                        }],
+                        gridLines: {
+                            display: false,
+                            drawOnChartArea: true,
+                            color: '#f2f2f2'
+                        },
+                        ticks: {
+                            fontFamily: "Poppins",
+                            fontSize: 11,
+                            beginAtZero: true
+                        }
+                    }],
                     yAxes: [{
-                            ticks: {
-                                beginAtZero: true,
-                                maxTicksLimit: 5,
-                                stepSize: 1,
-                                max: valVibrationsMax,
-                                fontFamily: "Poppins",
-                                fontSize: 11
-                            },
-                            gridLines: {
-                                display: false,
-                                color: '#f2f2f2'
-                            }
-                        }]
+                        ticks: {
+                            beginAtZero: true,
+                            maxTicksLimit: 5,
+                            stepSize: 1,
+                            max: valVibrationsMax,
+                            fontFamily: "Poppins",
+                            fontSize: 11
+                        },
+                        gridLines: {
+                            display: false,
+                            color: '#f2f2f2'
+                        }
+                    }]
                 },
                 elements: {
                     point: {
@@ -359,12 +344,9 @@
     // --------------------------------------------
     // --------  FONCTIONS POUR LES TESTS  -------- 
     // --------------------------------------------
-    function insererDataTest()
-    {
-        if (seuil_added === true)
-        {
-            for (i = 0; i < arrayChart.length; i++)
-            {
+    function insererDataTest() {
+        if (seuil_added === true) {
+            for (i = 0; i < arrayChart.length; i++) {
                 arrayChart[i].data.datasets[0].data.push(nbreRandom());
                 arrayChart[i].data.datasets[1].data.push(seuil[0]);
                 arrayChart[i].data.datasets[2].data.push(seuil[1]);
@@ -372,8 +354,7 @@
                 arrayChart[i].data.datasets[4].data.push(seuil[3]);
             }
 
-            for (i = 0; i < arrayChart.length; i++)
-            {
+            for (i = 0; i < arrayChart.length; i++) {
                 arrayChart[i].update(); // Mise a jour de donnéess
             }
 
@@ -382,8 +363,7 @@
 
 
 
-    function nbreRandom()
-    {
+    function nbreRandom() {
         return (Math.random() * (0.80 - 0.0) + 0.0).toFixed(2);
     }
 
