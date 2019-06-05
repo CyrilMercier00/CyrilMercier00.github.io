@@ -6,7 +6,6 @@ class M_vibration extends CI_Model {
 
     public function insert_vibration($prmDto) {
         
-        // Donnees a inserer
         $data = array(
             'valeur' => json_decode($prmDto['valeur']),
         );
@@ -31,6 +30,7 @@ class M_vibration extends CI_Model {
             $i++;
         }
 
+        // Formatage de la date
         $prmDate = str_split($prmDate);
         $année = (String) ($prmDate[0] . (String) $prmDate[1] . (String) $prmDate[2] . (String) $prmDate[3]);
         $mois = (String) ($prmDate[4] . (String) $prmDate[5]);
