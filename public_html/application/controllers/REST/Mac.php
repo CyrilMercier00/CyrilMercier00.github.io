@@ -18,7 +18,7 @@ class Mac extends REST_Controller {
 
     public function index_put($idMachine) {
         
-        $dto = $this->put('dto');
+        $dto = file_get_contents('php://input') ;
         $dto = (array) json_decode($dto);
         
         $this->response($this->M_mac->put_mac($dto, $idMachine));
