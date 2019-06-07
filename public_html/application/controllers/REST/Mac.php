@@ -12,8 +12,8 @@ class Mac extends REST_Controller {
     }
 
     // Recuperer les capteur & colonnes en rapport avec l'id moteur
-    public function index_get() {
-        $this->response($this->M_mac->get_mac());
+    public function index_get($idMachine) {
+        $this->response($this->M_mac->get_mac($idMachine));
     }
 
     public function index_put($idMachine) {

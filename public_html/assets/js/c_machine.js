@@ -65,7 +65,6 @@
                 success: function (result) {
                     nbCapteurs = result.length;
                     if (nbCapteurs > 0) {
-                        setInterval(insererDataTest, 1000); // Rafraichir les données du graphique        
                         creerGraph(nbCapteurs, result); // Creer une div pour chaque capteur
                     } else {
                         // Afficher un message si il n'y a aucun capteur
@@ -138,12 +137,14 @@
 
 
     // ------  Mise a jour des graph avec les valeurs instant ------ 
-    function updateGraph(prmJsonDecoded) {
-        numGraph = prmJsonDecoded['idMoteur'];
-        valVibration = prmJsonDecoded['valVibration'];
-        arrayChart['numGraph'].data.datasets[0].data.push(valVibration);
-        arrayChart['numGraph'].data.labels.push("");
-        arrayChart['numGraph'].update(); // Mise a jour de données
+    function updateGraph(prmData) {
+
+         numGraph = prmData['id_moteur'];
+         valVibration = parseFloat(prmData['accel']);
+         debugger;
+         arrayConfig['numGraph'].data.datasets[0].data.push(valVibration);
+         arrayConfig['numGraph'].data.labels.push(" ");
+         arrayChart['numGraph'].update(); // Mise a jour de données
     }
 
 
@@ -164,48 +165,47 @@
 
     // ------  Initialisation de l'ecoute MQTT ------ 
     function initWebsocketMQTT() {
-        try {
-            host = "172.16.129.32";
-            port = 9001;
-            idClient = "clientjs";
+        host = "172.16.129.32";
+        port = 9001;
+        idClient = "clientjs";
 
-            // Création du client MQTT
-            console.log(client = new Paho.MQTT.Client(host, port, idClient));
-            // Definir les handlers a utiliser
-            client.onConnectionLost = onConnectionLost;
-            client.onMessageArrived = onMessageArrived;
-            // Succès de la connexion au serveur MQTT
-            client.connect({
-                onSuccess: function () {
-                    console.log("MQTT - Client MQTT connecté a l'adresse: '" + client.host + "', port: '" + client.port + " path: " + client.path);
-                    client.subscribe("vibration");
-                    message = new Paho.MQTT.Message("site web connecté");
-                    message.destinationName = "vibration";
-                    client.send(message);
-                    console.log("MQTT - Message '" + message.payloadString + "' envoyé");
-                }
-            });
-            // Handler connection perdue
-            function onConnectionLost(responseObject) {
-                if (responseObject.errorCode !== 0) {
-                    console.log("MQTT - Connection perdue: " + responseObject.errorMessage);
-                }
+        // Création du client MQTT
+        var client = new Paho.MQTT.Client(host, port, idClient);
 
-                for (i = 0; i < tentativeRecoMQTTMax; i++) {
-                    client.connect();
-                    console.log("Tentative de reconnexion " + i + " de " + tentativeRecoMQTTMax);
-                    sleep(2000);
-                }
+        // Definir les handlers a utiliser
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+
+        // Succès de la connexion au serveur MQTT
+        client.connect({
+            reconnect: true,
+            onSuccess: onConnect,
+            onFailure: onConnectError
+        });
+
+        // Handler connection reussie 
+        function onConnect() {
+            console.log("MQTT - Connection réussie");
+            client.subscribe('/vibration/vib');
+        }
+
+        function onConnectError() {
+
+        }
+
+        // Handler connection perdue
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("MQTT - Connection perdue: " + responseObject.errorMessage);
             }
-            ;
-            // Handler Reception de message
-            function onMessageArrived(message) {
-                console.log("MQTT - Message reçu: " + message.payloadString);
-                updateGraph(message.payloadString); // Logique pour mettre a jour le graphique
-            }
-            ;
-        } catch (e) {
-            console.log("MQTT - Erreur: " + e);
+
+        }
+
+        // Handler Reception de message
+        function onMessageArrived(message) {
+            console.log("MQTT - Message reçu: " + message.payloadString);
+            donnees = JSON.parse(message.payloadString);
+            updateGraph(donnees['data']);
         }
     }
 
@@ -283,31 +283,31 @@
                 responsive: true,
                 scales: {
                     xAxes: [{
-                        gridLines: {
-                            display: false,
-                            drawOnChartArea: true,
-                            color: '#f2f2f2'
-                        },
-                        ticks: {
-                            fontFamily: "Poppins",
-                            fontSize: 11,
-                            beginAtZero: true
-                        }
-                    }],
+                            gridLines: {
+                                display: false,
+                                drawOnChartArea: true,
+                                color: '#f2f2f2'
+                            },
+                            ticks: {
+                                fontFamily: "Poppins",
+                                fontSize: 11,
+                                beginAtZero: true
+                            }
+                        }],
                     yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            maxTicksLimit: 5,
-                            stepSize: 1,
-                            max: valVibrationsMax,
-                            fontFamily: "Poppins",
-                            fontSize: 11
-                        },
-                        gridLines: {
-                            display: false,
-                            color: '#f2f2f2'
-                        }
-                    }]
+                            ticks: {
+                                beginAtZero: true,
+                                maxTicksLimit: 5,
+                                stepSize: 1,
+                                max: valVibrationsMax,
+                                fontFamily: "Poppins",
+                                fontSize: 11
+                            },
+                            gridLines: {
+                                display: false,
+                                color: '#f2f2f2'
+                            }
+                        }]
                 },
                 elements: {
                     point: {
@@ -326,45 +326,6 @@
 
         arrayConfig.push(config);
         return arrayConfig[arrayConfig.length - 1]; // Derniere valeur
-    }
-
-
-
-    function sleep(milliseconds) {
-        var start = new Date().getTime();
-        for (var i = 0; i < 1e7; i++) {
-            if ((new Date().getTime() - start) > milliseconds) {
-                break;
-            }
-        }
-    }
-
-
-
-    // --------------------------------------------
-    // --------  FONCTIONS POUR LES TESTS  -------- 
-    // --------------------------------------------
-    function insererDataTest() {
-        if (seuil_added === true) {
-            for (i = 0; i < arrayChart.length; i++) {
-                arrayChart[i].data.datasets[0].data.push(nbreRandom());
-                arrayChart[i].data.datasets[1].data.push(seuil[0]);
-                arrayChart[i].data.datasets[2].data.push(seuil[1]);
-                arrayChart[i].data.datasets[3].data.push(seuil[2]);
-                arrayChart[i].data.datasets[4].data.push(seuil[3]);
-            }
-
-            for (i = 0; i < arrayChart.length; i++) {
-                arrayChart[i].update(); // Mise a jour de donnéess
-            }
-
-        }
-    }
-
-
-
-    function nbreRandom() {
-        return (Math.random() * (0.80 - 0.0) + 0.0).toFixed(2);
     }
 
 })(jQuery);

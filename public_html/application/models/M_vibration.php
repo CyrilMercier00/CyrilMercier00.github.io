@@ -7,7 +7,7 @@ class M_vibration extends CI_Model {
     public function insert_vibration($prmDto) {
         
         $data = array(
-            'valeur' => json_decode($prmDto['valeur']),
+            'valeur' => json_decode($prmDto['vibration']),
         );
 
         return $this->db

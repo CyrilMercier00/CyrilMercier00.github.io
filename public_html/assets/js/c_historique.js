@@ -178,7 +178,7 @@
         dates_url = document.getElementById("choixDate").value.split("-");
 
         url = site_url + 'REST/vibration/' + numMachine + "/" + dates_url[0] + dates_url[1] + dates_url[2];
-        debugger;
+
         $.ajax({
             type: "GET",
             async: false,
