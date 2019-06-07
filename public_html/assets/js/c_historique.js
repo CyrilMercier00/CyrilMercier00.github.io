@@ -96,7 +96,7 @@
 
                         if (ctx) {
                             ctx.height = 230;
-                            arrayChart.push(new Chart(ctx, getNewConfig() ));
+                            arrayChart.push(new Chart(ctx, getNewConfig()));
                         }
 
                         initTime(freqence, i);
@@ -178,7 +178,7 @@
         dates_url = document.getElementById("choixDate").value.split("-");
 
         url = site_url + 'REST/vibration/' + numMachine + "/" + dates_url[0] + dates_url[1] + dates_url[2];
-console.log(url);
+        debugger;
         $.ajax({
             type: "GET",
             async: false,

@@ -14,14 +14,16 @@ class M_mac extends CI_Model
 
     public function put_mac($prmDto, $prmIdMachine)
     {        
-        if ( $this->db->get_where('idMachine', $prmIdMachine) > 0) {
+        $machineExiste = $this->db->select('idMachine')->get_where('machine', $prmIdMachine)->result();
+        
+        if ($machineExiste > 0) {
 
             $data = array('addrMac' => $prmDto['adresse']);
 
             $this->db->where('idMachine', $prmIdMachine);
             $this->db->update('colonne', $data);
 
-            return $this->db->affected_rows;
+            return $this->db->affected_rows();
    
         } else {
             return -2;
