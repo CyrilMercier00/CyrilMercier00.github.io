@@ -37,7 +37,7 @@
         <!-- Passe l'adresse du site au js -->
         <input type="hidden" id="url_js" value="<?php echo site_url(); ?>">
         <input type="hidden" id="url2_js" value="<?php echo base_url(); ?>">
-        
+
         <div class="page-wrapper">
 
             <!-- MENU SIDEBAR-->
@@ -49,25 +49,22 @@
                 </div>
                 <div class="menu-sidebar__content js-scrollbar3">
                     <nav class="navbar-sidebar">
-                        <ul class="list-unstyled navbar__list">
+                        <ul id="ulNavbar" class="list-unstyled navbar__list">
                             <li>
                                 <a href="<?php echo site_url() ?>/c_accueil">
                                     <i class="fas fa-home"></i>Accueil</a>
                             </li>
-
+                            
                             <?php
-
                             /* Si l'utilisateur se trouve sur la page machine,
-                               activer la redirection vers l'historique */
-                            if (isset($data['numMachine']))
-                            {
+                              activer la redirection vers l'historique */
+                            if (isset($data['numMachine'])) {
                                 echo '<li>';
-                                echo '<a href="' . site_url() . '/C_historique/' . (int)$data['numMachine'].'">';
+                                echo '<a href="' . site_url() . '/C_historique/' . (int) $data['numMachine'] . '">';
                                 echo '<i class="fas fa-clock"></i>Historique</a>';
                                 echo '</li>';
                             }
                             ?>
-
                             <li class="has-sub">
                                 <a class="js-arrow" href="#">
                                     <i class="fas fa-user"></i>Compte</a>
@@ -77,6 +74,13 @@
                                     </li>
                                 </ul>
                             </li>
+
+                            <?php
+                            if (isset($data['numMachine'])) {
+                                echo '<li id="connectState">Erreur de connexion</li>';
+                            }
+                            ?>
+
                         </ul>
                     </nav>
                 </div>
@@ -90,7 +94,7 @@
                 <!-- MAIN CONTENT-->
                 <div class="main-content">        
                     <div class="section__content section__content--p30">
-                        <?php echo $data['page'];?>
+                        <?php echo $data['page']; ?>
                     </div>
                 </div>
                 <!-- END MAIN CONTENT-->

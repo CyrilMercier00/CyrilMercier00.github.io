@@ -8,18 +8,14 @@
     const tentativeRecoMQTTMax = 3; // Nombre de tentatives de reconnexion autorisées
 
     var arrayChart = []; // Array contenant les graphiques crées
-    var arrayConfig = []; // Array contenant les config pour les graphiques   
+    var arrayConfig = []; // Array contenant les config pour les graphiques
+    var arrayId = [];
     var seuil = []; // Array contenant les seuils récupérés 
-    var graph_created = false; // Verifie si les graphiques sont initialisés
-    var seuil_added = false; // Verifie si les seuils ont bien été recupérés
     var nbCapteurs = 0; // Nombre max de capteurs
     var numMachine = parseInt(window.location.pathname.split("/").pop()); // Extraire le numero de la machine depui l'url
-    var freqMes = 0; // Frequence de mesure d'un moteur
-    var doOnce = false; // Pour ne faire qu'une fois la requete  
 
     //Heure pour le label
     var date = new Date();
-    var dataHeures = [];
 
     // Code html a inserer pour créer un graphique, separé pouvoir inserer des données
     var code_html1 = "<div class='col-lg-8'> \n\
@@ -54,29 +50,30 @@
     getNumCapteurs();
 
 
+
     // ------  Recuperer le nombre de capteurs a afficher ------ 
     function getNumCapteurs() {
-        if (graph_created === false) {
-            url = site_url + 'REST/machine/' + numMachine;
-            $.ajax({
-                type: "GET",
-                url: url,
-                dataType: "json",
-                success: function (result) {
-                    nbCapteurs = result.length;
-                    if (nbCapteurs > 0) {
-                        creerGraph(nbCapteurs, result); // Creer une div pour chaque capteur
-                    } else {
-                        // Afficher un message si il n'y a aucun capteur
-                        $("#divGraph").append('<figure> \n\
+        url = site_url + 'REST/machine/' + numMachine;
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json",
+            success: function (result) {
+
+                nbCapteurs = result.length;
+
+                if (nbCapteurs > 0) {
+                    creerGraph(nbCapteurs, result); // Creer une div pour chaque capteur
+                } else {
+                    // Afficher un message si il n'y a aucun capteur
+                    $("#divGraph").append('<figure> \n\
                         <img src="' + base_url + 'assets/images/icon/supersad.png" class="img-fluid mx-auto d-block" > \n\
                         <figcaption> <br> Il n\'y a aucun capteur pour cette machine. </figcaption> \n\
                         </figure> ');
-                        $("#divGraph").css("margin-top", "5%");
-                    }
+                    $("#divGraph").css("margin-top", "5%");
                 }
-            });
-        }
+            }
+        });
     }
 
 
@@ -84,17 +81,22 @@
     // ------  Créer les graphiques danns la page ------ 
     function creerGraph(prmNbCapteurs, prmResult) {
         for (i = 0; i < prmNbCapteurs; i++) {
+
+            arrayId.push(prmResult[i]['idMoteur']);
+
             $("#divGraph").append(code_html1 + prmResult[i]['fonction'] + code_html2 + i + code_html3);
             var ctx = document.getElementById("graphCapteur" + [i]); // Creer un graphique pour chaque div
+
             if (ctx) {
                 ctx.height = 230;
                 freqMes = prmResult[i]['freqMesure'];
                 arrayChart.push(new Chart(ctx, getNewConfig()));
-                initTime(i);
             }
+
         }
-        getValSeuil();
-        graph_created = true; // Pour ne pas recreer les div en boucle
+
+        initTime();
+
     }
 
 
@@ -106,58 +108,72 @@
             type: "GET",
             url: url,
             dataType: "json",
-            success: function (result) {
-                if (doOnce === false) {
-                    for (i = 0; i < result.length; i++) {
-                        seuil[i] = result[i]['seuil'];
-                    }
-                    seuil_added = true;
-                    // Afficher les seuils sur tous les graphique
-                    for (i = 0; i < arrayConfig.length; i++) // Pour tous les graph
-                    {
-                        for (j = 0; j < arrayConfig[i].data.labels.length; j++) // Pour tout les labels
-                        {
-                            // Ajouter la valeurs du seuil
-                            arrayConfig[i].data.datasets[1].data.push(seuil[0]);
-                            arrayConfig[i].data.datasets[2].data.push(seuil[1]);
-                            arrayConfig[i].data.datasets[3].data.push(seuil[2]);
-                            arrayConfig[i].data.datasets[4].data.push(seuil[3]);
-                        }
-                    }
-                    for (i = 0; i < arrayChart.length; i++) {
-                        arrayChart[i].update;
-                    }
-                }
-                doOnce = true;
-            }
+            success: succesSeuil
         });
     }
 
+
+
+    function succesSeuil(prmResult) {
+        for (i = 0; i < prmResult.length; i++) {
+            seuil[i] = prmResult[i]['seuil'];
+        }
+
+        // Afficher les seuils sur tous les graphique
+        for (i = 0; i < arrayConfig.length; i++) // Pour tous les graph
+        {
+            // Ajouter la valeurs du seuil
+            arrayConfig[i].data.datasets[1].data.push(seuil[0]);
+            arrayConfig[i].data.datasets[2].data.push(seuil[1]);
+            arrayConfig[i].data.datasets[3].data.push(seuil[2]);
+            arrayConfig[i].data.datasets[4].data.push(seuil[3]);
+
+        }
+
+        for (i = 0; i < arrayChart.length; i++) {
+            arrayChart[i].update;
+        }
+    }
 
 
 
     // ------  Mise a jour des graph avec les valeurs instant ------ 
     function updateGraph(prmData) {
 
-         numGraph = prmData['id_moteur'];
-         valVibration = parseFloat(prmData['accel']);
-         debugger;
-         arrayConfig['numGraph'].data.datasets[0].data.push(valVibration);
-         arrayConfig['numGraph'].data.labels.push(" ");
-         arrayChart['numGraph'].update(); // Mise a jour de données
+        idMoteur = prmData['id_moteur'];
+        valVibration = parseFloat(prmData['accel']);
+
+        for (i = 0; i < arrayId.length; i++) {
+
+            if (arrayId[i] === idMoteur) {
+                arrayConfig[i].data.datasets[0].data.push(valVibration);
+
+                arrayConfig[i].data.datasets[1].data.push(seuil[0]);
+                arrayConfig[i].data.datasets[2].data.push(seuil[1]);
+                arrayConfig[i].data.datasets[3].data.push(seuil[2]);
+                arrayConfig[i].data.datasets[4].data.push(seuil[3]);
+
+            }
+        }
+
+        for (i = 0; i < arrayId.length; i++) {
+            arrayChart[i].update(); // Mise a jour de données
+        }
     }
 
 
 
 
     // ------  Affichage de l'heure actuelle ------ 
-    function initTime(prmIdCapteur) {
-        // Heure actuelle
-        if (date.getMinutes() < 10) {
-            arrayConfig[prmIdCapteur].data.labels.push(date.getHours() + 'h0' + date.getMinutes());
-        } else {
-            arrayConfig[prmIdCapteur].data.labels.push(date.getHours() + 'h' + date.getMinutes());
+    function initTime() {
+        for (i = 0; i < arrayConfig.length; i++) {
+            if (date.getMinutes() < 10) {
+                arrayConfig[i].data.labels.push(date.getHours() + 'h0' + date.getMinutes());
+            } else {
+                arrayConfig[i].data.labels.push(date.getHours() + 'h' + date.getMinutes());
+            }
         }
+        getValSeuil();
     }
 
 
@@ -187,28 +203,36 @@
         function onConnect() {
             console.log("MQTT - Connection réussie");
             client.subscribe('/vibration/vib');
+
+            document.getElementById('connectState').style.color = "green";
+            document.getElementById('connectState').innerHTML = "Connexion  établie";
         }
 
+        // Handler erreur lors de la tentative
         function onConnectError() {
-
+            document.getElementById('connectState').style.color = "red";
+            document.getElementById('connectState').innerHTML = "Erreur lors de la tentative de connexion ";
         }
 
         // Handler connection perdue
         function onConnectionLost(responseObject) {
             if (responseObject.errorCode !== 0) {
+
+                document.getElementById('connectState').style.color = "red";
+                document.getElementById('connectState').innerHTML = "Connexion  perdue";
+
                 console.log("MQTT - Connection perdue: " + responseObject.errorMessage);
             }
-
         }
 
         // Handler Reception de message
         function onMessageArrived(message) {
             console.log("MQTT - Message reçu: " + message.payloadString);
             donnees = JSON.parse(message.payloadString);
+
             updateGraph(donnees['data']);
         }
     }
-
 
 
 

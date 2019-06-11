@@ -19,10 +19,10 @@ class C_machine extends CI_Controller {
                     'page' => $page,
                     'css_location' => 'machine.css',
                     'javascript_location' => 'c_machine.js',
-                    'numMachine' => $this->uri->segment(2)
+                    'numMachine' => $this->uri->segment(2),
                 );
 
-                $this->load->view('common/V_template', array('data' => $data), false);
+                $this->load->view('common/v_template', array('data' => $data), false);
             } else {
                 redirect('C_accueil');
             }

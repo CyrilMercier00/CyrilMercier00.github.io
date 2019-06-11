@@ -20,7 +20,7 @@ Class C_historique extends CI_Controller {
                 'javascript_location' => 'c_historique.js'
             );
 
-            $this->load->view('common/V_template', array('data' => $data), false);
+            $this->load->view('common/v_template', array('data' => $data), false);
         } else {
             redirect('C_login');
         }
