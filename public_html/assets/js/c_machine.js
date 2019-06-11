@@ -153,6 +153,12 @@
                 arrayConfig[i].data.datasets[3].data.push(seuil[2]);
                 arrayConfig[i].data.datasets[4].data.push(seuil[3]);
 
+                arrayConfig[i].data.labels.push("");
+
+                if (arrayConfig[i].data.labels.length >= 20) {
+                    arrayConfig[i].data.labels.shift();
+                    arrayConfig[i].data.datasets[0].data.shift();
+                }
             }
         }
 
@@ -303,6 +309,9 @@
                 maintainAspectRatio: false,
                 legend: {
                     display: false
+                },
+                animation: {
+                    duration: 0
                 },
                 responsive: true,
                 scales: {
