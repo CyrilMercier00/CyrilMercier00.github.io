@@ -1,8 +1,7 @@
 :root {
     --background-color: #191c1c;    /* Page background color */
-    --border-color: #fff4;          /* Header and footer border color */
     --head-foot-color: #1a1c1c;     /* Header and footer background color */
-    --border-pjt-color: #828282;    /*  */
+    --border-pjt-color: #828282;    /* List link color */
 }
 
 
@@ -15,7 +14,7 @@ html {
 
 body {
     font-family: 'Roboto', sans-serif;
-    font-size: 24px;
+    font-size: 32px;
     color: #ffffff;
     margin: 0px;
     height: 100%;
@@ -24,6 +23,12 @@ body {
 body a {    /* Remove links color and underline */
     color: inherit;
     text-decoration: none;
+}
+
+@media only screen and (max-device-width : 640px) {
+    .page-content-wrapper {
+    font-size: 16px
+    }
 }
 
 
@@ -41,7 +46,6 @@ body a {    /* Remove links color and underline */
 
 
 /* --- 3. Body --- */
-
 .page-content-wrapper {
     display: flex;
     flex-direction: column;
@@ -50,24 +54,22 @@ body a {    /* Remove links color and underline */
     min-height: 100%;
 }
 
-.inner-wrapper {
-    align-items: left;
-}
-
 
 
 /* --- List --- */
 .heading {
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: solid 1px var(--border-pjt-color);
+    padding-bottom: 8px;
     font-weight: bold;
 }
 
 .heading .fas {
     margin-right: 6px;
-    border-bottom: var(--border-color);
+    border-bottom: var(--border-pjt-color);
 }
 
 .list {
+    margin-top: 0.5em;
     padding: 0 0 0 0.5em;
     list-style: none;
 }
@@ -77,25 +79,39 @@ body a {    /* Remove links color and underline */
 }
 
 .list a {
-    padding: 2px 6px 2px 6px;;
-    border-radius: 8px;
+    padding: 4px 12px 4px;
 }
 
 .list a:hover {
-    background-color: rgba(0,0,0,0.33);
+    background-color: rgba(0,0,0,0.24);
     transition: 300ms ease;
 }
 
-.list li a:before {
+.list li a:before {     /* Horizontal */
     content: "";
     display: inline-block;
-    height: 4px;
-    width: 8px;
-    margin-right:7px ;
-    border-top: solid 1px var(--border-pjt-color);
+    height: 2px;
+    width: 14px;
+    margin-right: 7px;
+    margin-left: -6px;
+    margin-bottom: 2%;
+    background-color: var(--border-pjt-color);
 }
 
+.list li:before {      /* Vertical */
+    content: "";
+    height: 41px;
+    width: 2px;
+    position: absolute;
+    display: inline-block;
+    background-color: var(--border-pjt-color);
+    margin-left: 5px;
+    margin-top: -14px;
+}
 
+.list li:last-child {
+    border-left:none;
+}
 
 /* --- Generic --- */
 .flex {
