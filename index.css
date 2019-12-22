@@ -5,7 +5,7 @@
 }
 
 
-
+/*--- 1. Common --- */
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
 
 html {
@@ -56,7 +56,7 @@ body a {    /* Remove links color and underline */
 
 
 
-/* --- List --- */
+/* --- 4. List --- */
 .heading {
     border-bottom: solid 1px var(--border-pjt-color);
     padding-bottom: 8px;
@@ -72,6 +72,7 @@ body a {    /* Remove links color and underline */
     margin-top: 0.5em;
     padding: 0 0 0 0.5em;
     list-style: none;
+    text-align: left;
 }
 
 .list li {
@@ -94,24 +95,31 @@ body a {    /* Remove links color and underline */
     width: 14px;
     margin-right: 7px;
     margin-left: -6px;
-    margin-bottom: 2%;
+    margin-bottom: 8px;
     background-color: var(--border-pjt-color);
 }
 
 .list li:before {      /* Vertical */
     content: "";
-    height: 41px;
+    height: 1.6em;
     width: 2px;
     position: absolute;
     display: inline-block;
     background-color: var(--border-pjt-color);
     margin-left: 5px;
-    margin-top: -14px;
+    margin-top: -0.6em;
 }
 
 .list li:last-child {
     border-left:none;
 }
+
+/* --- 5. Font-awesome --- */
+.fab {
+    margin-right: 0.5em;
+}
+
+
 
 /* --- Generic --- */
 .flex {
